@@ -1,6 +1,6 @@
 # Islem Rebhi
 
-Cloud & DevOps engineering student at ESPRIT (Tunis, Tunisia).
+Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia).
 Focus: platform engineering: infrastructure as code, GitOps, Kubernetes, observability.
 Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia and Europe).
 

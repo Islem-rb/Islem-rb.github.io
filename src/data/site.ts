@@ -7,7 +7,7 @@ export const profile = {
   role: 'Cloud & DevOps Engineering Student',
   focus: 'Platform engineering: infrastructure as code, GitOps, Kubernetes, observability.',
   lookingFor: 'PFE internship in Cloud / DevOps / Platform Engineering (Tunisia and Europe).',
-  location: 'Tunis, Tunisia',
+  location: 'Ariana, Tunisia',
   school: 'ESPRIT',
   languages: ['Arabic (native)', 'French (fluent)', 'English (fluent)'],
 };
@@ -36,7 +36,7 @@ export const about = {
   title: ['Platform', 'engineering.'],
   photoAlt: 'Islem Rebhi',
   intro:
-    'Cloud & DevOps engineering student at ESPRIT (Tunis, Tunisia), focused on platform engineering: infrastructure as code, GitOps, Kubernetes and observability. Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.',
+    'Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia), focused on platform engineering: infrastructure as code, GitOps, Kubernetes and observability. Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.',
   link: 'More about me',
 };
 
@@ -44,7 +44,7 @@ export const about = {
 export const aboutPage = {
   title: 'About',
   lead: [
-    'Cloud & DevOps engineering student at ESPRIT (Tunis, Tunisia).',
+    'Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia).',
     'Focus: platform engineering: infrastructure as code, GitOps, Kubernetes, observability.',
     'Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia and Europe).',
   ],
