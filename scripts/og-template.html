@@ -1,0 +1,75 @@
+<!doctype html>
+<!-- Open Graph card (1200x630). Rendered to public/og.png by scripts/og-image.mjs.
+     Text comes from content/cv.md; colors mirror the light theme tokens in src/styles/global.css. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Inter Variable';
+        src: url('../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      @font-face {
+        font-family: 'JetBrains Mono Variable';
+        src: url('../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+        font-weight: 100 800;
+      }
+      :root {
+        --bg-from: #ffffff;
+        --bg-to: #e8f0ff;
+        --fg: #0f172a;
+        --muted: #475569;
+        --line: #cbd5e1;
+        --surface: #ffffff;
+        --accent: #2563eb;
+      }
+      * { margin: 0; box-sizing: border-box; }
+      body {
+        width: 1200px;
+        height: 630px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        background: linear-gradient(160deg, var(--bg-from), var(--bg-to));
+        color: var(--fg);
+        font-family: 'Inter Variable', sans-serif;
+        text-align: center;
+      }
+      h1 { font-size: 96px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+      .role { margin-top: 28px; font-size: 38px; font-weight: 300; color: var(--muted); }
+      .window {
+        margin-top: 56px;
+        width: 760px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: 0 20px 40px rgb(15 23 42 / 0.08);
+        overflow: hidden;
+        text-align: left;
+      }
+      .bar { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 20px; border-bottom: 1px solid var(--line); }
+      .dot { width: 14px; height: 14px; border-radius: 50%; }
+      .file { margin-left: 8px; font-size: 18px; color: var(--muted); }
+      .line { padding: 22px 24px 26px; font-family: 'JetBrains Mono Variable', monospace; font-size: 24px; }
+      .line span { color: var(--muted); }
+      .url { position: absolute; bottom: 36px; font-family: 'JetBrains Mono Variable', monospace; font-size: 24px; font-weight: 600; color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <h1>Islem Rebhi</h1>
+    <p class="role">Cloud &amp; DevOps Engineering Student</p>
+    <div class="window">
+      <div class="bar">
+        <span class="dot" style="background:#ff5f57"></span>
+        <span class="dot" style="background:#febc2e"></span>
+        <span class="dot" style="background:#28c840"></span>
+        <span class="file">skills.txt</span>
+      </div>
+      <p class="line"><span>&gt;</span> focus: IaC, GitOps, Kubernetes, observability</p>
+    </div>
+    <p class="url">islem-rb.github.io</p>
+  </body>
+</html>

@@ -20,6 +20,7 @@ export const links = {
 };
 
 export const seo = {
+  ogImageAlt: 'Islem Rebhi, Cloud & DevOps Engineering Student. islem-rb.github.io',
   title: 'Islem Rebhi | Cloud & DevOps Engineering Student',
   description:
     'Islem Rebhi, Cloud & DevOps engineering student at ESPRIT. Platform engineering: infrastructure as code, GitOps, Kubernetes, observability. Open to PFE internships.',
