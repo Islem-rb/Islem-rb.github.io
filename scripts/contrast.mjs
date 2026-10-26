@@ -7,7 +7,13 @@ const block = (re) => Object.fromEntries([...css.match(re)[1].matchAll(/--color-
 const light = block(/@theme \{([\s\S]*?)\n\}/);
 const dark = { ...light, ...block(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/) };
 // Particle opacities (Particles.astro) from the :root blocks.
-const alphas = (re) => Object.fromEntries([...css.match(re)[1].matchAll(/--particle-(dot|line)-alpha:\s*([\d.]+)/g)].map((m) => [m[1], Number(m[2])]));
+const alphas = (re) => {
+  const body = css.match(re)[1];
+  const get = (name) => Number(body.match(new RegExp(`--particle-${name}:\\s*([\\d.]+)`))[1]);
+  // Under text, both opacities are scaled by the text fade.
+  const fade = get('text-fade');
+  return { dot: get('dot-alpha') * fade, line: get('line-alpha') * fade, color: body.match(/--particle-color:\s*(#[0-9a-f]{6})/i)[1] };
+};
 light.particles = alphas(/\n:root \{([\s\S]*?)\n\}/);
 dark.particles = alphas(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/);
 
@@ -43,7 +49,7 @@ for (const [name, t] of [['light', light], ['dark', dark]]) {
     ['todo', t.todo, 'todo badge', mix(t.todo, t['bg-to'], 0.1), 4.5],
     ...['fg', 'muted', 'accent'].flatMap((k) =>
       ['bg-from', 'bg-to'].map((b) => {
-        const under = mix(t.accent, t[b], particleAlpha(t.particles));
+        const under = mix(t.particles.color, t[b], particleAlpha(t.particles));
         return [k, t[k], `particle on ${b}`, under, 4.5];
       }),
     ),
@@ -55,6 +61,12 @@ for (const [name, t] of [['light', light], ['dark', dark]]) {
     const ok = r >= target;
     if (!ok) failed = true;
     console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${r.toFixed(2).padStart(5)}:1  ${a} ${ca} on ${b} ${cb}  (target ${target})`);
+  }
+  // Visibility only (no target): a dot over empty background, at full strength.
+  const fade = Number(css.match(name === 'light' ? /\n:root \{[\s\S]*?--particle-text-fade:\s*([\d.]+)/ : /data-theme="dark"\] \{[\s\S]*?--particle-text-fade:\s*([\d.]+)/)[1]);
+  for (const b of ['bg-from', 'bg-to']) {
+    const dot = mix(t.particles.color, t[b], t.particles.dot / fade);
+    console.log(`  info  ${ratio(dot, t[b]).toFixed(2).padStart(5)}:1  particle dot (open area) on ${b}`);
   }
 }
 process.exit(failed ? 1 : 0);
