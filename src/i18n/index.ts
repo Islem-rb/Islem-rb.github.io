@@ -1,7 +1,5 @@
 // Language helpers. English is the default at /, French lives under /fr/ (astro.config.mjs i18n).
 // UI text is in en.json / fr.json; fr.json must have the same shape as en.json.
-import fs from 'node:fs';
-import path from 'node:path';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import en from './en.json';
@@ -23,9 +21,11 @@ export const localize = (lang: Lang, route = '/') => getRelativeLocaleUrl(lang, 
 // Route without the language prefix: '/fr/projects/x' -> '/projects/x'.
 export const unlocalize = (pathname: string) => pathname.replace(/^\/fr(?=\/|$)/, '') || '/';
 
-// CV per language. Until public/cv-en.pdf exists, English falls back to the French CV.
-export const cvEnMissing = !fs.existsSync(path.join(process.cwd(), 'public', 'cv-en.pdf'));
-export const cvHref = (lang: Lang) => (lang === 'en' && !cvEnMissing ? '/cv-en.pdf' : '/cv-fr.pdf');
+// CV per language (public/cv-en.pdf, public/cv-fr.pdf) and the file name it downloads as.
+export const cv: Record<Lang, { href: string; file: string }> = {
+  en: { href: '/cv-en.pdf', file: 'Islem_Rebhi_CV_EN.pdf' },
+  fr: { href: '/cv-fr.pdf', file: 'Islem_Rebhi_CV_FR.pdf' },
+};
 
 // Projects of one language, flagship first.
 export const getProjects = async (lang: Lang) =>

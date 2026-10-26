@@ -8,7 +8,7 @@ Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia an
 - GitHub: https://github.com/Islem-rb
 - LinkedIn: https://www.linkedin.com/in/rebhi-islem/
 - Email: islem.rebhi@esprit.tn
-- CV (PDF): /cv-en.pdf (English, to be added; falls back to /cv-fr.pdf)
+- CV (PDF): /cv-en.pdf (English), /cv-fr.pdf (French)
 
 ## Projects
 

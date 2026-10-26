@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Placeholder from '../assets/profile-placeholder.svg';
 import Tools from './Tools.astro';
+import CvLink from './CvLink.astro';
 import { getDict, localize, toLang } from '../i18n';
 
 const lang = toLang(Astro.currentLocale);
@@ -41,6 +42,7 @@ const photo = Object.values(photos)[0]?.default;
           <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
         </a>
       </p>
+      <CvLink class="btn">{about.cv}</CvLink>
     </div>
   </div>
   <div class="mx-auto w-full max-w-6xl">

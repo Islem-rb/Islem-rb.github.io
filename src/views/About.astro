@@ -2,13 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 // About page, shared by /about and /fr/about.
 import { profile } from '../data/site';
-import { cvEnMissing, cvHref, getDict, localize, toLang } from '../i18n';
+import CvLink from '../components/CvLink.astro';
+import { getDict, localize, toLang } from '../i18n';
 
 const lang = toLang(Astro.currentLocale);
 const t = getDict(lang);
-const { aboutPage, skills: cvSkills, todos } = t;
+const { aboutPage, skills: cvSkills } = t;
 const { items: experience, schools: education } = t.experience;
-const cvFallback = lang === 'en' && cvEnMissing;
 
 const blocks = [
   {
@@ -32,11 +32,8 @@ const blocks = [
     <div class="mt-6 space-y-2 text-[1.05rem] leading-relaxed text-fg/90">
       {aboutPage.lead.map((line) => <p>{line}</p>)}
     </div>
-    <p class="mt-6 flex flex-wrap items-center gap-3">
-      <a href={cvHref(lang)} class="font-medium text-accent hover:underline" download hreflang={cvFallback ? 'fr' : lang}>
-        {cvFallback ? aboutPage.cvFallback : aboutPage.cv}
-      </a>
-      {cvFallback && <span class="todo">{todos.cvEn}</span>}
+    <p class="mt-6">
+      <CvLink class="font-medium text-accent hover:underline">{aboutPage.cv}</CvLink>
     </p>
 
     <section class="mt-14" aria-labelledby="skills-title">

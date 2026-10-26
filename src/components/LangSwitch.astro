@@ -1,7 +1,7 @@
 ---
 // "EN | FR". Each link points to the same page in the other language; the script keeps the
 // current section (#hash) and remembers the choice. No automatic redirect anywhere.
-import { getDict, languages, localize, toLang, unlocalize } from '../i18n';
+import { cv, getDict, languages, localize, toLang, unlocalize } from '../i18n';
 
 const lang = toLang(Astro.currentLocale);
 const { labels } = getDict(lang);
@@ -20,6 +20,8 @@ const route = unlocalize(Astro.url.pathname);
           aria-label={getDict(l).meta.languageName}
           aria-current={l === lang ? 'true' : undefined}
           data-lang-link={l}
+          data-cv-href={cv[l].href}
+          data-cv-file={cv[l].file}
         >
           {l.toUpperCase()}
         </a>
@@ -67,8 +69,23 @@ const route = unlocalize(Astro.url.pathname);
 </style>
 
 <script>
+  // Every CV link on the page follows the chosen language right away.
+  const setCv = (a: HTMLAnchorElement | null | undefined) => {
+    if (!a) return;
+    document.querySelectorAll<HTMLAnchorElement>('[data-cv-link]').forEach((link) => {
+      link.href = a.dataset.cvHref ?? link.href;
+      link.download = a.dataset.cvFile ?? link.download;
+      link.hreflang = a.dataset.langLink ?? link.hreflang;
+    });
+  };
+  // Back/forward cache restores the swapped links: put the page's own language back.
+  addEventListener('pageshow', (e) => {
+    if (e.persisted) setCv(document.querySelector<HTMLAnchorElement>('[data-lang-link][aria-current="true"]'));
+  });
+
   document.querySelectorAll<HTMLAnchorElement>('[data-lang-link]').forEach((a) => {
     a.addEventListener('click', () => {
+      setCv(a);
       try {
         localStorage.setItem('lang', a.dataset.langLink ?? '');
       } catch {

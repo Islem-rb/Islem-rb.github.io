@@ -3,6 +3,7 @@ import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import SkillsWindow from './SkillsWindow.astro';
 import LangSwitch from './LangSwitch.astro';
+import CvLink from './CvLink.astro';
 import { links, profile } from '../data/site';
 import { getDict, localize, toLang, unlocalize } from '../i18n';
 
@@ -74,6 +75,9 @@ const sectionLinks = [
               </a>
             </li>
           ))}
+          <li>
+            <CvLink class="flex min-h-11 items-center text-muted transition-colors hover:text-accent">{labels.cv}</CvLink>
+          </li>
         </ul>
         <ul class="flex items-center gap-1">
           <li class="mr-2 flex items-center gap-3">

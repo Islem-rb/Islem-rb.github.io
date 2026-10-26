@@ -1,12 +1,12 @@
 ---
 import { links } from '../data/site';
-import { cvHref, getDict, localize, toLang } from '../i18n';
+import { cv, getDict, localize, toLang } from '../i18n';
 
 const lang = toLang(Astro.currentLocale);
 const { footer, labels } = getDict(lang);
 const items = [
   { label: footer.about, href: localize(lang, '/about'), external: false },
-  { label: footer.cv, href: cvHref(lang), external: false },
+  { label: footer.cv, href: cv[lang].href, external: false, cv: true },
   { label: labels.github, href: links.github, external: true },
   { label: labels.linkedin, href: links.linkedin, external: true },
 ];
@@ -22,6 +22,7 @@ const items = [
               href={item.href}
               class="inline-flex min-h-11 items-center hover:text-accent"
               {...(item.external ? { target: '_blank', rel: 'me noopener' } : {})}
+              {...(item.cv ? { download: cv[lang].file, hreflang: lang, type: 'application/pdf', 'data-cv-link': '' } : {})}
             >
               {item.label}
               {item.external && <span class="sr-only">{labels.newTab}</span>}

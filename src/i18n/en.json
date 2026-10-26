@@ -44,7 +44,8 @@
     "newTab": "(opens in a new tab)",
     "skipLink": "Skip to content",
     "darkTheme": "Dark theme",
-    "language": "Language"
+    "language": "Language",
+    "cv": "CV"
   },
   "langHint": {
     "text": "This site is also available in English.",
@@ -56,6 +57,7 @@
     "photoAlt": "Islem Rebhi",
     "intro": "Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia), focused on platform engineering: infrastructure as code, GitOps, Kubernetes and observability. Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.",
     "link": "More about me",
+    "cv": "Download my CV (PDF)",
     "tools": "Tools I work with"
   },
   "aboutPage": {
@@ -70,7 +72,6 @@
     "educationTitle": "Education",
     "languagesTitle": "Languages",
     "cv": "Download CV (PDF)",
-    "cvFallback": "Download CV (PDF, in French for now)",
     "back": "Back to home"
   },
   "skills": [
@@ -161,7 +162,6 @@
   },
   "todos": {
     "formspree": "TODO: set FORMSPREE_ID in Contact.astro (the form uses mailto until then)",
-    "photo": "TODO: add profile photo (src/assets/profile.jpg)",
-    "cvEn": "TODO: add the English CV (public/cv-en.pdf)"
+    "photo": "TODO: add profile photo (src/assets/profile.jpg)"
   }
 }

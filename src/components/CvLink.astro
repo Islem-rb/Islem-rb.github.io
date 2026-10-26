@@ -1,0 +1,13 @@
+---
+// CV download link in the page's language. LangSwitch also swaps every [data-cv-link] to the
+// other language the moment it is clicked, before the other page loads.
+import { cv, toLang } from '../i18n';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const lang = toLang(Astro.currentLocale);
+---
+
+<a href={cv[lang].href} download={cv[lang].file} hreflang={lang} type="application/pdf" class={className} data-cv-link><slot /></a>
