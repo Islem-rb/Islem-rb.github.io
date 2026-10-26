@@ -26,11 +26,18 @@ export const seo = {
     'Islem Rebhi, Cloud & DevOps engineering student at ESPRIT. Platform engineering: infrastructure as code, GitOps, Kubernetes, observability. Open to PFE internships.',
 };
 
-// skills.txt window under the header. The prefix stays, the focus areas from cv.md are typed in turn.
+// skills.txt window under the header: first-person sentences typed one at a time.
+// Each one restates a line of cv.md (Focus, Skills, Projects, Looking for).
 export const tagline = {
   file: 'skills.txt',
-  prefix: 'focus:',
-  words: ['infrastructure as code', 'GitOps', 'Kubernetes', 'observability'],
+  sentences: [
+    'I build cloud-native platforms on Kubernetes.',
+    'I automate infrastructure with Terraform and Ansible.',
+    'I ship continuously with GitOps, Argo CD and GitHub Actions.',
+    'I make systems observable with Prometheus, Grafana and Loki.',
+    "I'm looking for a PFE internship to learn and ship with a team.",
+  ],
+  pause: 'Pause the typing animation',
 };
 
 // Page names for the side dots (home page sections, in order).

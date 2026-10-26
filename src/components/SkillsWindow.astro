@@ -1,5 +1,7 @@
 ---
 import { tagline } from '../data/site';
+
+const [first] = tagline.sentences;
 ---
 
 <div class="mx-auto mt-20 w-full max-w-[26.25rem] px-10 text-left sm:px-0" aria-label={tagline.file} role="group">
@@ -9,13 +11,22 @@ import { tagline } from '../data/site';
       <span class="size-3 rounded-full bg-[#febc2e]" aria-hidden="true"></span>
       <span class="size-3 rounded-full bg-[#28c840]" aria-hidden="true"></span>
       <span class="ml-2 text-sm text-muted">{tagline.file}</span>
+      <!-- WCAG 2.2.2: the rotation runs for more than 5 s, so it can be paused. Shown by the script. -->
+      <button type="button" class="pause ml-auto" aria-label={tagline.pause} aria-pressed="false" hidden data-tagline-pause>
+        <svg viewBox="0 0 16 16" aria-hidden="true" class="icon-pause"><path d="M5 3h2v10H5zM9 3h2v10H9z" /></svg>
+        <svg viewBox="0 0 16 16" aria-hidden="true" class="icon-play"><path d="M5 3l8 5-8 5z" /></svg>
+      </button>
     </div>
-    <p class="min-h-[6.5rem] px-5 pt-5 pb-6 font-mono text-[0.95rem] text-fg">
-      <span class="sr-only">{`${tagline.prefix} ${tagline.words.join(', ')}`}</span>
-      <span aria-hidden="true"><span class="text-accent">&gt;&nbsp;</span>{tagline.prefix}&nbsp;<span
-        id="tagline-word"
-        data-words={JSON.stringify(tagline.words)}>{tagline.words.join(', ')}</span
-      ><span class="caret"></span></span>
+    <p class="flex gap-[1ch] px-5 pt-5 pb-6 font-mono text-[0.95rem] text-fg">
+      <span class="text-accent" aria-hidden="true">&gt;</span>
+      <!-- Every sentence sits invisibly in the same grid cell, so the box is as tall as the
+           longest one and the page never shifts while typing. -->
+      <span class="stack" aria-hidden="true">
+        {tagline.sentences.map((s) => <span class="ghost">{s}</span>)}
+        <span><span data-tagline-text data-sentences={JSON.stringify(tagline.sentences)}>{first}</span><span class="caret"></span></span>
+      </span>
+      <!-- Screen readers hear each sentence once it is complete, never letter by letter. -->
+      <span class="sr-only" aria-live="polite" data-tagline-live>{first}</span>
     </p>
   </div>
 </div>
@@ -32,6 +43,16 @@ import { tagline } from '../data/site';
   .code-window > div:first-child {
     border-color: color-mix(in oklab, var(--color-fg) 12%, transparent);
   }
+  .stack {
+    display: grid;
+    flex: 1;
+  }
+  .stack > * {
+    grid-area: 1 / 1;
+  }
+  .ghost {
+    visibility: hidden;
+  }
   .caret {
     display: inline-block;
     width: 0.55em;
@@ -46,32 +67,93 @@ import { tagline } from '../data/site';
       opacity: 0;
     }
   }
+  .pause {
+    display: inline-flex;
+    width: 1.75rem;
+    height: 1.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+  .pause[hidden] {
+    display: none;
+  }
+  .pause:hover {
+    color: var(--color-accent);
+  }
+  .pause svg {
+    width: 0.75rem;
+    height: 0.75rem;
+    fill: currentColor;
+  }
+  .pause[aria-pressed='true'] .icon-pause,
+  .pause[aria-pressed='false'] .icon-play {
+    display: none;
+  }
 </style>
 
 <script>
-  // Types each focus area in turn. Without JS or with reduced motion, the full list stays.
-  const el = document.getElementById('tagline-word');
-  if (el && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const words: string[] = JSON.parse(el.dataset.words!);
-    let w = 0;
-    let i = 0;
-    let deleting = false;
-    const tick = () => {
-      const word = words[w];
-      i += deleting ? -1 : 1;
-      el.textContent = word.slice(0, i);
-      let delay = deleting ? 35 : 70;
-      if (!deleting && i === word.length) {
-        deleting = true;
-        delay = 1600;
-      } else if (deleting && i === 0) {
-        deleting = false;
-        w = (w + 1) % words.length;
-        delay = 300;
-      }
-      setTimeout(tick, delay);
+  // Types the sentences one at a time. Without JS or with reduced motion, the first one stays.
+  const text = document.querySelector<HTMLElement>('[data-tagline-text]');
+  const live = document.querySelector<HTMLElement>('[data-tagline-live]');
+  const button = document.querySelector<HTMLButtonElement>('[data-tagline-pause]');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (text && live && button && !reducedMotion.matches) {
+    const sentences: string[] = JSON.parse(text.dataset.sentences ?? '[]');
+    const TYPE = 45; // ms per letter
+    const ERASE = 18;
+    const HOLD = 2400; // ms a finished sentence stays
+    const GAP = 350; // ms between sentences
+
+    let s = 0;
+    let i = sentences[0].length; // the first sentence is already on screen
+    let erasing = false;
+    let timer = 0;
+    let paused = false;
+    let inView = true;
+
+    const schedule = (delay: number) => {
+      clearTimeout(timer);
+      if (!paused && inView && document.visibilityState === 'visible') timer = window.setTimeout(tick, delay);
     };
-    el.textContent = '';
-    setTimeout(tick, 400);
+    const tick = () => {
+      const sentence = sentences[s];
+      if (erasing) {
+        i -= 1;
+        text.textContent = sentence.slice(0, i);
+        if (i > 0) return schedule(ERASE);
+        erasing = false;
+        s = (s + 1) % sentences.length;
+        return schedule(GAP);
+      }
+      i += 1;
+      text.textContent = sentence.slice(0, i);
+      if (i < sentence.length) return schedule(TYPE);
+      live.textContent = sentence;
+      erasing = true;
+      schedule(HOLD);
+    };
+    // Resuming mid-sentence continues where it stopped; a finished one holds first.
+    const resume = () => schedule(i === sentences[s].length ? HOLD : TYPE);
+
+    button.hidden = false;
+    button.addEventListener('click', () => {
+      paused = !paused;
+      button.setAttribute('aria-pressed', String(paused));
+      if (paused) clearTimeout(timer);
+      else resume();
+    });
+    // Off-screen or in a hidden tab, nothing types and nothing is announced.
+    new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      if (inView) resume();
+      else clearTimeout(timer);
+    }).observe(text);
+    document.addEventListener('visibilitychange', resume);
+    erasing = true;
+    schedule(HOLD);
   }
 </script>
