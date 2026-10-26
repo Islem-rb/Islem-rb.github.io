@@ -16,6 +16,10 @@ const schema = z.object({
   // Only set when cv.md says the project is still running.
   inProgress: z.boolean().default(false),
   featured: z.boolean().default(false),
+  // Facts counted or read in the project's repository (proofs in refs/FACTS.md). No estimates.
+  // glance: the "At a glance" block on the project page; highlights: the short lines on the card.
+  glance: z.array(z.string()).min(3).max(5),
+  highlights: z.array(z.string()).min(2).max(3),
 });
 
 // English project pages (src/content/projects/*.md) and their French versions (projects/fr/*.md,

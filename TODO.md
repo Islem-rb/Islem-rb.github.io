@@ -7,6 +7,19 @@ Open items. Each one is shown as a yellow dashed `TODO` badge in the UI until it
       replaces the placeholder and the badge automatically.
 - [ ] **Formspree ID.** The contact form opens the visitor's email app (mailto fallback) until
       `FORMSPREE_ID` is set in `src/components/Contact.astro`.
+- [ ] **Facts I couldn't verify in the repos.** The project pages only show facts counted in the
+      code (proofs in `refs/FACTS.md`). These claims from `content/cv.md` have no trace in the
+      public repos; send the files (or confirm/correct the claim) to add them:
+  - CityVoice: OpenStack IaaS (Nova, Neutron, Heat, Octavia, Zabbix), Ansible (7 roles), Jenkins
+    CI/CD with webhooks, Cloudflare Tunnel. The `cityvoice` repo holds only application code.
+    Kafka is a dependency but the producer is a logging stub with Kafka auto-configuration
+    turned off, so it isn't claimed either.
+  - DevOps Observability Platform: Terraform (no `.tf` file in `devops-platform` or
+    `devops-platform-gitops`); "deployed with Helm" (the services use plain manifests, Helm only
+    installs the monitoring stack).
+  - Carnova: Docker (no Dockerfile); "Stripe Checkout" (the code uses Stripe PaymentIntents).
+  - Metrics: no measured results exist for CityVoice, Carnova or the observability platform
+    (no load test, uptime, cost or timing numbers). GitOps EKS has them in `docs/RESULTS.md`.
 - [ ] **Proofread the French translation.** Every file below is marked "needs review by Islem":
   - `src/i18n/fr.json` (all UI text, experience, education, skills, taglines)
   - `content/cv.fr.md`
@@ -15,8 +28,9 @@ Open items. Each one is shown as a yellow dashed `TODO` badge in the UI until it
   - `src/content/projects/fr/cityvoice.md`
   - `src/content/projects/fr/carnova.md`
 
-  Points to check: "Élève ingénieur" as the job title (masculine "ingénieur"; use "ingénieure"
-  if you prefer), "Stagiaire développement Full-Stack / mobile", and the English terms kept on
+  The "At a glance" facts and card lines in the four French project files are new in this round.
+  Points to check: "Élève ingénieur" as the job title (masculine "ingénieur", use "ingénieure"
+  if you prefer; your French CV PDF says "Étudiant Ingénieur"), "Stagiaire développement Full-Stack / mobile", and the English terms kept on
   purpose (platform engineering, infrastructure as code, progressive delivery, delivery flow).
 
 ## Notes

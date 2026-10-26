@@ -19,6 +19,17 @@ order: 1
 year: '2026'
 inProgress: false
 featured: true
+# Verified against the project repository; every item has its proof in refs/FACTS.md.
+glance:
+  - '5 Terraform modules written from scratch (VPC, EKS, IAM, ECR, workload identity): 39 AWS resource blocks, 4 environments (dev, staging, prod, shared).'
+  - '4 GitHub Actions workflows: the app pipeline lints and tests, builds 3 images, scans them with Trivy, writes a CycloneDX SBOM, signs with Cosign (keyless) and bumps the GitOps tag; 3 more run TFLint, Checkov, plans and terraform test.'
+  - '11 Argo CD Applications. The API ships as an Argo Rollouts canary (20%, 60%, 100%) gated by a Prometheus error-rate analysis.'
+  - '5 Prometheus alert rules (2 of them SLO burn-rate), 3 Kyverno admission policies, 6 NetworkPolicies, 3 runbooks and 4 architecture decision records.'
+  - 'Measured on EKS (docs/RESULTS.md): a bad release with 50% injected errors was aborted automatically in 245 to 328 s while the stable pods kept serving.'
+highlights:
+  - '5 Terraform modules, 39 AWS resource blocks'
+  - '11 Argo CD apps, canary gated by Prometheus'
+  - 'Trivy, SBOM and Cosign signing in CI'
 ---
 
 ## Infrastructure

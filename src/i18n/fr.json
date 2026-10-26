@@ -86,7 +86,8 @@
     "title": "Projets",
     "cta": "Rapport détaillé",
     "inProgress": "En cours",
-    "stack": "Stack"
+    "stack": "Stack",
+    "highlights": "Points clés"
   },
   "experience": {
     "title": "Expérience & formation",
@@ -144,6 +145,7 @@
     "back": "Tous les projets",
     "stack": "Stack",
     "repository": "Dépôt",
+    "glance": "En bref",
     "flowTitle": "Delivery flow",
     "flowCaption": "D'un commit à la production sur EKS, puis vers la stack d'observabilité.",
     "flowSteps": ["git push", "GitHub Actions", "ECR", "Argo CD", "EKS", "Observabilité"],

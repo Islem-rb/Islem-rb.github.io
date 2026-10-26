@@ -16,6 +16,17 @@ order: 4
 year: '2025'
 inProgress: false
 featured: false
+# Vérifié dans le dépôt du projet ; preuves dans refs/FACTS.md.
+glance:
+  - 'API REST Spring Boot 3.3 sur Java 17 : 10 contrôleurs, 24 endpoints, PostgreSQL via JPA.'
+  - 'Authentification JWT avec 3 rôles (admin, professionnel, utilisateur).'
+  - 'Paiements avec les PaymentIntents Stripe.'
+  - 'Assistant IA sur un modèle Ollama local (gemma3:1b configuré, OpenAI en fournisseur alternatif) et suppression d''arrière-plan avec Rembg.'
+  - 'Front-end Angular 16 avec des modèles 3D de voitures rendus par three.js.'
+highlights:
+  - '10 contrôleurs, 24 endpoints REST'
+  - 'JWT avec 3 rôles, paiements Stripe'
+  - 'Assistant Ollama (gemma3:1b) et Rembg'
 ---
 
 ## Backend

@@ -12,7 +12,7 @@ const lang = toLang(Astro.currentLocale);
 const { projectPage } = getDict(lang);
 const home = localize(lang, '/');
 const { project, index, next } = Astro.props;
-const { title, summary, kind, stack, repo } = project.data;
+const { title, summary, kind, stack, repo, glance } = project.data;
 const { Content } = await render(project);
 // The delivery-flow diagram describes the GitOps EKS pipeline only.
 const showFlow = project.id === 'gitops-eks-platform';
@@ -54,6 +54,13 @@ const showFlow = project.id === 'gitops-eks-platform';
       }
     </dl>
 
+    <section class="reveal glance mt-10" aria-labelledby="glance-title">
+      <h2 id="glance-title" class="section-kicker !text-left">{projectPage.glance}</h2>
+      <ul class="mt-4 grid gap-3 md:grid-cols-2">
+        {glance.map((fact) => <li>{fact}</li>)}
+      </ul>
+    </section>
+
     {
       showFlow && (
         <div class="reveal mt-10">
@@ -77,6 +84,25 @@ const showFlow = project.id === 'gitops-eks-platform';
 </BaseLayout>
 
 <style>
+  .glance li {
+    position: relative;
+    padding: 0.9rem 1.1rem 0.9rem 2.4rem;
+    border: 1px solid color-mix(in oklab, var(--color-accent) 18%, transparent);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 0.8rem 0.8rem 0.8rem 0.3rem;
+    background: color-mix(in oklab, var(--color-surface) 90%, transparent);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--color-fg) 88%, transparent);
+  }
+  .glance li::before {
+    content: '>';
+    position: absolute;
+    top: 0.9rem;
+    left: 1.1rem;
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+  }
   .prose-body :global(h2) {
     font-size: 1.25rem;
     font-weight: 700;
