@@ -20,6 +20,11 @@
   --color-accent-on-tint: #183fb0;
   --color-muted-on-tint: #434c5e;
   --color-todo: #92400e;
+  /* Footer, as on the reference: one dark band in both themes (Tailwind gray-900 / gray-400),
+     links turn to the reference accent on hover and focus. */
+  --color-footer-bg: #101828;
+  --color-footer-fg: #99a1af;
+  --color-footer-hover: #3b82f6;
 
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -69,6 +74,9 @@
   --color-accent-on-tint: #a8cefc;
   --color-muted-on-tint: #c3cbd7;
   --color-todo: #f2c66d;
+  --color-footer-bg: #101828;
+  --color-footer-fg: #99a1af;
+  --color-footer-hover: #60a5fa;
   --shadow-card: 0 4px 20px rgb(0 0 0 / 0.3);
   --shadow-window: 0 8px 30px rgb(0 0 0 / 0.4);
   --particle-color: #93c5fd;

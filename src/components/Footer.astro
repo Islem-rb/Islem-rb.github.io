@@ -12,15 +12,17 @@ const items = [
 ];
 ---
 
-<footer class="border-t border-line">
-  <nav aria-label={labels.footer} class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-    <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-muted">
+<!-- Reference footer: dark band, centered links separated by bullets, 0.75rem / 0.875rem from sm,
+     padding 1.5rem x 0.75rem (plus the bottom safe area). -->
+<footer class="site-footer px-3 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+  <nav aria-label={labels.footer}>
+    <ul class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs sm:text-sm">
       {
         items.map((item) => (
-          <li>
+          <li class="flex items-center">
             <a
               href={item.href}
-              class="inline-flex min-h-11 items-center hover:text-accent"
+              class="inline-flex min-h-6 items-center"
               {...(item.external ? { target: '_blank', rel: 'me noopener' } : {})}
               {...(item.cv ? { download: cv[lang].file, hreflang: lang, type: 'application/pdf', 'data-cv-link': '' } : {})}
             >
@@ -33,3 +35,29 @@ const items = [
     </ul>
   </nav>
 </footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    background: var(--color-footer-bg);
+    color: var(--color-footer-fg);
+  }
+  /* Bullet separators, silent for screen readers (empty alt text). */
+  li + li::before {
+    content: '•' / '';
+    margin-right: 1rem;
+  }
+  /* 24px tap target (WCAG 2.5.8) that overflows the line instead of growing the band, so the
+     footer keeps the reference's height (68px, 64px below sm). */
+  a {
+    margin-block: calc((1lh - 24px) / 2);
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  a:hover,
+  a:focus-visible {
+    color: var(--color-footer-hover);
+  }
+  a:focus-visible {
+    outline-color: var(--color-footer-hover);
+  }
+</style>

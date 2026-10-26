@@ -56,6 +56,10 @@ for (const [name, t] of [['light', light], ['dark', dark]]) {
       const under = mix(t.particles.color, t[b], particleAlpha(t.particles));
       return [k, t[k], `particle on ${b}`, under, 4.5];
     }),
+    // Footer band: links, their hover/focus color, and the focus ring (non-text, 3:1).
+    ['footer-fg', t['footer-fg'], 'footer-bg', t['footer-bg'], 4.5],
+    ['footer-hover', t['footer-hover'], 'footer-bg', t['footer-bg'], 4.5],
+    ['footer focus ring', t['footer-hover'], 'footer-bg', t['footer-bg'], 3],
     ['line (UI)', t.line, 'surface', t.surface, 1.2],
     ['muted (UI, icons)', t.muted, 'surface', t.surface, 3],
   ];
