@@ -58,6 +58,46 @@ export const hero = {
   },
 };
 
+// skills.txt window under the header. The prefix stays, the focus areas from cv.md are typed in turn.
+export const tagline = {
+  file: 'skills.txt',
+  prefix: 'focus:',
+  words: ['infrastructure as code', 'GitOps', 'Kubernetes', 'observability'],
+};
+
+export const about = {
+  title: ['Platform', 'engineering.'],
+  photoAlt: 'Islem Rebhi',
+  intro:
+    'Cloud & DevOps engineering student at ESPRIT (Tunis, Tunisia), focused on platform engineering: infrastructure as code, GitOps, Kubernetes and observability. Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.',
+  link: 'More about me',
+};
+
+// /about page. Skills are the groups of cv.md, copied verbatim.
+export const aboutPage = {
+  title: 'About',
+  lead: [
+    'Cloud & DevOps engineering student at ESPRIT (Tunis, Tunisia).',
+    'Focus: platform engineering: infrastructure as code, GitOps, Kubernetes, observability.',
+    'Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia and Europe).',
+  ],
+  skillsTitle: 'Skills',
+  experienceTitle: 'Experience',
+  educationTitle: 'Education',
+  languagesTitle: 'Languages',
+  cv: 'Download CV (PDF)',
+  back: 'Back to home',
+};
+
+export const cvSkills = [
+  { group: 'Cloud & infrastructure', items: 'AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V' },
+  { group: 'IaC & delivery', items: 'Terraform, Ansible, GitHub Actions, Jenkins, Argo CD, Helm' },
+  { group: 'Containers', items: 'Docker, Kubernetes, Docker Swarm' },
+  { group: 'Observability & security', items: 'Prometheus, Grafana, Loki, Zabbix, Nagios, Trivy, Gitleaks' },
+  { group: 'Systems', items: 'Linux (Ubuntu, CentOS, RHEL), networking, server hardening' },
+  { group: 'Development', items: 'Java, Python, JavaScript, C, Spring Boot, Node.js, Angular, React' },
+];
+
 export const sections = {
   projects: {
     kicker: '// projects',
@@ -206,4 +246,5 @@ export const todos = {
   repoShort: 'TODO: repo URL',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
+  photo: 'TODO: add profile photo (src/assets/profile.jpg)',
 };

@@ -1,0 +1,113 @@
+---
+import { Image } from 'astro:assets';
+import placeholder from '../assets/profile-placeholder.svg?url';
+import { about, profile, tagline, todos } from '../data/site';
+
+// Drop src/assets/profile.{jpg,jpeg,png,webp} in place and it replaces the placeholder.
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/profile.{jpg,jpeg,png,webp}', { eager: true });
+const photo = Object.values(photos)[0]?.default;
+---
+
+<div class="mx-auto mt-20 w-full max-w-[26.25rem] px-10 sm:px-0" aria-label={tagline.file} role="group">
+  <div class="code-window">
+    <div class="flex h-11 items-center gap-2 border-b border-line px-4">
+      <span class="size-3 rounded-full bg-[#ff5f57]" aria-hidden="true"></span>
+      <span class="size-3 rounded-full bg-[#febc2e]" aria-hidden="true"></span>
+      <span class="size-3 rounded-full bg-[#28c840]" aria-hidden="true"></span>
+      <span class="ml-2 text-sm text-muted">{tagline.file}</span>
+    </div>
+    <p class="min-h-[6.5rem] px-5 pt-5 pb-6 font-mono text-[0.95rem] text-fg">
+      <span class="sr-only">{`${tagline.prefix} ${tagline.words.join(', ')}`}</span>
+      <span aria-hidden="true"><span class="text-muted">&gt;&nbsp;</span>{tagline.prefix}&nbsp;<span
+        id="tagline-word"
+        data-words={JSON.stringify(tagline.words)}>{tagline.words.join(', ')}</span
+      ><span class="caret"></span></span>
+    </p>
+  </div>
+</div>
+
+<section id="about" class="flex min-h-dvh items-center px-6 py-16" aria-labelledby="about-title">
+  <div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 md:grid-cols-2">
+    <div class="flex flex-col items-center gap-8 text-center">
+      <h2 id="about-title" class="text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg">
+        {about.title[0]}<br />{about.title[1]}
+      </h2>
+      <div class="flex flex-col items-center gap-3">
+        <div class="size-48 overflow-hidden rounded-full shadow-lg ring-2 ring-fg/25 md:size-56">
+          {
+            photo ? (
+              <Image src={photo} alt={about.photoAlt} width={448} height={448} class="size-full object-cover" />
+            ) : (
+              <img src={placeholder} alt="" width="224" height="224" class="size-full object-cover" />
+            )
+          }
+        </div>
+        {!photo && <span class="todo">{todos.photo}</span>}
+      </div>
+    </div>
+
+    <div class="flex flex-col items-start gap-8">
+      <p class="text-[1.05rem] leading-relaxed text-fg/90">
+        {about.intro}
+        <br /><br />
+        <a href="/about" class="group inline-flex items-center gap-2 font-medium text-accent italic hover:underline">
+          {about.link}
+          <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+        </a>
+      </p>
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .code-window {
+    border: 1px solid var(--color-line);
+    border-radius: 0.875rem;
+    background: var(--color-surface);
+    box-shadow: 0 20px 40px rgb(0 0 0 / 0.45);
+    overflow: hidden;
+  }
+  .caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    margin-left: 2px;
+    vertical-align: -0.2em;
+    background: var(--color-muted);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Types each focus area in turn. Without JS or with reduced motion, the full list stays.
+  const el = document.getElementById('tagline-word');
+  if (el && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const words: string[] = JSON.parse(el.dataset.words!);
+    let w = 0;
+    let i = 0;
+    let deleting = false;
+    const tick = () => {
+      const word = words[w];
+      i += deleting ? -1 : 1;
+      el.textContent = word.slice(0, i);
+      let delay = deleting ? 35 : 70;
+      if (!deleting && i === word.length) {
+        deleting = true;
+        delay = 1600;
+      } else if (deleting && i === 0) {
+        deleting = false;
+        w = (w + 1) % words.length;
+        delay = 300;
+      }
+      setTimeout(tick, delay);
+    };
+    el.textContent = '';
+    setTimeout(tick, 400);
+  }
+</script>
