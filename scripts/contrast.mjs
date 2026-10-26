@@ -6,6 +6,10 @@ const css = fs.readFileSync(new URL('../src/styles/global.css', import.meta.url)
 const block = (re) => Object.fromEntries([...css.match(re)[1].matchAll(/--color-([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
 const light = block(/@theme \{([\s\S]*?)\n\}/);
 const dark = { ...light, ...block(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/) };
+// Particle opacities (Particles.astro) from the :root blocks.
+const alphas = (re) => Object.fromEntries([...css.match(re)[1].matchAll(/--particle-(dot|line)-alpha:\s*([\d.]+)/g)].map((m) => [m[1], Number(m[2])]));
+light.particles = alphas(/\n:root \{([\s\S]*?)\n\}/);
+dark.particles = alphas(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/);
 
 const rgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const lum = (hex) => {
@@ -18,6 +22,9 @@ const ratio = (a, b) => {
 };
 // Badge background: 10% of the TODO color over the page background.
 const mix = (a, b, t) => '#' + rgb(a).map((v, i) => Math.round(v * t + rgb(b)[i] * (1 - t)).toString(16).padStart(2, '0')).join('');
+
+// Worst case under text that sits directly on the page: a dot with a line crossing it.
+const particleAlpha = ({ dot, line }) => 1 - (1 - dot) * (1 - line);
 
 let failed = false;
 for (const [name, t] of [['light', light], ['dark', dark]]) {
@@ -34,6 +41,12 @@ for (const [name, t] of [['light', light], ['dark', dark]]) {
     ['accent', t.accent, 'surface-2', t['surface-2'], 4.5],
     ['accent-ink', t['accent-ink'], 'accent', t.accent, 4.5],
     ['todo', t.todo, 'todo badge', mix(t.todo, t['bg-to'], 0.1), 4.5],
+    ...['fg', 'muted', 'accent'].flatMap((k) =>
+      ['bg-from', 'bg-to'].map((b) => {
+        const under = mix(t.accent, t[b], particleAlpha(t.particles));
+        return [k, t[k], `particle on ${b}`, under, 4.5];
+      }),
+    ),
     ['line (UI)', t.line, 'surface', t.surface, 1.2],
     ['muted (UI, icons)', t.muted, 'surface', t.surface, 3],
   ];

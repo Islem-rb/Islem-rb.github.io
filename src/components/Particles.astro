@@ -1,0 +1,169 @@
+---
+// Floating points behind every section: slow drifting dots, faint lines between close ones.
+// One fixed <canvas>, no library. Colors and opacities come from the theme tokens
+// (--color-accent, --particle-dot-alpha, --particle-line-alpha in global.css), so the
+// contrast script can check text over the worst case (a dot right under a glyph).
+---
+
+<canvas class="particles" aria-hidden="true" data-particles></canvas>
+
+<style>
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-particles]');
+  const ctx = canvas?.getContext('2d');
+
+  if (canvas && ctx) {
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const finePointer = matchMedia('(pointer: fine) and (min-width: 769px)');
+    const LINK = { desktop: 140, mobile: 110 }; // px: max distance for a connecting line
+    const SPEED = 0.18; // px per frame at 60 fps
+    const CURSOR_RADIUS = 130; // px
+    const CURSOR_PUSH = 0.6; // px per frame at the cursor, fading to 0 at the radius
+
+    type Dot = { x: number; y: number; vx: number; vy: number; r: number };
+    let dots: Dot[] = [];
+    let width = 0;
+    let height = 0;
+    let link = LINK.desktop;
+    let color = '96, 165, 250';
+    let dotAlpha = 0.2;
+    let lineAlpha = 0.1;
+    let frame = 0;
+    let last = 0;
+    let visible = true;
+    const cursor = { x: -1e4, y: -1e4 };
+
+    const readTheme = () => {
+      const style = getComputedStyle(document.documentElement);
+      const hex = style.getPropertyValue('--color-accent').trim();
+      const m = /^#([0-9a-f]{6})$/i.exec(hex);
+      if (m) color = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16)).join(', ');
+      dotAlpha = parseFloat(style.getPropertyValue('--particle-dot-alpha')) || dotAlpha;
+      lineAlpha = parseFloat(style.getPropertyValue('--particle-line-alpha')) || lineAlpha;
+    };
+
+    const random = (min: number, max: number) => min + Math.random() * (max - min);
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = innerWidth;
+      height = innerHeight;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const desktop = width > 768;
+      link = desktop ? LINK.desktop : LINK.mobile;
+      const count = desktop ? 40 : 18;
+      // Keep existing dots (no jump on mobile URL-bar resizes), wrap them into the new box.
+      dots = dots.slice(0, count).map((d) => ({ ...d, x: d.x % width, y: d.y % height }));
+      while (dots.length < count) {
+        const angle = random(0, Math.PI * 2);
+        const speed = random(0.4, 1) * SPEED;
+        dots.push({ x: random(0, width), y: random(0, height), vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, r: random(1.5, 2.6) });
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.lineWidth = 1;
+      for (let i = 0; i < dots.length; i++) {
+        const a = dots[i];
+        for (let j = i + 1; j < dots.length; j++) {
+          const b = dots[j];
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist >= link) continue;
+          ctx.strokeStyle = `rgba(${color}, ${lineAlpha * (1 - dist / link)})`;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+      ctx.fillStyle = `rgba(${color}, ${dotAlpha})`;
+      for (const d of dots) {
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
+    const step = (dt: number) => {
+      const interact = finePointer.matches;
+      for (const d of dots) {
+        d.x += d.vx * dt;
+        d.y += d.vy * dt;
+        // Mild push away from the cursor (desktop only).
+        if (interact) {
+          const dx = d.x - cursor.x;
+          const dy = d.y - cursor.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > 0 && dist < CURSOR_RADIUS) {
+            const push = (1 - dist / CURSOR_RADIUS) * CURSOR_PUSH * dt;
+            d.x += (dx / dist) * push;
+            d.y += (dy / dist) * push;
+          }
+        }
+        // Wrap around the edges with a small margin so dots never pop in view.
+        if (d.x < -10) d.x = width + 10;
+        else if (d.x > width + 10) d.x = -10;
+        if (d.y < -10) d.y = height + 10;
+        else if (d.y > height + 10) d.y = -10;
+      }
+    };
+
+    const loop = (now: number) => {
+      // dt in 60 fps frames, capped so a long pause doesn't teleport the dots.
+      const dt = last ? Math.min((now - last) / (1000 / 60), 3) : 1;
+      last = now;
+      step(dt);
+      draw();
+      frame = requestAnimationFrame(loop);
+    };
+
+    const running = () => !reducedMotion.matches && visible && document.visibilityState === 'visible';
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      if (running()) frame = requestAnimationFrame(loop);
+      else draw(); // reduced motion or paused: one static frame
+    };
+
+    readTheme();
+    resize();
+    update();
+
+    addEventListener('resize', () => {
+      resize();
+      if (!frame) draw();
+    }, { passive: true });
+    addEventListener('pointermove', (e) => {
+      cursor.x = e.clientX;
+      cursor.y = e.clientY;
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => {
+      cursor.x = cursor.y = -1e4;
+    });
+    document.addEventListener('visibilitychange', update);
+    reducedMotion.addEventListener('change', update);
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      update();
+    }).observe(canvas);
+    // Theme toggle: re-read the accent and opacities as soon as data-theme changes.
+    new MutationObserver(() => {
+      readTheme();
+      if (!frame) draw();
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+</script>

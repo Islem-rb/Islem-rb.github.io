@@ -13,7 +13,7 @@
   --color-line: #d3dcec;
   --color-fg: #1e293b;
   --color-muted: #4b5568;
-  --color-accent: #2563eb;
+  --color-accent: #1d4ed8;
   --color-accent-ink: #ffffff;
   --color-todo: #92400e;
 
@@ -29,6 +29,9 @@
   --shadow-card: 0 4px 20px rgb(15 23 42 / 0.07);
   --shadow-window: 0 8px 30px rgb(15 23 42 / 0.12);
   --halo: color-mix(in oklab, var(--color-accent) 14%, transparent);
+  /* Floating points (Particles.astro): accent at these opacities. Checked by scripts/contrast.mjs. */
+  --particle-dot-alpha: 0.11;
+  --particle-line-alpha: 0.06;
 }
 
 :root[data-theme="dark"] {
@@ -47,6 +50,8 @@
   --shadow-card: 0 4px 20px rgb(0 0 0 / 0.3);
   --shadow-window: 0 8px 30px rgb(0 0 0 / 0.4);
   --halo: color-mix(in oklab, var(--color-accent) 12%, transparent);
+  --particle-dot-alpha: 0.16;
+  --particle-line-alpha: 0.07;
 }
 
 @layer base {
