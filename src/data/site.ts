@@ -157,7 +157,6 @@ export const projectPage = {
   repository: 'Repository',
   flowTitle: 'Delivery flow',
   flowCaption: 'From a commit to production on EKS, then into the observability stack.',
-  results: 'Results',
   next: 'Next project',
 };
 
@@ -186,6 +185,5 @@ export const footer = {
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
   formspree: 'TODO: set FORMSPREE_ID in Contact.astro (the form uses mailto until then)',
-  metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
   photo: 'TODO: add profile photo (src/assets/profile.jpg)',
 };

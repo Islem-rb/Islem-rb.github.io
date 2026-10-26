@@ -12,9 +12,6 @@ each item is shown as a yellow dashed `TODO` badge in the UI until it's resolved
 - [ ] **CityVoice: exact repo URL.** Same as above. `src/content/projects/cityvoice.md`.
 - [ ] **Carnova: repo URL.** cv.md has no repo for this project (it may be private; if so,
       remove the TODO in the UI). `src/content/projects/carnova.md`.
-- [ ] **Measurable results for every project** (e.g. pipeline duration, rollout strategy, alert
-      count, cost). cv.md has no metrics. Shown in the "Results" block on each detail page;
-      text is `todos.metrics` in `src/data/site.ts`.
 - [ ] **Open Graph preview image** (1200×630) for link previews on LinkedIn and Slack. Add it under
       `public/` and an `og:image` tag in `src/layouts/BaseLayout.astro` (currently omitted
       rather than faked).

@@ -2,7 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DeliveryFlow from '../../components/DeliveryFlow.astro';
-import { profile, projectPage, todos } from '../../data/site';
+import { profile, projectPage } from '../../data/site';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -73,10 +73,6 @@ const showFlow = project.id === 'gitops-eks-platform';
       <Content />
     </div>
 
-    <section class="reveal mt-10 max-w-3xl" aria-labelledby="results-title">
-      <h2 id="results-title" class="font-mono text-xl font-bold text-fg">{projectPage.results}</h2>
-      <p class="mt-3"><span class="todo">{todos.metrics}</span></p>
-    </section>
 
     <nav class="mt-16 border-t border-line pt-8" aria-label="Project navigation">
       <a href={`/projects/${next.id}`} class="card card-link group block p-5 sm:p-6">
