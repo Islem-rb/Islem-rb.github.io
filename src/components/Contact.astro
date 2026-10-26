@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { labels, links, sections, todos } from '../data/site';
+import { labels, links, pages, sections, todos } from '../data/site';
 
 const { contact } = sections;
 // Formspree form ID (the part after https://formspree.io/f/). While it is "TODO", the form
@@ -18,7 +18,7 @@ const field =
   'mt-1 w-full rounded-md border border-line bg-surface px-3.5 py-2 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40';
 ---
 
-<section id="contact" class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="contact-title">
+<section id="contact" data-page={pages.contact} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="contact-title">
   <div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-stretch gap-8 md:grid-cols-2 lg:gap-12">
     <div class="flex flex-col">
       <h2 id="contact-title" class="mb-3 text-[clamp(1.6rem,3vw,2.3rem)] leading-tight font-semibold text-fg">

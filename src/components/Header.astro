@@ -1,9 +1,10 @@
 ---
 import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import { labels, links, profile } from '../data/site';
+import SkillsWindow from './SkillsWindow.astro';
+import { labels, links, pages, profile } from '../data/site';
 
-// Home: large centered name, role line and three round links.
+// Home: the first page (name, role line, three round links, skills.txt window).
 // Sub-pages: the same links in a compact bar.
 const isHome = Astro.url.pathname === '/';
 
@@ -16,13 +17,21 @@ const items = [
 
 {
   isHome ? (
-    <header id="top" class="hero-halo relative flex flex-col items-center px-6 pt-[clamp(7rem,24vh,14.5rem)] text-center">
+    <header
+      id="top"
+      data-page={pages.home}
+      class="hero-halo relative flex min-h-dvh flex-col items-center px-6 pt-[clamp(7rem,24vh,14.5rem)] pb-12 text-center"
+    >
       <ThemeToggle class="!fixed top-4 right-4 z-50" />
-      <h1 class="hero-name font-bold leading-none text-[clamp(2.75rem,6vw,4rem)]">{profile.name}</h1>
-      <p class="mt-6 text-lg font-light text-muted sm:text-xl md:text-2xl">{profile.role}</p>
+      <h1 class="reveal hero-name font-bold leading-none text-[clamp(2.75rem,6vw,4rem)]" style="--delay: 0ms">
+        {profile.name}
+      </h1>
+      <p class="reveal mt-6 text-lg font-light text-muted sm:text-xl md:text-2xl" style="--delay: 150ms">
+        {profile.role}
+      </p>
       <ul class="mt-16 flex items-center justify-center gap-8">
-        {items.map((item) => (
-          <li>
+        {items.map((item, i) => (
+          <li class="reveal" style={`--delay: ${300 + i * 150}ms`}>
             <a
               href={item.href}
               aria-label={item.external ? `${item.label} ${labels.newTab}` : item.label}
@@ -34,6 +43,7 @@ const items = [
           </li>
         ))}
       </ul>
+      <SkillsWindow />
     </header>
   ) : (
     <header id="top" class="border-b border-line">

@@ -33,6 +33,16 @@ export const tagline = {
   words: ['infrastructure as code', 'GitOps', 'Kubernetes', 'observability'],
 };
 
+// Page names for the side dots (home page sections, in order).
+export const pages = {
+  home: 'Home',
+  about: 'About',
+  projects: 'Projects & experience',
+  contact: 'Contact',
+  goTo: 'Go to',
+  nav: 'Sections',
+};
+
 export const about = {
   title: ['Platform', 'engineering.'],
   photoAlt: 'Islem Rebhi',

@@ -1,0 +1,77 @@
+---
+import { tagline } from '../data/site';
+---
+
+<div class="mx-auto mt-20 w-full max-w-[26.25rem] px-10 text-left sm:px-0" aria-label={tagline.file} role="group">
+  <div class="code-window">
+    <div class="flex h-11 items-center gap-2 border-b border-line px-4">
+      <span class="size-3 rounded-full bg-[#ff5f57]" aria-hidden="true"></span>
+      <span class="size-3 rounded-full bg-[#febc2e]" aria-hidden="true"></span>
+      <span class="size-3 rounded-full bg-[#28c840]" aria-hidden="true"></span>
+      <span class="ml-2 text-sm text-muted">{tagline.file}</span>
+    </div>
+    <p class="min-h-[6.5rem] px-5 pt-5 pb-6 font-mono text-[0.95rem] text-fg">
+      <span class="sr-only">{`${tagline.prefix} ${tagline.words.join(', ')}`}</span>
+      <span aria-hidden="true"><span class="text-accent">&gt;&nbsp;</span>{tagline.prefix}&nbsp;<span
+        id="tagline-word"
+        data-words={JSON.stringify(tagline.words)}>{tagline.words.join(', ')}</span
+      ><span class="caret"></span></span>
+    </p>
+  </div>
+</div>
+
+<style>
+  .code-window {
+    border: 1px solid color-mix(in oklab, var(--color-fg) 18%, transparent);
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+    box-shadow: var(--shadow-window);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+  }
+  .code-window > div:first-child {
+    border-color: color-mix(in oklab, var(--color-fg) 12%, transparent);
+  }
+  .caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    margin-left: 2px;
+    vertical-align: -0.2em;
+    background: var(--color-muted);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Types each focus area in turn. Without JS or with reduced motion, the full list stays.
+  const el = document.getElementById('tagline-word');
+  if (el && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const words: string[] = JSON.parse(el.dataset.words!);
+    let w = 0;
+    let i = 0;
+    let deleting = false;
+    const tick = () => {
+      const word = words[w];
+      i += deleting ? -1 : 1;
+      el.textContent = word.slice(0, i);
+      let delay = deleting ? 35 : 70;
+      if (!deleting && i === word.length) {
+        deleting = true;
+        delay = 1600;
+      } else if (deleting && i === 0) {
+        deleting = false;
+        w = (w + 1) % words.length;
+        delay = 300;
+      }
+      setTimeout(tick, delay);
+    };
+    el.textContent = '';
+    setTimeout(tick, 400);
+  }
+</script>

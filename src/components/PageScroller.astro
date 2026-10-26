@@ -1,0 +1,248 @@
+---
+// Section-by-section scrolling on the home page, modeled on the reference (see refs/NOTES.md):
+// a 650 ms ease-in-out cubic tween between [data-page] sections, driven by wheel and keys.
+// The page itself keeps native scrolling: touch, scrollbars, find-in-page and focus moves all
+// work, and the paging only runs with a fine pointer, wider than 768px and no reduced motion.
+import { pages } from '../data/site';
+---
+
+<nav class="page-dots" aria-label={pages.nav} data-page-dots data-go-to={pages.goTo}></nav>
+
+<style>
+  .page-dots {
+    position: fixed;
+    top: 50%;
+    right: 1.25rem;
+    z-index: 40;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-50%);
+  }
+  @media (min-width: 769px) {
+    .page-dots {
+      display: flex;
+    }
+  }
+  /* 10px dots 22px apart like the reference, each inside a 24x22 button (larger target). */
+  .page-dots :global(button) {
+    display: flex;
+    width: 1.5rem;
+    height: 1.375rem;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .page-dots :global(button)::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--color-fg) 25%, transparent);
+    transition: background 0.35s, transform 0.35s, box-shadow 0.35s;
+  }
+  .page-dots :global(button:hover)::before {
+    background: color-mix(in oklab, var(--color-accent) 60%, transparent);
+    transform: scale(1.3);
+  }
+  .page-dots :global(button[aria-current='true'])::before {
+    background: var(--color-accent);
+    box-shadow: 0 0 8px color-mix(in oklab, var(--color-accent) 50%, transparent);
+    transform: scale(1.4);
+  }
+</style>
+
+<script>
+  const DURATION = 650; // ms, measured on the reference
+  const WHEEL_THRESHOLD = 50; // accumulated deltaY that turns a wheel gesture into a page change
+  const WHEEL_RESET = 180; // ms of wheel silence that resets the accumulator
+  const EDGE_COOLDOWN = 250; // ms after native scrolling inside a tall page before it may page
+  const EDGE = 2; // px tolerance
+
+  const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+
+  const pageEls = [...document.querySelectorAll<HTMLElement>('[data-page]')];
+  const dotsNav = document.querySelector<HTMLElement>('[data-page-dots]');
+  const pagingQuery = matchMedia('(min-width: 769px) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  let animating = false;
+  let wheelSum = 0;
+  let wheelTimer = 0;
+  let lastNative = 0;
+  let lastWheel = 0;
+  // Set when a wheel gesture pages; trackpad momentum keeps sending events after the tween,
+  // so the lock holds until the stream pauses for WHEEL_RESET (one page per gesture).
+  let gestureLock = false;
+
+  const maxScroll = () => document.documentElement.scrollHeight - innerHeight;
+  const top = (el: HTMLElement) => el.getBoundingClientRect().top + scrollY;
+  const bottom = (el: HTMLElement) => el.getBoundingClientRect().bottom + scrollY;
+
+  // The page whose top has been reached; the last page also owns everything after it (footer).
+  const currentIndex = () => {
+    let index = 0;
+    pageEls.forEach((el, i) => {
+      if (top(el) <= scrollY + EDGE + 1) index = i;
+    });
+    return index;
+  };
+  // Content of the current page still below / above the viewport.
+  const roomBelow = (i: number) => (i === pageEls.length - 1 ? maxScroll() : bottom(pageEls[i]) - innerHeight) - scrollY;
+  const roomAbove = (i: number) => scrollY - top(pageEls[i]);
+
+  const tween = (target: number) =>
+    new Promise<void>((resolve) => {
+      const from = scrollY;
+      const to = Math.max(0, Math.min(target, maxScroll()));
+      if (Math.abs(to - from) < EDGE || reducedMotion.matches) {
+        scrollTo({ top: to, behavior: 'instant' });
+        return resolve();
+      }
+      animating = true;
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min((now - start) / DURATION, 1);
+        scrollTo({ top: from + (to - from) * easeInOutCubic(t), behavior: 'instant' });
+        if (t < 1) requestAnimationFrame(step);
+        else {
+          animating = false;
+          resolve();
+        }
+      };
+      requestAnimationFrame(step);
+    });
+
+  // Going down lands on a page's top; going up into a tall page lands on its bottom (reference).
+  const goTo = (index: number, fromBelow = false) => {
+    if (index < 0 || index >= pageEls.length) return;
+    const el = pageEls[index];
+    history.replaceState(null, '', `#${el.id}`);
+    return tween(fromBelow && el.offsetHeight > innerHeight ? bottom(el) - innerHeight : top(el));
+  };
+
+  const page = (dir: 1 | -1) => {
+    const i = currentIndex();
+    // Partway into a page (e.g. after native scrolling): first align to its own edge.
+    if (dir === -1 && roomAbove(i) > EDGE && pageEls[i].offsetHeight <= innerHeight) return goTo(i);
+    return goTo(i + dir, dir === -1);
+  };
+
+  const onWheel = (e: WheelEvent) => {
+    if (!pagingQuery.matches || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    const now = performance.now();
+    const quiet = now - lastWheel >= WHEEL_RESET;
+    lastWheel = now;
+    if (animating || (gestureLock && !quiet)) return e.preventDefault();
+    gestureLock = false;
+    const i = currentIndex();
+    const room = e.deltaY > 0 ? roomBelow(i) : roomAbove(i);
+    // Tall page with content left in this direction: scroll natively, but never past its edge.
+    if (room > EDGE) {
+      if (Math.abs(e.deltaY) > room) {
+        e.preventDefault();
+        scrollBy({ top: Math.sign(e.deltaY) * room, behavior: 'instant' });
+      }
+      lastNative = now;
+      wheelSum = 0;
+      return;
+    }
+    e.preventDefault();
+    if (now - lastNative < EDGE_COOLDOWN) return;
+    wheelSum += e.deltaY;
+    clearTimeout(wheelTimer);
+    wheelTimer = window.setTimeout(() => (wheelSum = 0), WHEEL_RESET);
+    if (Math.abs(wheelSum) >= WHEEL_THRESHOLD) {
+      const dir = wheelSum > 0 ? 1 : -1;
+      wheelSum = 0;
+      gestureLock = true;
+      page(dir);
+    }
+  };
+
+  const typing = (el: EventTarget | null) =>
+    el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+
+  const onKey = (e: KeyboardEvent) => {
+    if (!pagingQuery.matches || e.altKey || e.ctrlKey || e.metaKey || typing(e.target)) return;
+    const down = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
+    const up = e.key === 'ArrowUp' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey);
+    if (!down && !up && e.key !== 'Home' && e.key !== 'End') return;
+    // Space on a button or link activates it.
+    if (e.key === ' ' && e.target instanceof HTMLElement && e.target.closest('a, button')) return;
+    if (animating) return e.preventDefault();
+    if (e.key === 'Home' || e.key === 'End') {
+      e.preventDefault();
+      goTo(e.key === 'Home' ? 0 : pageEls.length - 1);
+      return;
+    }
+    const i = currentIndex();
+    // Inside a tall page the browser scrolls natively until the edge.
+    if ((down ? roomBelow(i) : roomAbove(i)) > EDGE) return;
+    e.preventDefault();
+    page(down ? 1 : -1);
+  };
+
+  // In-page anchors: same tween, then focus the target so keyboard users land there too.
+  const onClick = (e: MouseEvent) => {
+    const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+    if (!link || !pagingQuery.matches || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+    if (!target) return;
+    e.preventDefault();
+    const index = pageEls.findIndex((p) => p.contains(target));
+    const done = index >= 0 && pageEls[index] === target ? goTo(index) : tween(top(target));
+    history.replaceState(null, '', link.hash);
+    done?.then(() => {
+      if (!target.matches('a, button, input, textarea, select, [tabindex]')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    });
+  };
+
+  // Side dots: one named button per page; aria-current follows the page in view.
+  const dots = pageEls.map((el, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', `${dotsNav?.dataset.goTo ?? ''} ${el.dataset.page}`.trim());
+    b.addEventListener('click', () => {
+      goTo(i)?.then(() => {
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
+        el.focus({ preventScroll: true });
+      });
+    });
+    dotsNav?.appendChild(b);
+    return b;
+  });
+  const updateDots = () => {
+    // The page covering the middle of the viewport is the active one.
+    const mid = scrollY + innerHeight / 2;
+    let active = 0;
+    pageEls.forEach((el, i) => {
+      if (top(el) <= mid) active = i;
+    });
+    if (scrollY >= maxScroll() - EDGE) active = pageEls.length - 1;
+    dots.forEach((d, i) => d.setAttribute('aria-current', String(i === active)));
+  };
+
+  let ticking = false;
+  addEventListener(
+    'scroll',
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateDots();
+        ticking = false;
+      });
+    },
+    { passive: true },
+  );
+  addEventListener('resize', updateDots, { passive: true });
+  addEventListener('wheel', onWheel, { passive: false });
+  addEventListener('keydown', onKey);
+  document.addEventListener('click', onClick);
+  updateDots();
+</script>

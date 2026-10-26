@@ -52,7 +52,6 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -205,11 +204,24 @@
   }
 }
 
-/* Scroll reveal: only hides content once JS has confirmed it can reveal it again. */
+/* Touch devices: pages snap gently (proximity never traps a scroll). Desktop paging is JS,
+   see PageScroller.astro; both are off with reduced motion. */
+@media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+  html:has([data-page]) {
+    scroll-snap-type: y proximity;
+  }
+  [data-page] {
+    scroll-snap-align: start;
+  }
+}
+
+/* Enter animation, timed like the reference's fadeUp: 0.7s ease, 12px, staggered by --delay.
+   Only hides content once JS has confirmed it can reveal it again. */
 html.js .reveal {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
+  transform: translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition-delay: var(--delay, 0ms);
 }
 html.js .reveal.is-visible {
   opacity: 1;
