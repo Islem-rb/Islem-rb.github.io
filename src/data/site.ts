@@ -82,6 +82,7 @@ export const sections = {
     text: 'Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.',
     form: {
       name: 'Name',
+      email: 'Email',
           message: 'Message',
       placeholder: 'Your internship offer, project or question…',
       submit: 'Send',
