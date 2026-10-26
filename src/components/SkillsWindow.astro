@@ -1,7 +1,7 @@
 ---
 import { getDict, toLang } from '../i18n';
 
-const { tagline } = getDict(toLang(Astro.currentLocale));
+const { tagline, availability } = getDict(toLang(Astro.currentLocale));
 
 const [first] = tagline.sentences;
 ---
@@ -31,6 +31,9 @@ const [first] = tagline.sentences;
       <span class="sr-only" aria-live="polite" data-tagline-live>{first}</span>
     </p>
   </div>
+  <p class="availability mt-5 flex items-center justify-center gap-2.5 text-sm font-medium text-muted">
+    <span class="pulse" aria-hidden="true"></span>{availability}
+  </p>
 </div>
 
 <style>
@@ -67,6 +70,32 @@ const [first] = tagline.sentences;
   @keyframes blink {
     50% {
       opacity: 0;
+    }
+  }
+  /* Status dot: decorative, the text carries the meaning. */
+  .pulse {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #22c55e;
+  }
+  .pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: pulse 2s ease-out infinite;
+  }
+  @keyframes pulse {
+    from {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(2.6);
     }
   }
   .pause {

@@ -26,11 +26,11 @@ const { pages } = getDict(toLang(Astro.currentLocale));
       display: flex;
     }
   }
-  /* 10px dots 22px apart like the reference, each inside a 24x22 button (larger target). */
+  /* 10px dots in 24x24 buttons (WCAG 2.5.8 target size; the reference spaces them 22px). */
   .page-dots :global(button) {
     display: flex;
     width: 1.5rem;
-    height: 1.375rem;
+    height: 1.5rem;
     align-items: center;
     justify-content: center;
     border: 0;

@@ -23,6 +23,7 @@
     ],
     "pause": "Mettre en pause l'animation de saisie"
   },
+  "availability": "Disponible pour un stage PFE",
   "pages": {
     "home": "Accueil",
     "about": "À propos",

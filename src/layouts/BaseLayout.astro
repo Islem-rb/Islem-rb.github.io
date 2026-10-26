@@ -8,7 +8,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Particles from '../components/Particles.astro';
 import LangHint from '../components/LangHint.astro';
-import { profile } from '../data/site';
+import { links, profile } from '../data/site';
 import { getDict, languages, localize, toLang, unlocalize } from '../i18n';
 
 interface Props {
@@ -25,6 +25,19 @@ const { title = meta.title, description = meta.description, type = 'website', al
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
 const route = unlocalize(Astro.url.pathname);
+// Person schema on the home pages (facts from cv.md).
+const isHome = route === '/';
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: getDict(lang).profile.role,
+  url: new URL(localize(lang, '/'), Astro.site).href,
+  image: ogImage.href,
+  sameAs: [links.github, links.linkedin],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'ESPRIT' },
+  knowsLanguage: ['ar', 'fr', 'en'],
+};
 const alternateUrls = languages.map((l) => ({ lang: l, href: new URL(localize(l, route), Astro.site).href }));
 ---
 
@@ -74,6 +87,8 @@ const alternateUrls = languages.map((l) => ({ lang: l, href: new URL(localize(l,
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={meta.ogImageAlt} />
+
+    {isHome && <script type="application/ld+json" set:html={JSON.stringify(person)} />}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
