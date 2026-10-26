@@ -110,9 +110,17 @@ export const sections = {
     title: 'Path',
   },
   contact: {
-    kicker: '// contact',
-    title: "Let's talk",
+    title: ['A question?', 'Get in touch.'],
     text: 'Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.',
+    form: {
+      name: 'Name',
+      email: 'Email',
+      message: 'Message',
+      placeholder: 'Your internship offer, project or question…',
+      submit: 'Send',
+      subject: 'Portfolio contact from',
+      note: 'Sending opens your email app with the message filled in.',
+    },
   },
 };
 
@@ -211,6 +219,7 @@ export const footer = {
 export const todos = {
   repoShort: 'TODO: repo URL',
   year: 'TODO: year',
+  formspree: 'TODO: Formspree endpoint (the form uses a mailto fallback for now)',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
   photo: 'TODO: add profile photo (src/assets/profile.jpg)',
