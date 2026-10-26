@@ -182,9 +182,13 @@ const { pages } = getDict(toLang(Astro.currentLocale));
       return;
     }
     const i = currentIndex();
-    // Inside a tall page the browser scrolls natively until the edge.
-    if ((down ? roomBelow(i) : roomAbove(i)) > EDGE) return;
     e.preventDefault();
+    // Inside a tall page: move 70% of the viewport (reference), never past the page's edge.
+    const room = down ? roomBelow(i) : roomAbove(i);
+    if (room > EDGE) {
+      tween(scrollY + (down ? 1 : -1) * Math.min(room, innerHeight * 0.7));
+      return;
+    }
     page(down ? 1 : -1);
   };
 
