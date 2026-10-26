@@ -1,0 +1,132 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DeliveryFlow from '../../components/DeliveryFlow.astro';
+import { links, profile, projectPage, todos } from '../../data/site';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, index: i, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+  next: CollectionEntry<'projects'>;
+}
+
+const { project, index, next } = Astro.props;
+const { title, summary, kind, stack, repo } = project.data;
+const { Content } = await render(project);
+// The delivery-flow diagram describes the GitOps EKS pipeline only.
+const showFlow = project.id === 'gitops-eks-platform';
+---
+
+<BaseLayout title={`${title} | ${profile.name}`} description={summary} type="article">
+  <article class="mx-auto max-w-6xl px-4 pt-10 pb-20 sm:px-6 sm:pt-14 sm:pb-28">
+    <a href="/#projects" class="cta-back font-mono text-sm text-muted hover:text-accent">
+      <span aria-hidden="true">← </span>{projectPage.back}
+    </a>
+
+    <header class="reveal mt-8 max-w-3xl">
+      <p class="flex flex-wrap items-baseline gap-3 font-mono text-xs">
+        <span class="text-accent">{String(index + 1).padStart(2, '0')}</span>
+        {kind && <span class="tracking-wider text-muted uppercase">{kind}</span>}
+      </p>
+      <h1 class="mt-3 text-[clamp(2rem,5vw,3.25rem)] font-extrabold text-fg">{title}</h1>
+      <p class="mt-4 text-lg text-muted">{summary}</p>
+    </header>
+
+    <dl class="reveal mt-8 grid gap-6 border-y border-line py-6 md:grid-cols-[1fr_auto] md:gap-10">
+      <div>
+        <dt class="section-kicker !text-left">{projectPage.stack}</dt>
+        <dd class="mt-3">
+          <ul class="flex flex-wrap gap-1.5">{stack.map((s) => <li class="tag">{s}</li>)}</ul>
+        </dd>
+      </div>
+      <div>
+        <dt class="section-kicker !text-left">{projectPage.repository}</dt>
+        <dd class="mt-3 flex flex-col items-start gap-2">
+          {
+            repo ? (
+              <a href={repo} class="cta-arrow font-mono text-sm text-accent hover:underline" rel="noopener" target="_blank">
+                {repo.replace('https://', '')}
+              </a>
+            ) : (
+              <>
+                <span class="todo">{todos.repo}</span>
+                <a href={links.github} class="cta-arrow font-mono text-sm text-accent hover:underline" rel="noopener" target="_blank">
+                  {projectPage.profileFallback}
+                </a>
+              </>
+            )
+          }
+        </dd>
+      </div>
+    </dl>
+
+    {
+      showFlow && (
+        <div class="reveal mt-10">
+          <DeliveryFlow />
+        </div>
+      )
+    }
+
+    <div class="reveal prose-body mt-12 max-w-3xl">
+      <Content />
+    </div>
+
+    <section class="reveal mt-10 max-w-3xl" aria-labelledby="results-title">
+      <h2 id="results-title" class="font-mono text-xl font-bold text-fg">{projectPage.results}</h2>
+      <p class="mt-3"><span class="todo">{todos.metrics}</span></p>
+    </section>
+
+    <nav class="mt-16 border-t border-line pt-8" aria-label="Project navigation">
+      <a href={`/projects/${next.id}`} class="card card-link group block p-5 sm:p-6">
+        <span class="section-kicker block !text-left">{projectPage.next}</span>
+        <span class="cta-arrow mt-2 block font-mono text-lg font-bold text-fg group-hover:text-accent">{next.data.title}</span>
+      </a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .prose-body :global(h2) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 2.25rem;
+    color: var(--color-fg);
+  }
+  .prose-body :global(h2::before) {
+    content: '## ';
+    color: var(--color-accent);
+  }
+  .prose-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose-body :global(p),
+  .prose-body :global(ul) {
+    margin-top: 0.75rem;
+    color: color-mix(in oklab, var(--color-fg) 82%, transparent);
+  }
+  .prose-body :global(ul) {
+    list-style: none;
+    padding: 0;
+  }
+  .prose-body :global(li) {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-top: 0.35rem;
+  }
+  .prose-body :global(li::before) {
+    content: '>';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+  }
+</style>

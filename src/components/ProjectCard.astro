@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { sections, todos } from '../data/site';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+
+const { project, index } = Astro.props;
+const { title, summary, kind, stack, repo, featured } = project.data;
+const number = String(index + 1).padStart(2, '0');
+const href = `/projects/${project.id}`;
+const visibleStack = featured ? stack : stack.slice(0, 6);
+const hiddenCount = stack.length - visibleStack.length;
+---
+
+<article
+  class:list={[
+    'card card-link group flex h-full flex-col p-5 sm:p-6',
+    featured && 'border-l-[3px] border-l-accent md:p-8',
+  ]}
+>
+  <p class="flex items-baseline gap-3 font-mono text-xs">
+    <span class="text-accent">{number}</span>
+    {kind && <span class="tracking-wider text-muted uppercase">{kind}</span>}
+  </p>
+
+  <h3 class:list={['mt-3 font-bold text-fg', featured ? 'text-2xl sm:text-3xl' : 'text-xl']}>
+    <a href={href} class="after:absolute after:inset-0 after:rounded-[inherit] focus-visible:outline-none">
+      {title}
+    </a>
+  </h3>
+
+  <p class:list={['mt-3 text-[0.9375rem] text-muted', featured && 'max-w-3xl sm:text-base']}>{summary}</p>
+
+  <ul class="mt-5 flex flex-wrap gap-1.5" aria-label="Tech stack">
+    {visibleStack.map((s) => <li class="tag">{s}</li>)}
+    {hiddenCount > 0 && <li class="tag !text-muted">+{hiddenCount}</li>}
+  </ul>
+
+  <div class="mt-auto flex flex-wrap items-center justify-between gap-3 pt-6">
+    <span class="cta-arrow font-mono text-sm font-semibold text-accent" aria-hidden="true">{sections.projects.cta}</span>
+    {!repo && <span class="todo relative z-10">{todos.repoShort}</span>}
+  </div>
+</article>
+
+<style>
+  /* Make the whole card show the focus ring when its title link is focused. */
+  article:has(a:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+</style>

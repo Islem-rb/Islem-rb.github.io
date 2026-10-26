@@ -1,0 +1,42 @@
+---
+title: GitOps EKS Platform
+summary: AWS infrastructure provisioned with Terraform modules, secure CI with GitHub Actions, GitOps deployments with Argo CD and progressive delivery with Argo Rollouts on EKS.
+kind: Flagship project
+stack:
+  - AWS (VPC, EKS, IAM, ECR)
+  - Terraform
+  - GitHub Actions
+  - Argo CD
+  - Argo Rollouts
+  - Trivy
+  - Cosign
+  - Prometheus
+  - Grafana
+  - Loki
+  - Alertmanager
+# TODO: exact repository URL (cv.md only gives https://github.com/Islem-rb)
+repo: null
+order: 1
+featured: true
+---
+
+## Infrastructure
+
+AWS infrastructure (VPC, EKS, IAM, ECR) provisioned with Terraform modules.
+
+## CI/CD
+
+CI/CD with GitHub Actions:
+
+- AWS authentication via OIDC
+- Trivy vulnerability scans
+- SBOM generation
+- Cosign signing
+
+## Delivery
+
+GitOps deployments with Argo CD and progressive delivery with Argo Rollouts.
+
+## Observability
+
+Observability with Prometheus, Grafana, Loki and Alertmanager.

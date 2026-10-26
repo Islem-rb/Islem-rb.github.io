@@ -104,7 +104,8 @@
     border: 1px solid color-mix(in oklab, var(--color-accent) 24%, transparent);
     border-radius: 999px;
     padding: 0.2rem 0.6rem;
-    white-space: nowrap;
+    max-width: 100%;
+    line-height: 1.45;
   }
 
   .cta-arrow::after {

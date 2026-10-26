@@ -1,0 +1,142 @@
+---
+// Pure HTML/CSS pipeline diagram: vertical on mobile, horizontal from lg up.
+import { deliveryFlow, projectPage } from '../data/site';
+---
+
+<figure class="flow card p-5 sm:p-8" aria-labelledby="flow-title">
+  <figcaption class="mb-6 text-center lg:mb-8">
+    <h2 id="flow-title" class="font-mono text-lg font-bold text-fg">
+      <span class="text-accent" aria-hidden="true">$ </span>{projectPage.flowTitle}
+    </h2>
+    <p class="mt-1 text-sm text-muted">{projectPage.flowCaption}</p>
+  </figcaption>
+
+  <ol class="flow-track">
+    {
+      deliveryFlow.map((step, i) => (
+        <li class="flow-step">
+          <div class="flow-node">
+            <span class="font-mono text-[0.6875rem] text-accent">{String(i + 1).padStart(2, '0')}</span>
+            <span class="block font-mono text-sm font-bold text-fg">{step.title}</span>
+            {step.detail.length > 0 && (
+              <span class="mt-2 flex flex-wrap justify-center gap-1">
+                {step.detail.map((d) => (
+                  <span class="tag !px-1.5 !py-0 !text-[0.625rem]">{d}</span>
+                ))}
+              </span>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</figure>
+
+<style>
+  .flow-track {
+    --gap: 2.25rem;
+    display: grid;
+    grid-template-columns: minmax(0, 18rem);
+    justify-content: center;
+    row-gap: var(--gap);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .flow-step {
+    position: relative;
+  }
+  .flow-node {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.75rem 0.75rem 0.85rem;
+    border-radius: 0.75rem;
+    background: var(--color-bg);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 30%, var(--color-line));
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s var(--ease-out-soft);
+  }
+  .flow-node:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 24px color-mix(in oklab, var(--color-accent) 18%, transparent);
+    transform: translateY(-2px);
+  }
+
+  /* Connector between steps: animated dashed line plus an arrow head. */
+  .flow-step:not(:last-child)::after,
+  .flow-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+  }
+  .flow-step:not(:last-child)::after {
+    left: 50%;
+    top: 100%;
+    width: 2px;
+    height: var(--gap);
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--color-accent) 0 5px,
+      transparent 5px 10px
+    );
+    background-size: 2px 20px;
+    animation: flow-y 0.9s linear infinite;
+    opacity: 0.8;
+  }
+  .flow-step:not(:last-child)::before {
+    left: 50%;
+    top: calc(100% + var(--gap) - 7px);
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top: 6px solid var(--color-accent);
+    z-index: 2;
+  }
+
+  @keyframes flow-y {
+    to {
+      background-position: 0 20px;
+    }
+  }
+  @keyframes flow-x {
+    to {
+      background-position: 20px 0;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .flow-track {
+      --gap: 1.5rem;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: var(--gap);
+      align-items: stretch;
+    }
+    .flow-step:not(:last-child)::after {
+      left: 100%;
+      top: 50%;
+      width: var(--gap);
+      height: 2px;
+      transform: translateY(-50%);
+      background: repeating-linear-gradient(to right, var(--color-accent) 0 5px, transparent 5px 10px);
+      background-size: 20px 2px;
+      animation-name: flow-x;
+    }
+    .flow-step:not(:last-child)::before {
+      left: calc(100% + var(--gap) - 7px);
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-left: 6px solid var(--color-accent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow-step::after {
+      animation: none !important;
+    }
+  }
+</style>

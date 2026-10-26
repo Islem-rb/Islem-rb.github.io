@@ -160,14 +160,35 @@ export const timeline = [
   },
 ];
 
+export const projectPage = {
+  back: 'All projects',
+  stack: 'Stack',
+  repository: 'Repository',
+  profileFallback: 'GitHub profile',
+  flowTitle: 'Delivery flow',
+  flowCaption: 'From a commit to production on EKS, then into the observability stack.',
+  results: 'Results',
+  next: 'Next project',
+};
+
+// GitOps EKS Platform delivery flow, from the "Delivery flow" line of cv.md.
+export const deliveryFlow = [
+  { title: 'git push', detail: [] },
+  { title: 'GitHub Actions', detail: ['OIDC', 'Trivy', 'SBOM', 'Cosign'] },
+  { title: 'ECR', detail: [] },
+  { title: 'Argo CD', detail: [] },
+  { title: 'EKS', detail: ['Argo Rollouts'] },
+  { title: 'Observability', detail: ['Prometheus', 'Grafana', 'Loki', 'Alertmanager'] },
+];
+
 export const footer = {
   note: 'Built with Astro and Tailwind CSS. Deployed on GitHub Pages.',
 };
 
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
+  repoShort: 'TODO: repo URL',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
-  repoMissing: 'TODO: repo URL (none in cv.md)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
   ogImage: 'TODO: Open Graph preview image',
 };
