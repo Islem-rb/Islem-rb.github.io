@@ -127,19 +127,16 @@
     ]
   },
   "contact": {
-    "title": ["Une question ?", "Contactez-moi."],
-    "text": "À la recherche d'un stage PFE en Cloud / DevOps / Platform Engineering, en Tunisie ou en Europe.",
-    "form": {
-      "name": "Nom",
-      "email": "E-mail",
-      "message": "Message",
-      "placeholder": "Votre offre de stage, projet ou question…",
-      "submit": "Envoyer",
-      "subject": "Contact portfolio de",
-      "note": "L'envoi ouvre votre messagerie avec le message prérempli.",
-      "sent": "Merci, votre message a bien été envoyé.",
-      "fallback": "Ou écrivez-moi directement : "
-    }
+    "title": ["Une question ?", "Contactez-moi."],
+    "text": "Ouvert aux opportunités de stage PFE. Le moyen le plus rapide de me joindre est l'email.",
+    "button": "M'envoyer un email",
+    "subject": "Bonjour Islem, à propos d'une opportunité",
+    "emailLabel": "Adresse email",
+    "copy": "Copier",
+    "copyLabel": "Copier l'adresse email",
+    "copied": "Copié",
+    "copyManual": "Adresse sélectionnée : appuyez sur Ctrl+C (⌘C sur Mac) pour la copier.",
+    "profiles": "Retrouvez-moi sur"
   },
   "projectPage": {
     "back": "Tous les projets",
@@ -163,7 +160,6 @@
     "cv": "CV"
   },
   "todos": {
-    "formspree": "TODO : définir FORMSPREE_ID dans Contact.astro (le formulaire utilise mailto en attendant)",
     "photo": "TODO : ajouter la photo de profil (src/assets/profile.jpg)"
   }
 }

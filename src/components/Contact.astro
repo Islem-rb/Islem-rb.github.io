@@ -3,94 +3,71 @@ import Icon from './Icon.astro';
 import { links } from '../data/site';
 import { getDict, toLang } from '../i18n';
 
-const { contact, labels, pages, todos } = getDict(toLang(Astro.currentLocale));
-// Formspree form ID (the part after https://formspree.io/f/). While it is "TODO", the form
-// opens the visitor's email app instead (mailto fallback).
-const FORMSPREE_ID = 'TODO';
-const formspree = FORMSPREE_ID === 'TODO' ? null : `https://formspree.io/f/${FORMSPREE_ID}`;
+const { contact, labels, pages } = getDict(toLang(Astro.currentLocale));
+// Email only: a mailto button with a subject in the page language, plus the address to copy.
+const mailto = `mailto:${links.email}?subject=${encodeURIComponent(contact.subject)}`;
 
-const channels = [
-  { icon: 'email', label: links.email, href: `mailto:${links.email}`, external: false },
-  { icon: 'linkedin', label: labels.linkedin, href: links.linkedin, external: true },
-  { icon: 'github', label: labels.github, href: links.github, external: true },
+const profiles = [
+  { icon: 'github', label: labels.github, href: links.github },
+  { icon: 'linkedin', label: labels.linkedin, href: links.linkedin },
 ] as const;
-
-const field =
-  'mt-1 w-full rounded-md border border-line bg-surface px-3.5 py-2 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40';
 ---
 
-<section id="contact" data-bg="contact" data-page={pages.contact} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="contact-title">
-  <div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-stretch gap-8 md:grid-cols-2 lg:gap-12">
+<!-- Same frame as the reference's contact page: centered max-w-6xl, two columns from md (one
+     column, max-w-md, below), a heading over each card, cards p-5 / p-8 with a 1rem radius. -->
+<section id="contact" data-bg="contact" data-page={pages.contact} class="flex min-h-dvh items-center px-4 py-6 md:px-6 md:py-12" aria-labelledby="contact-title">
+  <div class="mx-auto grid w-full max-w-md grid-cols-1 items-stretch gap-8 py-6 md:max-w-6xl md:grid-cols-2 lg:gap-12">
     <div class="flex flex-col">
       <h2 id="contact-title" class="mb-3 text-[clamp(1.6rem,3vw,2.3rem)] leading-tight font-semibold text-fg">
         {contact.title[0]}<br />{contact.title[1]}
       </h2>
-      <div class="flex flex-1 flex-col justify-center gap-6 contact-card rounded-2xl p-5 sm:p-6 md:p-8">
+      <div class="contact-card flex flex-1 flex-col justify-center gap-6 rounded-2xl p-5 sm:p-6 md:p-8">
         <p class="text-[1.05rem] leading-relaxed text-fg/90">{contact.text}</p>
-        <ul class="flex flex-col gap-3">
-          {
-            channels.map((c) => (
-              <li>
-                <a
-                  href={c.href}
-                  class="inline-flex min-h-11 items-center gap-3 text-fg transition-colors hover:text-accent"
-                  {...(c.external ? { target: '_blank', rel: 'me noopener' } : {})}
-                >
-                  <span class="flex size-10 items-center justify-center rounded-full border border-accent/30 text-accent">
-                    <Icon name={c.icon} class="size-5" />
-                  </span>
-                  {c.label}
-                  {c.external && <span class="sr-only">{labels.newTab}</span>}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+        <a
+          href={mailto}
+          class="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-md bg-accent px-6 py-3 font-semibold text-accent-ink transition-[filter] hover:brightness-110 sm:self-start"
+        >
+          <Icon name="email" class="size-5" />
+          {contact.button}
+        </a>
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span class="sr-only">{contact.emailLabel}:</span>
+          <span id="contact-address" class="font-mono text-sm break-all text-fg">{links.email}</span>
+          <button
+            type="button"
+            class="copy-btn min-h-9 cursor-pointer rounded-md border px-3 text-sm font-semibold text-accent"
+            aria-label={contact.copyLabel}
+            data-copy={links.email}
+            data-copy-target="contact-address"
+            data-copied={contact.copied}
+            data-manual={contact.copyManual}
+          >
+            {contact.copy}
+          </button>
+          <span class="text-sm font-semibold text-accent empty:hidden" aria-live="polite" data-copy-status></span>
+        </div>
       </div>
     </div>
 
     <div class="flex flex-col">
       <p class="mb-3 hidden text-[clamp(1.6rem,3vw,2.3rem)] leading-tight md:block" aria-hidden="true">&nbsp;<br />&nbsp;</p>
-      <div class="flex flex-1 flex-col justify-center contact-card rounded-2xl p-5 sm:p-6 md:p-8">
-        <form
-          id="contact-form"
-          class="flex flex-col gap-4"
-          action={formspree ?? `mailto:${links.email}`}
-          method="post"
-          enctype={formspree ? undefined : 'text/plain'}
-          data-mailto={links.email}
-          data-formspree={formspree ?? undefined}
-          data-subject={contact.form.subject}
-          data-sent={contact.form.sent}
-        >
-          <div>
-            <label for="contact-name" class="block text-sm font-bold text-fg">{contact.form.name}</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" required class={field} />
-          </div>
-          <div>
-            <label for="contact-email" class="block text-sm font-bold text-fg">{contact.form.email}</label>
-            <input id="contact-email" name="email" type="email" autocomplete="email" required class={field} />
-          </div>
-          <div>
-            <label for="contact-message" class="block text-sm font-bold text-fg">{contact.form.message}</label>
-            <textarea id="contact-message" name="message" rows="3" required class:list={[field, 'resize-none']} placeholder={contact.form.placeholder}></textarea>
-          </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <button
-              type="submit"
-              class="min-h-11 cursor-pointer rounded-md bg-accent px-5 py-2 text-sm font-semibold text-accent-ink transition-[filter] hover:brightness-110"
-            >
-              {contact.form.submit}
-            </button>
-            {!formspree && <span class="text-xs text-muted">{contact.form.note}</span>}
-          </div>
-          <p id="contact-status" class="text-sm text-fg empty:hidden" role="status"></p>
-          {!formspree && <p><span class="todo">{todos.formspree}</span></p>}
-        </form>
-        <p class="mt-5 border-t border-line pt-4 text-sm text-muted">
-          {contact.form.fallback}
-          <a href={`mailto:${links.email}`} class="text-accent underline underline-offset-2 hover:no-underline">{links.email}</a>
-        </p>
+      <div class="contact-card flex flex-1 flex-col justify-center gap-4 rounded-2xl p-5 sm:p-6 md:p-8">
+        <p class="font-mono text-xs font-bold tracking-[0.12em] text-muted uppercase">{contact.profiles}</p>
+        <ul class="flex flex-col gap-3">
+          {
+            profiles.map((c) => (
+              <li>
+                <a href={c.href} class="inline-flex min-h-11 items-center gap-3 text-fg transition-colors hover:text-accent" target="_blank" rel="me noopener">
+                  <span class="flex size-10 items-center justify-center rounded-full border border-accent/30 text-accent">
+                    <Icon name={c.icon} class="size-5" />
+                  </span>
+                  {c.label}
+                  <span class="sr-only">{labels.newTab}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
   </div>
@@ -109,31 +86,64 @@ const field =
       border-color: color-mix(in oklab, var(--color-accent) 30%, transparent);
     }
   }
+  .copy-btn {
+    border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .copy-btn:hover,
+  .copy-btn:focus-visible {
+    background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+    border-color: var(--color-accent);
+  }
 </style>
 
 <script>
-  const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  const status = document.getElementById('contact-status');
-  if (form) {
-    const { mailto, formspree, subject, sent } = form.dataset;
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const data = new FormData(form);
-      const name = String(data.get('name'));
-      // mailto fallback: a clean email instead of the browser's raw text/plain post.
-      const openMail = () => {
-        const body = `${data.get('message')}\n\n${name}\n${data.get('email')}`;
-        window.location.href = `mailto:${mailto}?subject=${encodeURIComponent(`${subject} ${name}`)}&body=${encodeURIComponent(body)}`;
-      };
-      if (!formspree) return openMail();
+  // Copy the address: Clipboard API, then the execCommand fallback (older browsers, http),
+  // then select the address so it can be copied by hand. The result is announced (aria-live).
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    const status = btn.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    const text = btn.dataset.copy ?? '';
+    let timer = 0;
+    const say = (msg: string) => {
+      if (!status) return;
+      // Clear first so the same message is announced again on a second click.
+      status.textContent = '';
+      requestAnimationFrame(() => (status.textContent = msg));
+      clearTimeout(timer);
+      timer = window.setTimeout(() => (status.textContent = ''), 4000);
+    };
+    const legacyCopy = () => {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.append(area);
+      area.select();
+      let ok = false;
       try {
-        const res = await fetch(formspree, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-        if (!res.ok) throw new Error(String(res.status));
-        form.reset();
-        if (status) status.textContent = sent ?? '';
+        ok = document.execCommand('copy');
+      } catch {}
+      area.remove();
+      btn.focus();
+      return ok;
+    };
+    btn.addEventListener('click', async () => {
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
       } catch {
-        openMail();
+        ok = legacyCopy();
       }
+      if (ok) return say(btn.dataset.copied ?? '');
+      const target = document.getElementById(btn.dataset.copyTarget ?? '');
+      if (target) {
+        const range = document.createRange();
+        range.selectNodeContents(target);
+        getSelection()?.removeAllRanges();
+        getSelection()?.addRange(range);
+      }
+      say(btn.dataset.manual ?? '');
     });
-  }
+  });
 </script>

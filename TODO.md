@@ -5,8 +5,6 @@ Open items. Each one is shown as a yellow dashed `TODO` badge in the UI until it
 - [ ] **Profile photo.** The About block on the home page shows a placeholder
       (`src/assets/profile-placeholder.svg`). Add `src/assets/profile.jpg` (or .png/.webp); it
       replaces the placeholder and the badge automatically.
-- [ ] **Formspree ID.** The contact form opens the visitor's email app (mailto fallback) until
-      `FORMSPREE_ID` is set in `src/components/Contact.astro`.
 - [ ] **Facts I couldn't verify in the repos.** The project pages only show facts counted in the
       code (proofs in `refs/FACTS.md`). These claims from `content/cv.md` have no trace in the
       public repos; send the files (or confirm/correct the claim) to add them:

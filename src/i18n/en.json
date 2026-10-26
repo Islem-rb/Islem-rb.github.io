@@ -128,18 +128,15 @@
   },
   "contact": {
     "title": ["A question?", "Get in touch."],
-    "text": "Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.",
-    "form": {
-      "name": "Name",
-      "email": "Email",
-      "message": "Message",
-      "placeholder": "Your internship offer, project or question…",
-      "submit": "Send",
-      "subject": "Portfolio contact from",
-      "note": "Sending opens your email app with the message filled in.",
-      "sent": "Thanks, your message has been sent.",
-      "fallback": "Or email me directly: "
-    }
+    "text": "Open to PFE internship opportunities. The fastest way to reach me is by email.",
+    "button": "Send me an email",
+    "subject": "Hello Islem, about an opportunity",
+    "emailLabel": "Email address",
+    "copy": "Copy",
+    "copyLabel": "Copy the email address",
+    "copied": "Copied",
+    "copyManual": "Address selected: press Ctrl+C (⌘C on Mac) to copy it.",
+    "profiles": "Find me on"
   },
   "projectPage": {
     "back": "All projects",
@@ -163,7 +160,6 @@
     "cv": "CV"
   },
   "todos": {
-    "formspree": "TODO: set FORMSPREE_ID in Contact.astro (the form uses mailto until then)",
     "photo": "TODO: add profile photo (src/assets/profile.jpg)"
   }
 }
