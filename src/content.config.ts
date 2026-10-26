@@ -13,7 +13,7 @@ const projects = defineCollection({
     // null = no public repository; the project page then shows no repo link.
     repo: z.url().nullable(),
     order: z.number().int(),
-    // Year shown on the home timeline; the timeline is sorted on it, newest first.
+    // Year shown on the project card.
     year: z.string().regex(/^\d{4}$/),
     // Only set when cv.md says the project is still running.
     inProgress: z.boolean().default(false),

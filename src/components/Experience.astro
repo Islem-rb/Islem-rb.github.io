@@ -1,0 +1,225 @@
+---
+import { education, experience, pages, sections } from '../data/site';
+
+const { experience: t } = sections;
+---
+
+<section id="experience" data-page={pages.experience} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="experience-title">
+  <div class="mx-auto w-full max-w-6xl">
+    <h2 id="experience-title" class="mb-10 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-12">
+      {t.title}
+    </h2>
+
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
+      <div>
+        <h3 class="block-title">{t.experience}</h3>
+        <ol class="track">
+          {
+            experience.map((e, i) => (
+              <li class="item reveal" style={`--delay: ${i * 120}ms`}>
+                <span class="dot" aria-hidden="true" />
+                <p class="period">{e.period}</p>
+                <div class="entry">
+                  <h4 class="role">{e.role}</h4>
+                  <p class="org">{e.org}</p>
+                  <ul class="tech" aria-label={t.tech}>
+                    {e.tech.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ul>
+                  <ul class="bullets">
+                    {e.bullets.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                  {e.link && (
+                    <a href={e.link.href} class="cta">
+                      {e.link.label}
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div>
+        <h3 class="block-title">{t.education}</h3>
+        <ol class="edu reveal" style="--delay: 240ms">
+          {
+            education.map((e) => (
+              <li>
+                <p class="period">{e.period}</p>
+                <h4 class="edu-title">{e.title}</h4>
+                <p class="org">{e.org}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .block-title {
+    margin-bottom: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .block-title::before {
+    content: '// ';
+    color: var(--color-accent);
+  }
+  /* Vertical rail with one accent dot per internship. */
+  .track {
+    position: relative;
+    list-style: none;
+    padding: 0;
+  }
+  .track::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0;
+    left: 0.4375rem;
+    width: 2px;
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+  .item {
+    position: relative;
+    padding-left: 2.25rem;
+  }
+  .item + .item {
+    margin-top: 1.75rem;
+  }
+  .dot {
+    position: absolute;
+    top: 0.3rem;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    border: 3px solid var(--color-accent);
+    border-radius: 999px;
+    background: var(--color-surface);
+  }
+  .period {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .entry {
+    margin-top: 0.625rem;
+    padding: 1.125rem 1.375rem 1.25rem;
+    border: 1px solid color-mix(in oklab, var(--color-accent) 18%, transparent);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 1.05rem 1.05rem 1.05rem 0.35rem;
+    background: color-mix(in oklab, var(--color-surface) 90%, transparent);
+    box-shadow: var(--shadow-card);
+  }
+  .role {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-fg);
+  }
+  .org {
+    margin-top: 0.25rem;
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+  }
+  .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.875rem;
+    list-style: none;
+    padding: 0;
+  }
+  .tech li {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid color-mix(in oklab, var(--color-accent) 22%, transparent);
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .bullets {
+    margin-top: 0.875rem;
+    list-style: none;
+    padding: 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+  .bullets li {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+  .bullets li + li {
+    margin-top: 0.3rem;
+  }
+  .bullets li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+  }
+  .cta {
+    display: inline-block;
+    margin-top: 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .cta::after {
+    content: '→';
+    display: inline-block;
+    margin-left: 0.35rem;
+    transition: transform 0.25s var(--ease-out-soft);
+  }
+  .cta:hover::after {
+    transform: translateX(4px);
+  }
+
+  /* Education: one compact card, entries separated by hairlines. */
+  .edu {
+    list-style: none;
+    padding: 0.5rem 1.375rem;
+    border: 1px solid color-mix(in oklab, var(--color-accent) 18%, transparent);
+    border-radius: 1.05rem;
+    background: color-mix(in oklab, var(--color-surface) 90%, transparent);
+    box-shadow: var(--shadow-card);
+  }
+  .edu li {
+    padding: 1rem 0;
+  }
+  .edu li + li {
+    border-top: 1px solid var(--color-line);
+  }
+  .edu-title {
+    margin-top: 0.35rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-fg);
+  }
+
+  @media (max-width: 767px) and (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+    .item,
+    .edu {
+      scroll-snap-align: center;
+    }
+  }
+</style>

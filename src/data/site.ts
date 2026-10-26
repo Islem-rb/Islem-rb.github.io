@@ -44,7 +44,8 @@ export const tagline = {
 export const pages = {
   home: 'Home',
   about: 'About',
-  projects: 'Projects & experience',
+  projects: 'Projects',
+  experience: 'Experience & education',
   contact: 'Contact',
   goTo: 'Go to',
   nav: 'Sections',
@@ -87,13 +88,16 @@ export const toolsLabel = 'Tools I work with';
 
 export const sections = {
   projects: {
-    title: 'Projects & experience',
+    title: 'Projects',
     cta: 'Detailed report',
     inProgress: 'In progress',
+    stack: 'Stack',
   },
   experience: {
-    kicker: '// experience & education',
-    title: 'Path',
+    title: 'Experience & education',
+    experience: 'Experience',
+    education: 'Education',
+    tech: 'Tech',
   },
   contact: {
     title: ['A question?', 'Get in touch.'],
@@ -113,6 +117,9 @@ export const sections = {
 };
 
 export const labels = {
+  main: 'Main',
+  projects: 'Projects',
+  experience: 'Experience',
   contact: 'Contact',
   github: 'GitHub',
   linkedin: 'LinkedIn',
@@ -121,53 +128,40 @@ export const labels = {
   darkTheme: 'Dark theme',
 };
 
-// Home timeline entries that have no project page (projects come from the content collection).
-export const timelineExtra = [
+// Internships, most recent first. Dates, roles and details copied from cv.md
+// (Experience section; the Al Idhafa bullets come from the Carnova project it built).
+export const experience = [
   {
-    year: '2024',
-    context: 'Abajim',
-    title: 'Mobile Developer Intern',
+    org: 'Al Idhafa Group',
+    role: 'Full-Stack Developer Intern',
+    period: 'Jul 2025 to Aug 2025',
+    tech: ['Spring Boot', 'Angular', 'PostgreSQL', 'Docker', 'Stripe', 'Ollama'],
+    bullets: [
+      'Built Carnova, an automotive marketplace: REST API, JWT + role-based access.',
+      'Stripe Checkout and a seller "Showroom" space.',
+      'AI features: background removal (Rembg) and an LLM assistant (Gemma via Ollama).',
+    ],
+    link: { href: '/projects/carnova', label: 'See the Carnova project' },
+  },
+  {
+    org: 'Abajim',
+    role: 'Mobile Developer Intern',
+    period: 'Feb 2024 to Jun 2024',
     tech: ['React Native', 'Node.js', 'MongoDB'],
-    summary: 'React Native accessibility app for visually impaired users, OCR and text-to-speech APIs, Node.js + MongoDB backend.',
+    bullets: [
+      'React Native accessibility app for visually impaired users.',
+      'OCR and text-to-speech APIs.',
+      'Node.js + MongoDB backend.',
+    ],
+    link: null,
   },
 ];
 
-// Experience and education, most recent first. Dates copied exactly from cv.md.
-export const timeline = [
-  {
-    kind: 'Education',
-    org: 'ESPRIT (Ariana, Tunisia)',
-    title: 'Engineering cycle, Cloud & DevOps',
-    period: 'Sept 2023 to present',
-    current: true,
-  },
-  {
-    kind: 'Experience',
-    org: 'Al Idhafa Group',
-    title: 'Full-Stack Developer Intern',
-    period: 'Jul 2025 to Aug 2025',
-    text: 'Built Carnova, an automotive marketplace.',
-    link: { href: '/projects/carnova', label: 'See Carnova' },
-  },
-  {
-    kind: 'Experience',
-    org: 'Abajim',
-    title: 'Mobile Developer Intern',
-    period: 'Feb 2024 to Jun 2024',
-    text: 'React Native accessibility app for visually impaired users, OCR and text-to-speech APIs, Node.js + MongoDB backend.',
-  },
-  {
-    kind: 'Education',
-    org: 'ISITCOM (Hammam Sousse)',
-    title: 'Bachelor in Computer Science',
-    period: 'Sept 2021 to June 2023',
-  },
-  {
-    kind: 'Education',
-    org: 'Lycée El Manar, Kasserine',
-    title: 'Baccalauréat (Mathematics)',
-    period: '2020 to 2021',
-  },
+// Most recent first, dates exactly as in cv.md.
+export const education = [
+  { org: 'ESPRIT (Ariana, Tunisia)', title: 'Engineering cycle, Cloud & DevOps', period: 'Sept 2023 to present' },
+  { org: 'ISITCOM (Hammam Sousse)', title: 'Bachelor in Computer Science', period: 'Sept 2021 to June 2023' },
+  { org: 'Lycée El Manar, Kasserine', title: 'Baccalauréat (Mathematics)', period: '2020 to 2021' },
 ];
 
 export const projectPage = {

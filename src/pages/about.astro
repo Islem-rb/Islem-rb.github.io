@@ -1,9 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { aboutPage, cvSkills, links, profile, timeline } from '../data/site';
+import { aboutPage, cvSkills, education, experience, links, profile } from '../data/site';
 
-const experience = timeline.filter((t) => t.kind === 'Experience');
-const education = timeline.filter((t) => t.kind === 'Education');
+const blocks = [
+  {
+    id: 'experience',
+    title: aboutPage.experienceTitle,
+    entries: experience.map((e) => ({ period: e.period, title: e.role, org: e.org, bullets: e.bullets })),
+  },
+  {
+    id: 'education',
+    title: aboutPage.educationTitle,
+    entries: education.map((e) => ({ ...e, bullets: [] as string[] })),
+  },
+];
 ---
 
 <BaseLayout title={`${aboutPage.title} | ${profile.name}`}>
@@ -33,10 +43,7 @@ const education = timeline.filter((t) => t.kind === 'Education');
     </section>
 
     {
-      [
-        { id: 'experience', title: aboutPage.experienceTitle, entries: experience },
-        { id: 'education', title: aboutPage.educationTitle, entries: education },
-      ].map((block) => (
+      blocks.map((block) => (
         <section class="mt-14" aria-labelledby={`${block.id}-title`}>
           <h2 id={`${block.id}-title`} class="text-2xl font-semibold text-fg">
             {block.title}
@@ -47,7 +54,13 @@ const education = timeline.filter((t) => t.kind === 'Education');
                 <p class="font-mono text-xs tracking-wider text-muted uppercase">{e.period}</p>
                 <h3 class="mt-1 text-lg font-semibold text-fg">{e.title}</h3>
                 <p class="text-muted">{e.org}</p>
-                {e.text && <p class="mt-1 text-fg/90">{e.text}</p>}
+                {e.bullets.length > 0 && (
+                  <ul class="mt-2 list-disc space-y-1 pl-5 text-fg/90 marker:text-accent">
+                    {e.bullets.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
