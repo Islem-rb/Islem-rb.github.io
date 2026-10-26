@@ -1,0 +1,21 @@
+---
+import { contactIcons } from '../data/icons';
+
+interface Props {
+  name: keyof typeof contactIcons;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const icon = contactIcons[name];
+---
+
+<svg viewBox={icon.viewBox} class={className} aria-hidden="true" focusable="false">
+  {
+    'stroke' in icon ? (
+      <path d={icon.stroke} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+    ) : (
+      <path d={icon.fill} fill="currentColor" />
+    )
+  }
+</svg>

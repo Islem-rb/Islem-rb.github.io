@@ -2,12 +2,12 @@
 
 /* Design tokens. Every color, font and motion value used on the site lives here. */
 @theme {
-  --color-bg: #0d1117;
-  --color-surface: #131a23;
-  --color-surface-2: #182230;
-  --color-line: #263040;
-  --color-fg: #e6edf3;
-  --color-muted: #9aa7b4;
+  --color-bg: #0a0a0a;
+  --color-surface: #121212;
+  --color-surface-2: #181818;
+  --color-line: #262626;
+  --color-fg: #ededed;
+  --color-muted: #a3a3a3;
   --color-accent: #3dd6b0;
   --color-accent-ink: #062a21;
   --color-todo: #f2c66d;
@@ -37,7 +37,6 @@
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-mono);
     letter-spacing: -0.02em;
     line-height: 1.2;
   }

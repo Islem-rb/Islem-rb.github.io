@@ -4,10 +4,9 @@
 export const profile = {
   name: 'Islem Rebhi',
   handle: 'islem',
-  role: 'Cloud & DevOps Engineering Student at ESPRIT',
+  role: 'Cloud & DevOps Engineering Student',
   focus: 'Platform engineering: infrastructure as code, GitOps, Kubernetes, observability.',
   lookingFor: 'PFE internship in Cloud / DevOps / Platform Engineering (Tunisia and Europe).',
-  availability: 'Open to PFE internships',
   location: 'Tunis, Tunisia',
   school: 'ESPRIT',
   languages: ['Arabic (native)', 'French (fluent)', 'English (fluent)'],
@@ -82,6 +81,7 @@ export const sections = {
 };
 
 export const labels = {
+  contact: 'Contact',
   email: 'Email',
   github: 'GitHub',
   linkedin: 'LinkedIn',
