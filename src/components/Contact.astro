@@ -3,8 +3,10 @@ import Icon from './Icon.astro';
 import { labels, links, sections, todos } from '../data/site';
 
 const { contact } = sections;
-// TODO: set a Formspree endpoint (https://formspree.io/f/<id>) to send without leaving the page.
-const formspree: string | null = null;
+// Formspree form ID (the part after https://formspree.io/f/). While it is "TODO", the form
+// opens the visitor's email app instead (mailto fallback).
+const FORMSPREE_ID = 'TODO';
+const formspree = FORMSPREE_ID === 'TODO' ? null : `https://formspree.io/f/${FORMSPREE_ID}`;
 
 const channels = [
   { icon: 'email', label: links.email, href: `mailto:${links.email}`, external: false },
@@ -55,8 +57,10 @@ const field =
           action={formspree ?? `mailto:${links.email}`}
           method="post"
           enctype={formspree ? undefined : 'text/plain'}
-          data-mailto={formspree ? undefined : links.email}
+          data-mailto={links.email}
+          data-formspree={formspree ?? undefined}
           data-subject={contact.form.subject}
+          data-sent={contact.form.sent}
         >
           <div>
             <label for="contact-name" class="block text-sm font-bold text-fg">{contact.form.name}</label>
@@ -79,25 +83,41 @@ const field =
             </button>
             {!formspree && <span class="text-xs text-muted">{contact.form.note}</span>}
           </div>
+          <p id="contact-status" class="text-sm text-fg empty:hidden" role="status"></p>
           {!formspree && <p><span class="todo">{todos.formspree}</span></p>}
         </form>
+        <p class="mt-5 border-t border-line pt-4 text-sm text-muted">
+          {contact.form.fallback}
+          <a href={`mailto:${links.email}`} class="text-accent hover:underline">{links.email}</a>
+        </p>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  // mailto fallback: build a clean email instead of the browser's raw text/plain post.
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  const to = form?.dataset.mailto;
-  if (form && to) {
-    form.addEventListener('submit', (e) => {
+  const status = document.getElementById('contact-status');
+  if (form) {
+    const { mailto, formspree, subject, sent } = form.dataset;
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
       const name = String(data.get('name'));
-      const subject = `${form.dataset.subject} ${name}`;
-      const body = `${data.get('message')}\n\n${name}\n${data.get('email')}`;
-      window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // mailto fallback: a clean email instead of the browser's raw text/plain post.
+      const openMail = () => {
+        const body = `${data.get('message')}\n\n${name}\n${data.get('email')}`;
+        window.location.href = `mailto:${mailto}?subject=${encodeURIComponent(`${subject} ${name}`)}&body=${encodeURIComponent(body)}`;
+      };
+      if (!formspree) return openMail();
+      try {
+        const res = await fetch(formspree, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        if (status) status.textContent = sent ?? '';
+      } catch {
+        openMail();
+      }
     });
   }
 </script>

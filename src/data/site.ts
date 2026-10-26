@@ -87,6 +87,8 @@ export const sections = {
       submit: 'Send',
       subject: 'Portfolio contact from',
       note: 'Sending opens your email app with the message filled in.',
+      sent: 'Thanks, your message has been sent.',
+      fallback: 'Or email me directly: ',
     },
   },
 };
@@ -182,7 +184,7 @@ export const footer = {
 
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
-  formspree: 'TODO: Formspree endpoint (the form uses a mailto fallback for now)',
+  formspree: 'TODO: set FORMSPREE_ID in Contact.astro (the form uses mailto until then)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
   photo: 'TODO: add profile photo (src/assets/profile.jpg)',
 };
