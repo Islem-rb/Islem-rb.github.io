@@ -1,7 +1,9 @@
 ---
-import { education, experience, pages, sections } from '../data/site';
+import { getDict, localize, toLang } from '../i18n';
 
-const { experience: t } = sections;
+const lang = toLang(Astro.currentLocale);
+const { pages, experience: t } = getDict(lang);
+const { items: experience, schools: education } = t;
 ---
 
 <section id="experience" data-page={pages.experience} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="experience-title">
@@ -33,7 +35,7 @@ const { experience: t } = sections;
                     ))}
                   </ul>
                   {e.link && (
-                    <a href={e.link.href} class="cta">
+                    <a href={localize(lang, `/projects/${e.link.slug}`)} class="cta">
                       {e.link.label}
                     </a>
                   )}

@@ -1,5 +1,7 @@
 ---
-import { tagline } from '../data/site';
+import { getDict, toLang } from '../i18n';
+
+const { tagline } = getDict(toLang(Astro.currentLocale));
 
 const [first] = tagline.sentences;
 ---

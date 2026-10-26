@@ -1,15 +1,15 @@
 ---
-import { getCollection } from 'astro:content';
-import { pages, sections } from '../data/site';
+import { getDict, getProjects, localize, toLang } from '../i18n';
 
 // Collection order (flagship first); the flagship card spans the full row.
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
-const { projects: t } = sections;
+const lang = toLang(Astro.currentLocale);
+const { pages, projects: t } = getDict(lang);
+const projects = await getProjects(lang);
 ---
 
-<section id="projects" data-page={pages.projects} class="flex min-h-dvh items-center px-4 py-16 sm:px-6 md:py-20" aria-labelledby="projects-title">
+<section id="projects" data-page={pages.projects} class="flex min-h-dvh items-center px-4 py-14 sm:px-6" aria-labelledby="projects-title">
   <div class="mx-auto w-full max-w-6xl">
-    <h2 id="projects-title" class="mb-10 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-12">
+    <h2 id="projects-title" class="mb-8 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-10">
       {t.title}
     </h2>
 
@@ -39,7 +39,7 @@ const { projects: t } = sections;
                         <li>{s}</li>
                       ))}
                     </ul>
-                    <a href={`/projects/${p.id}`} class="cta" aria-label={`${t.cta}: ${p.data.title}`}>
+                    <a href={localize(lang, `/projects/${p.id}`)} class="cta" aria-label={`${t.cta}: ${p.data.title}`}>
                       {t.cta}
                     </a>
                   </div>

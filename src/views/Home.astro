@@ -1,0 +1,17 @@
+---
+// Home page, shared by / and /fr/ (language from Astro.currentLocale).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Intro from '../components/Intro.astro';
+import Projects from '../components/Projects.astro';
+import Experience from '../components/Experience.astro';
+import Contact from '../components/Contact.astro';
+import PageScroller from '../components/PageScroller.astro';
+---
+
+<BaseLayout>
+  <Intro />
+  <Projects />
+  <Experience />
+  <Contact />
+  <PageScroller />
+</BaseLayout>

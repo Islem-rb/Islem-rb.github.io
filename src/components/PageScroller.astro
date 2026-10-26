@@ -3,7 +3,9 @@
 // a 650 ms ease-in-out cubic tween between [data-page] sections, driven by wheel and keys.
 // The page itself keeps native scrolling: touch, scrollbars, find-in-page and focus moves all
 // work, and the paging only runs with a fine pointer, wider than 768px and no reduced motion.
-import { pages } from '../data/site';
+import { getDict, toLang } from '../i18n';
+
+const { pages } = getDict(toLang(Astro.currentLocale));
 ---
 
 <nav class="page-dots" aria-label={pages.nav} data-page-dots data-go-to={pages.goTo}></nav>

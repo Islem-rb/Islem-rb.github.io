@@ -7,21 +7,29 @@ import monoWoff2 from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Particles from '../components/Particles.astro';
-import { labels, profile, seo } from '../data/site';
+import LangHint from '../components/LangHint.astro';
+import { profile } from '../data/site';
+import { getDict, languages, localize, toLang, unlocalize } from '../i18n';
 
 interface Props {
   title?: string;
   description?: string;
   type?: 'website' | 'article';
+  // false on pages that exist in one language only (404).
+  alternates?: boolean;
 }
 
-const { title = seo.title, description = seo.description, type = 'website' } = Astro.props;
+const lang = toLang(Astro.currentLocale);
+const { meta, labels } = getDict(lang);
+const { title = meta.title, description = meta.description, type = 'website', alternates = true } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
+const route = unlocalize(Astro.url.pathname);
+const alternateUrls = languages.map((l) => ({ lang: l, href: new URL(localize(l, route), Astro.site).href }));
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang={meta.htmlLang} data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,6 +47,12 @@ const ogImage = new URL('/og.png', Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {
+      alternates && [
+        ...alternateUrls.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />),
+        <link rel="alternate" hreflang="x-default" href={alternateUrls[0].href} />,
+      ]
+    }
     <meta name="theme-color" content="#ffffff" />
     <meta name="author" content={profile.name} />
     <meta name="generator" content={Astro.generator} />
@@ -48,17 +62,18 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={meta.ogLocale} />
+    {alternates && languages.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={getDict(l).meta.ogLocale} />)}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={seo.ogImageAlt} />
+    <meta property="og:image:alt" content={meta.ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content={seo.ogImageAlt} />
+    <meta name="twitter:image:alt" content={meta.ogImageAlt} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -80,6 +95,7 @@ const ogImage = new URL('/og.png', Astro.site);
       <slot />
     </main>
     <Footer />
+    {alternates && <LangHint />}
 
     <script>
       const els = document.querySelectorAll<HTMLElement>('.reveal');

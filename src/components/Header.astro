@@ -2,23 +2,28 @@
 import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import SkillsWindow from './SkillsWindow.astro';
-import { labels, links, pages, profile } from '../data/site';
+import LangSwitch from './LangSwitch.astro';
+import { links, profile } from '../data/site';
+import { getDict, localize, toLang, unlocalize } from '../i18n';
 
 // Home: the first page (name, role line, three round links, skills.txt window).
 // Sub-pages: the same links in a compact bar.
-const isHome = Astro.url.pathname === '/';
+const lang = toLang(Astro.currentLocale);
+const { labels, pages, profile: localProfile } = getDict(lang);
+const home = localize(lang, '/');
+const isHome = unlocalize(Astro.url.pathname).replace(/\/$/, '') === '';
 
 const items = [
-  { name: 'email', label: labels.contact, href: isHome ? '#contact' : '/#contact', external: false },
+  { name: 'email', label: labels.contact, href: isHome ? '#contact' : `${home}#contact`, external: false },
   { name: 'linkedin', label: labels.linkedin, href: links.linkedin, external: true },
   { name: 'github', label: labels.github, href: links.github, external: true },
 ] as const;
 
 // Sub-pages: text links back to the home sections.
 const sectionLinks = [
-  { label: labels.projects, href: '/#projects' },
-  { label: labels.experience, href: '/#experience' },
-  { label: labels.contact, href: '/#contact' },
+  { label: labels.projects, href: `${home}#projects` },
+  { label: labels.experience, href: `${home}#experience` },
+  { label: labels.contact, href: `${home}#contact` },
 ];
 ---
 
@@ -29,12 +34,15 @@ const sectionLinks = [
       data-page={pages.home}
       class="hero-halo relative flex min-h-dvh flex-col items-center px-6 pt-[clamp(7rem,24vh,14.5rem)] pb-12 text-center"
     >
-      <ThemeToggle class="!fixed top-4 right-4 z-50" />
+      <div class="absolute top-4 right-4 z-50 flex items-center gap-3 md:fixed">
+        <LangSwitch />
+        <ThemeToggle />
+      </div>
       <h1 class="reveal hero-name font-bold leading-none text-[clamp(2.75rem,6vw,4rem)]" style="--delay: 0ms">
         {profile.name}
       </h1>
       <p class="reveal mt-6 text-lg font-light text-muted sm:text-xl md:text-2xl" style="--delay: 150ms">
-        {profile.role}
+        {localProfile.role}
       </p>
       <ul class="mt-16 flex items-center justify-center gap-8">
         {items.map((item, i) => (
@@ -55,7 +63,7 @@ const sectionLinks = [
   ) : (
     <header id="top" class="border-b border-line">
       <nav aria-label={labels.main} class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 px-4 sm:px-6">
-        <a href="/" class="flex min-h-16 items-center font-semibold text-fg hover:text-accent">
+        <a href={home} class="flex min-h-16 items-center font-semibold text-fg hover:text-accent">
           {profile.name}
         </a>
         <ul class="order-last flex w-full gap-6 border-t border-line text-sm sm:order-none sm:w-auto sm:border-0">
@@ -68,7 +76,8 @@ const sectionLinks = [
           ))}
         </ul>
         <ul class="flex items-center gap-1">
-          <li class="mr-2 flex items-center">
+          <li class="mr-2 flex items-center gap-3">
+            <LangSwitch />
             <ThemeToggle />
           </li>
           {items.slice(1).map((item) => (

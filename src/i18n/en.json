@@ -1,0 +1,166 @@
+{
+  "_source": "All UI text in English. Facts come only from content/cv.md; missing ones go in todos and TODO.md.",
+  "meta": {
+    "htmlLang": "en",
+    "ogLocale": "en_US",
+    "languageName": "English",
+    "title": "Islem Rebhi | Cloud & DevOps Engineering Student",
+    "description": "Islem Rebhi, Cloud & DevOps engineering student at ESPRIT. Platform engineering: infrastructure as code, GitOps, Kubernetes, observability. Open to PFE internships.",
+    "ogImageAlt": "Islem Rebhi, Cloud & DevOps Engineering Student. islem-rb.github.io"
+  },
+  "profile": {
+    "role": "Cloud & DevOps Engineering Student",
+    "languages": ["Arabic (native)", "French (fluent)", "English (fluent)"]
+  },
+  "tagline": {
+    "file": "skills.txt",
+    "sentences": [
+      "I build cloud-native platforms on Kubernetes.",
+      "I automate infrastructure with Terraform and Ansible.",
+      "I ship continuously with GitOps, Argo CD and GitHub Actions.",
+      "I make systems observable with Prometheus, Grafana and Loki.",
+      "I'm looking for a PFE internship to learn and ship with a team."
+    ],
+    "pause": "Pause the typing animation"
+  },
+  "pages": {
+    "home": "Home",
+    "about": "About",
+    "projects": "Projects",
+    "experience": "Experience & education",
+    "contact": "Contact",
+    "goTo": "Go to",
+    "nav": "Sections"
+  },
+  "labels": {
+    "main": "Main",
+    "footer": "Footer",
+    "projects": "Projects",
+    "experience": "Experience",
+    "contact": "Contact",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "newTab": "(opens in a new tab)",
+    "skipLink": "Skip to content",
+    "darkTheme": "Dark theme",
+    "language": "Language"
+  },
+  "langHint": {
+    "text": "This site is also available in English.",
+    "action": "Read in English",
+    "dismiss": "Dismiss"
+  },
+  "about": {
+    "title": ["Platform", "engineering."],
+    "photoAlt": "Islem Rebhi",
+    "intro": "Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia), focused on platform engineering: infrastructure as code, GitOps, Kubernetes and observability. Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.",
+    "link": "More about me",
+    "tools": "Tools I work with"
+  },
+  "aboutPage": {
+    "title": "About",
+    "lead": [
+      "Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia).",
+      "Focus: platform engineering: infrastructure as code, GitOps, Kubernetes, observability.",
+      "Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia and Europe)."
+    ],
+    "skillsTitle": "Skills",
+    "experienceTitle": "Experience",
+    "educationTitle": "Education",
+    "languagesTitle": "Languages",
+    "cv": "Download CV (PDF)",
+    "cvFallback": "Download CV (PDF, in French for now)",
+    "back": "Back to home"
+  },
+  "skills": [
+    { "group": "Cloud & infrastructure", "items": "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V" },
+    { "group": "IaC & delivery", "items": "Terraform, Ansible, GitHub Actions, Jenkins, Argo CD, Helm" },
+    { "group": "Containers", "items": "Docker, Kubernetes, Docker Swarm" },
+    { "group": "Observability & security", "items": "Prometheus, Grafana, Loki, Zabbix, Nagios, Trivy, Gitleaks" },
+    { "group": "Systems", "items": "Linux (Ubuntu, CentOS, RHEL), networking, server hardening" },
+    { "group": "Development", "items": "Java, Python, JavaScript, C, Spring Boot, Node.js, Angular, React" }
+  ],
+  "projects": {
+    "title": "Projects",
+    "cta": "Detailed report",
+    "inProgress": "In progress",
+    "stack": "Stack"
+  },
+  "experience": {
+    "title": "Experience & education",
+    "experience": "Experience",
+    "education": "Education",
+    "tech": "Tech",
+    "items": [
+      {
+        "org": "Al Idhafa Group",
+        "role": "Full-Stack Developer Intern",
+        "period": "Jul 2025 to Aug 2025",
+        "tech": ["Spring Boot", "Angular", "PostgreSQL", "Docker", "Stripe", "Ollama"],
+        "bullets": [
+          "Built Carnova, an automotive marketplace: REST API, JWT + role-based access.",
+          "Stripe Checkout and a seller \"Showroom\" space.",
+          "AI features: background removal (Rembg) and an LLM assistant (Gemma via Ollama)."
+        ],
+        "link": { "slug": "carnova", "label": "See the Carnova project" }
+      },
+      {
+        "org": "Abajim",
+        "role": "Mobile Developer Intern",
+        "period": "Feb 2024 to Jun 2024",
+        "tech": ["React Native", "Node.js", "MongoDB"],
+        "bullets": [
+          "React Native accessibility app for visually impaired users.",
+          "OCR and text-to-speech APIs.",
+          "Node.js + MongoDB backend."
+        ],
+        "link": null
+      }
+    ],
+    "schools": [
+      { "org": "ESPRIT (Ariana, Tunisia)", "title": "Engineering cycle, Cloud & DevOps", "period": "Sept 2023 to present" },
+      { "org": "ISITCOM (Hammam Sousse)", "title": "Bachelor in Computer Science", "period": "Sept 2021 to June 2023" },
+      { "org": "Lycée El Manar, Kasserine", "title": "Baccalauréat (Mathematics)", "period": "2020 to 2021" }
+    ]
+  },
+  "contact": {
+    "title": ["A question?", "Get in touch."],
+    "text": "Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "placeholder": "Your internship offer, project or question…",
+      "submit": "Send",
+      "subject": "Portfolio contact from",
+      "note": "Sending opens your email app with the message filled in.",
+      "sent": "Thanks, your message has been sent.",
+      "fallback": "Or email me directly: "
+    }
+  },
+  "projectPage": {
+    "back": "All projects",
+    "stack": "Stack",
+    "repository": "Repository",
+    "flowTitle": "Delivery flow",
+    "flowCaption": "From a commit to production on EKS, then into the observability stack.",
+    "flowSteps": ["git push", "GitHub Actions", "ECR", "Argo CD", "EKS", "Observability"],
+    "next": "Next project",
+    "navigation": "Project navigation"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "command": "cd ./this-page",
+    "error": "No such file or directory",
+    "back": "Back to home"
+  },
+  "footer": {
+    "about": "About",
+    "cv": "CV"
+  },
+  "todos": {
+    "formspree": "TODO: set FORMSPREE_ID in Contact.astro (the form uses mailto until then)",
+    "photo": "TODO: add profile photo (src/assets/profile.jpg)",
+    "cvEn": "TODO: add the English CV (public/cv-en.pdf)"
+  }
+}

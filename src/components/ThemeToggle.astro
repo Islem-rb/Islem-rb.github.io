@@ -1,5 +1,7 @@
 ---
-import { labels } from '../data/site';
+import { getDict, toLang } from '../i18n';
+
+const { labels } = getDict(toLang(Astro.currentLocale));
 
 interface Props {
   class?: string;

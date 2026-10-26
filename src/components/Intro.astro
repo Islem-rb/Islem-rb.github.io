@@ -2,7 +2,10 @@
 import { Image } from 'astro:assets';
 import Placeholder from '../assets/profile-placeholder.svg';
 import Tools from './Tools.astro';
-import { about, pages, todos } from '../data/site';
+import { getDict, localize, toLang } from '../i18n';
+
+const lang = toLang(Astro.currentLocale);
+const { about, pages, todos } = getDict(lang);
 
 // Drop src/assets/profile.{jpg,jpeg,png,webp} in place and it replaces the placeholder.
 const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/profile.{jpg,jpeg,png,webp}', { eager: true });
@@ -33,7 +36,7 @@ const photo = Object.values(photos)[0]?.default;
       <p class="text-[1.05rem] leading-relaxed text-fg/90">
         {about.intro}
         <br /><br />
-        <a href="/about" class="group inline-flex items-center gap-2 font-medium text-accent italic hover:underline">
+        <a href={localize(lang, '/about')} class="group inline-flex items-center gap-2 font-medium text-accent italic hover:underline">
           {about.link}
           <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
         </a>

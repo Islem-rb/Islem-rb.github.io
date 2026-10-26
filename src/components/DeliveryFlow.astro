@@ -1,6 +1,10 @@
 ---
 // Pure HTML/CSS pipeline diagram: vertical on mobile, horizontal from lg up.
-import { deliveryFlow, projectPage } from '../data/site';
+import { deliveryFlowDetail } from '../data/site';
+import { getDict, toLang } from '../i18n';
+
+const { projectPage } = getDict(toLang(Astro.currentLocale));
+const deliveryFlow = projectPage.flowSteps.map((title, i) => ({ title, detail: deliveryFlowDetail[i] }));
 ---
 
 <figure class="flow card p-5 sm:p-8" aria-labelledby="flow-title">

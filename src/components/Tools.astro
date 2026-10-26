@@ -14,7 +14,9 @@ import {
   siPython,
   siTerraform,
 } from 'simple-icons';
-import { toolsLabel } from '../data/site';
+import { getDict, toLang } from '../i18n';
+
+const toolsLabel = getDict(toLang(Astro.currentLocale)).about.tools;
 
 // Only tools listed in content/cv.md. simple-icons has no AWS logo, so AWS is a text mark.
 const icons = [

@@ -7,6 +7,19 @@ Open items. Each one is shown as a yellow dashed `TODO` badge in the UI until it
       replaces the placeholder and the badge automatically.
 - [ ] **Formspree ID.** The contact form opens the visitor's email app (mailto fallback) until
       `FORMSPREE_ID` is set in `src/components/Contact.astro`.
+- [ ] **English CV.** Add `public/cv-en.pdf`. Until it exists, the English site links to the French
+      CV (`public/cv-fr.pdf`) and says so; the link switches automatically at the next build.
+- [ ] **Proofread the French translation.** Every file below is marked "needs review by Islem":
+  - `src/i18n/fr.json` (all UI text, experience, education, skills, taglines)
+  - `content/cv.fr.md`
+  - `src/content/projects/fr/gitops-eks-platform.md`
+  - `src/content/projects/fr/devops-observability-platform.md`
+  - `src/content/projects/fr/cityvoice.md`
+  - `src/content/projects/fr/carnova.md`
+
+  Points to check: "Élève ingénieur" as the job title (masculine "ingénieur"; use "ingénieure"
+  if you prefer), "Stagiaire développement Full-Stack / mobile", and the English terms kept on
+  purpose (platform engineering, infrastructure as code, progressive delivery, delivery flow).
 
 ## Notes
 

@@ -1,0 +1,10 @@
+---
+import Project from '../../../views/Project.astro';
+import { projectPaths, type ProjectProps } from '../../../i18n';
+
+export const getStaticPaths = () => projectPaths('fr');
+
+type Props = ProjectProps;
+---
+
+<Project {...Astro.props} />

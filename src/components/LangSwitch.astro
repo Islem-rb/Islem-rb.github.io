@@ -1,0 +1,87 @@
+---
+// "EN | FR". Each link points to the same page in the other language; the script keeps the
+// current section (#hash) and remembers the choice. No automatic redirect anywhere.
+import { getDict, languages, localize, toLang, unlocalize } from '../i18n';
+
+const lang = toLang(Astro.currentLocale);
+const { labels } = getDict(lang);
+const route = unlocalize(Astro.url.pathname);
+---
+
+<nav aria-label={labels.language} class="lang-switch">
+  {
+    languages.map((l, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true" class="sep">|</span>}
+        <a
+          href={localize(l, route)}
+          hreflang={l}
+          lang={l}
+          aria-label={getDict(l).meta.languageName}
+          aria-current={l === lang ? 'true' : undefined}
+          data-lang-link={l}
+        >
+          {l.toUpperCase()}
+        </a>
+      </>
+    ))
+  }
+</nav>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    height: 2rem;
+    padding: 0 0.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .lang-switch a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.4rem;
+    color: var(--color-muted);
+    transition: color 0.2s;
+  }
+  /* 44px tall touch target, visual size unchanged. */
+  .lang-switch a::after {
+    content: '';
+    position: absolute;
+    inset: -0.75rem -0.1rem;
+  }
+  .lang-switch a:hover {
+    color: var(--color-accent);
+  }
+  .lang-switch a[aria-current='true'] {
+    color: var(--color-accent);
+  }
+  .sep {
+    color: var(--color-line);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-link]').forEach((a) => {
+    a.addEventListener('click', () => {
+      try {
+        localStorage.setItem('lang', a.dataset.langLink ?? '');
+      } catch {
+        // Storage blocked: the switch still works, it just isn't remembered.
+      }
+      // Keep the section in view: the one covering the middle of the screen, else the URL hash.
+      const mid = innerHeight / 2;
+      const page = [...document.querySelectorAll<HTMLElement>('[data-page]')].find((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= mid && r.bottom > mid;
+      });
+      const hash = page && page.id !== 'top' ? `#${page.id}` : page ? '' : location.hash;
+      a.href = a.href.split('#')[0] + hash;
+    });
+  });
+</script>

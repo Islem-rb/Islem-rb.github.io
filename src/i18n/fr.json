@@ -1,0 +1,166 @@
+{
+  "_source": "needs review by Islem. French translation of en.json; facts come only from content/cv.fr.md.",
+  "meta": {
+    "htmlLang": "fr",
+    "ogLocale": "fr_FR",
+    "languageName": "Français",
+    "title": "Islem Rebhi | Élève ingénieur Cloud & DevOps",
+    "description": "Islem Rebhi, élève ingénieur Cloud & DevOps à ESPRIT. Platform engineering : infrastructure as code, GitOps, Kubernetes, observabilité. À la recherche d'un stage PFE.",
+    "ogImageAlt": "Islem Rebhi, Cloud & DevOps Engineering Student. islem-rb.github.io"
+  },
+  "profile": {
+    "role": "Élève ingénieur Cloud & DevOps",
+    "languages": ["Arabe (langue maternelle)", "Français (courant)", "Anglais (courant)"]
+  },
+  "tagline": {
+    "file": "skills.txt",
+    "sentences": [
+      "Je construis des plateformes cloud-native sur Kubernetes.",
+      "J'automatise l'infrastructure avec Terraform et Ansible.",
+      "Je livre en continu avec GitOps, Argo CD et GitHub Actions.",
+      "Je rends les systèmes observables avec Prometheus, Grafana et Loki.",
+      "Je cherche un stage PFE pour apprendre et livrer en équipe."
+    ],
+    "pause": "Mettre en pause l'animation de saisie"
+  },
+  "pages": {
+    "home": "Accueil",
+    "about": "À propos",
+    "projects": "Projets",
+    "experience": "Expérience & formation",
+    "contact": "Contact",
+    "goTo": "Aller à",
+    "nav": "Sections"
+  },
+  "labels": {
+    "main": "Principal",
+    "footer": "Pied de page",
+    "projects": "Projets",
+    "experience": "Expérience",
+    "contact": "Contact",
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "newTab": "(s'ouvre dans un nouvel onglet)",
+    "skipLink": "Aller au contenu",
+    "darkTheme": "Thème sombre",
+    "language": "Langue"
+  },
+  "langHint": {
+    "text": "Ce site existe aussi en français.",
+    "action": "Lire en français",
+    "dismiss": "Fermer"
+  },
+  "about": {
+    "title": ["Platform", "engineering."],
+    "photoAlt": "Islem Rebhi",
+    "intro": "Élève ingénieur Cloud & DevOps à ESPRIT (Ariana, Tunisie), axé sur le platform engineering : infrastructure as code, GitOps, Kubernetes et observabilité. À la recherche d'un stage PFE en Cloud / DevOps / Platform Engineering, en Tunisie ou en Europe.",
+    "link": "En savoir plus",
+    "tools": "Les outils que j'utilise"
+  },
+  "aboutPage": {
+    "title": "À propos",
+    "lead": [
+      "Élève ingénieur Cloud & DevOps à ESPRIT (Ariana, Tunisie).",
+      "Domaine : platform engineering : infrastructure as code, GitOps, Kubernetes, observabilité.",
+      "Recherche : stage PFE en Cloud / DevOps / Platform Engineering (Tunisie et Europe)."
+    ],
+    "skillsTitle": "Compétences",
+    "experienceTitle": "Expérience",
+    "educationTitle": "Formation",
+    "languagesTitle": "Langues",
+    "cv": "Télécharger le CV (PDF)",
+    "cvFallback": "Télécharger le CV (PDF)",
+    "back": "Retour à l'accueil"
+  },
+  "skills": [
+    { "group": "Cloud & infrastructure", "items": "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V" },
+    { "group": "IaC & delivery", "items": "Terraform, Ansible, GitHub Actions, Jenkins, Argo CD, Helm" },
+    { "group": "Conteneurs", "items": "Docker, Kubernetes, Docker Swarm" },
+    { "group": "Observabilité & sécurité", "items": "Prometheus, Grafana, Loki, Zabbix, Nagios, Trivy, Gitleaks" },
+    { "group": "Systèmes", "items": "Linux (Ubuntu, CentOS, RHEL), réseaux, durcissement de serveurs" },
+    { "group": "Développement", "items": "Java, Python, JavaScript, C, Spring Boot, Node.js, Angular, React" }
+  ],
+  "projects": {
+    "title": "Projets",
+    "cta": "Rapport détaillé",
+    "inProgress": "En cours",
+    "stack": "Stack"
+  },
+  "experience": {
+    "title": "Expérience & formation",
+    "experience": "Expérience",
+    "education": "Formation",
+    "tech": "Technologies",
+    "items": [
+      {
+        "org": "Al Idhafa Group",
+        "role": "Stagiaire développement Full-Stack",
+        "period": "Juil. 2025 – août 2025",
+        "tech": ["Spring Boot", "Angular", "PostgreSQL", "Docker", "Stripe", "Ollama"],
+        "bullets": [
+          "Développement de Carnova, une marketplace automobile : API REST, JWT + contrôle d'accès par rôles.",
+          "Stripe Checkout et un espace vendeur « Showroom ».",
+          "Fonctionnalités IA : suppression d'arrière-plan (Rembg) et assistant LLM (Gemma via Ollama)."
+        ],
+        "link": { "slug": "carnova", "label": "Voir le projet Carnova" }
+      },
+      {
+        "org": "Abajim",
+        "role": "Stagiaire développement mobile",
+        "period": "Févr. 2024 – juin 2024",
+        "tech": ["React Native", "Node.js", "MongoDB"],
+        "bullets": [
+          "Application d'accessibilité en React Native pour les personnes malvoyantes.",
+          "API d'OCR et de synthèse vocale (text-to-speech).",
+          "Backend Node.js + MongoDB."
+        ],
+        "link": null
+      }
+    ],
+    "schools": [
+      { "org": "ESPRIT (Ariana, Tunisie)", "title": "Cycle ingénieur, Cloud & DevOps", "period": "Sept. 2023 – aujourd'hui" },
+      { "org": "ISITCOM (Hammam Sousse)", "title": "Licence en informatique", "period": "Sept. 2021 – juin 2023" },
+      { "org": "Lycée El Manar, Kasserine", "title": "Baccalauréat (Mathématiques)", "period": "2020 – 2021" }
+    ]
+  },
+  "contact": {
+    "title": ["Une question ?", "Contactez-moi."],
+    "text": "À la recherche d'un stage PFE en Cloud / DevOps / Platform Engineering, en Tunisie ou en Europe.",
+    "form": {
+      "name": "Nom",
+      "email": "E-mail",
+      "message": "Message",
+      "placeholder": "Votre offre de stage, projet ou question…",
+      "submit": "Envoyer",
+      "subject": "Contact portfolio de",
+      "note": "L'envoi ouvre votre messagerie avec le message prérempli.",
+      "sent": "Merci, votre message a bien été envoyé.",
+      "fallback": "Ou écrivez-moi directement : "
+    }
+  },
+  "projectPage": {
+    "back": "Tous les projets",
+    "stack": "Stack",
+    "repository": "Dépôt",
+    "flowTitle": "Delivery flow",
+    "flowCaption": "D'un commit à la production sur EKS, puis vers la stack d'observabilité.",
+    "flowSteps": ["git push", "GitHub Actions", "ECR", "Argo CD", "EKS", "Observabilité"],
+    "next": "Projet suivant",
+    "navigation": "Navigation entre projets"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "command": "cd ./this-page",
+    "error": "No such file or directory",
+    "back": "Retour à l'accueil"
+  },
+  "footer": {
+    "about": "À propos",
+    "cv": "CV"
+  },
+  "todos": {
+    "formspree": "TODO : définir FORMSPREE_ID dans Contact.astro (le formulaire utilise mailto en attendant)",
+    "photo": "TODO : ajouter la photo de profil (src/assets/profile.jpg)",
+    "cvEn": "TODO : ajouter le CV en anglais (public/cv-en.pdf)"
+  }
+}

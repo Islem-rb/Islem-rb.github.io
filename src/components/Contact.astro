@@ -1,8 +1,9 @@
 ---
 import Icon from './Icon.astro';
-import { labels, links, pages, sections, todos } from '../data/site';
+import { links } from '../data/site';
+import { getDict, toLang } from '../i18n';
 
-const { contact } = sections;
+const { contact, labels, pages, todos } = getDict(toLang(Astro.currentLocale));
 // Formspree form ID (the part after https://formspree.io/f/). While it is "TODO", the form
 // opens the visitor's email app instead (mailto fallback).
 const FORMSPREE_ID = 'TODO';

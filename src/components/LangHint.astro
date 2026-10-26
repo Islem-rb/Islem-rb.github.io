@@ -1,0 +1,101 @@
+---
+// Small dismissible suggestion, written in the other language, shown when the visitor seems to
+// prefer it: a saved choice, or on a first visit a browser language that matches. Never redirects.
+import { getDict, localize, otherLang, toLang, unlocalize } from '../i18n';
+
+const lang = toLang(Astro.currentLocale);
+const other = otherLang(lang);
+const hint = getDict(other).langHint;
+const href = localize(other, unlocalize(Astro.url.pathname));
+---
+
+<aside class="lang-hint" lang={other} aria-label={hint.text} hidden data-lang-hint data-page-lang={lang} data-other={other}>
+  <p>{hint.text}</p>
+  <a href={href} hreflang={other} data-lang-link={other}>{hint.action}</a>
+  <button type="button" aria-label={hint.dismiss} title={hint.dismiss} data-lang-hint-close>
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+  </button>
+</aside>
+
+<style>
+  .lang-hint {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 60;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    max-width: 26rem;
+    padding: 0.625rem 0.5rem 0.625rem 1rem;
+    border: 1px solid color-mix(in oklab, var(--color-accent) 25%, transparent);
+    border-radius: 0.875rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-window);
+    font-size: 0.875rem;
+    color: var(--color-fg);
+  }
+  .lang-hint[hidden] {
+    display: none;
+  }
+  .lang-hint p {
+    flex: 1 1 12rem;
+  }
+  .lang-hint a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .lang-hint a:hover {
+    text-decoration: underline;
+  }
+  .lang-hint button {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+  .lang-hint button:hover {
+    color: var(--color-fg);
+  }
+  .lang-hint svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+</style>
+
+<script>
+  const hint = document.querySelector<HTMLElement>('[data-lang-hint]');
+  if (hint) {
+    const { pageLang, other } = hint.dataset;
+    let saved: string | null = null;
+    let dismissed = false;
+    try {
+      saved = localStorage.getItem('lang');
+      dismissed = localStorage.getItem('langHintDismissed') === '1';
+    } catch {
+      // No storage: decide from the browser language only.
+    }
+    const browser = (navigator.languages?.[0] ?? navigator.language ?? '').slice(0, 2).toLowerCase();
+    const preferred = saved ?? browser;
+    if (!dismissed && preferred === other && preferred !== pageLang) hint.hidden = false;
+    hint.querySelector('[data-lang-hint-close]')?.addEventListener('click', () => {
+      hint.hidden = true;
+      try {
+        localStorage.setItem('langHintDismissed', '1');
+      } catch {}
+    });
+  }
+</script>
