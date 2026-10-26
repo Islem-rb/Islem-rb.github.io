@@ -13,8 +13,8 @@ const projects = defineCollection({
     // null = exact repository URL not in cv.md yet; rendered as a visible TODO.
     repo: z.url().nullable(),
     order: z.number().int(),
-    // Year shown on the home timeline. null = not in cv.md yet; rendered as a visible TODO.
-    year: z.string().nullable().default(null),
+    // Year shown on the home timeline; the timeline is sorted on it, newest first.
+    year: z.string().regex(/^\d{4}$/),
     // Only set when cv.md says the project is still running.
     inProgress: z.boolean().default(false),
     featured: z.boolean().default(false),

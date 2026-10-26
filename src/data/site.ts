@@ -183,7 +183,6 @@ export const footer = {
 
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
-  year: 'TODO: year',
   formspree: 'TODO: Formspree endpoint (the form uses a mailto fallback for now)',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',

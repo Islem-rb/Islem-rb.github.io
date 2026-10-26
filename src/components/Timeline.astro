@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import { sections, timelineExtra, todos } from '../data/site';
+import { sections, timelineExtra } from '../data/site';
 
-// Projects first (collection order, newest first as far as cv.md tells), then entries without a project page.
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 
+// Newest first; Array.sort is stable, so equal years keep the collection order.
 const entries = [
   ...projects.map((p) => ({
     year: p.data.year,
@@ -16,7 +16,7 @@ const entries = [
     href: `/projects/${p.id}`,
   })),
   ...timelineExtra.map((e) => ({ ...e, inProgress: false, href: null })),
-];
+].sort((a, b) => Number(b.year) - Number(a.year));
 ---
 
 <section id="projects" class="px-4 py-16 sm:px-6 md:py-24" aria-labelledby="projects-title">
@@ -37,7 +37,7 @@ const entries = [
               </span>
               <div class="side">
                 <p class="period">
-                  {e.inProgress ? sections.projects.inProgress : e.year ?? <span class="todo">{todos.year}</span>}
+                  {e.inProgress ? sections.projects.inProgress : e.year}
                 </p>
                 <Card href={e.href ?? undefined} class:list={['entry', e.href && 'entry--link']}>
                   {e.context && <p class="context">{e.context}</p>}
@@ -242,9 +242,5 @@ const entries = [
     .entry {
       margin-top: 0;
     }
-  }
-  .period .todo {
-    letter-spacing: 0;
-    text-transform: none;
   }
 </style>

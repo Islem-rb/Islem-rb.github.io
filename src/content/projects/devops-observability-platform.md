@@ -17,6 +17,8 @@ stack:
 # TODO: exact repository URL (cv.md only gives https://github.com/Islem-rb)
 repo: null
 order: 2
+year: '2026'
+inProgress: false
 featured: false
 ---
 

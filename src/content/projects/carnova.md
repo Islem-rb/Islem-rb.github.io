@@ -14,6 +14,7 @@ repo: null
 order: 4
 # From cv.md: Full-Stack Developer Intern, Al Idhafa Group, Jul 2025 to Aug 2025.
 year: '2025'
+inProgress: false
 featured: false
 ---
 
