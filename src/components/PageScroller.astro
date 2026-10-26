@@ -249,34 +249,47 @@ const { pages } = getDict(toLang(Astro.currentLocale));
     { passive: true },
   );
   addEventListener('resize', updateDots, { passive: true });
-  // Touch: native scrolling and CSS snapping do the work (global.css), this only makes sure a
-  // swipe that starts at a page's edge lands on the next page. Without it, a short swipe snapped
-  // back to the page it started on and a fast one could fly past the next page. Swipe = the
-  // reference's rule: > 45 px, mostly vertical, < 700 ms. Nothing is prevented.
+  // Touch: native scrolling and CSS snapping do the work (global.css). The script only steps in
+  // for a swipe that starts at a page's edge and heads for the next page: that one gesture's native
+  // drag is cancelled and the page moves exactly one step. Without it, a short swipe snapped back,
+  // a fast one could fly past a page, and the browser's snap-back after a short drag overrode a
+  // programmatic move. Inside a tall page (content left in that direction) nothing is prevented.
+  // Swipe = the reference's rule: > 45 px, mostly vertical, < 700 ms.
   const touchQuery = matchMedia('(pointer: coarse) and (prefers-reduced-motion: no-preference)');
-  let swipe: { x: number; y: number; t: number; i: number; below: number; above: number } | null = null;
+  type Swipe = { x: number; y: number; t: number; i: number; below: number; above: number; dir: 0 | 1 | -1; lock: boolean };
+  let swipe: Swipe | null = null;
   const onTouchStart = (e: TouchEvent) => {
     swipe = null;
-    if (!touchQuery.matches || e.touches.length !== 1) return;
+    if (!touchQuery.matches || e.touches.length !== 1 || animating) return;
     const i = currentIndex();
-    swipe = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: performance.now(), i, below: roomBelow(i), above: roomAbove(i) };
+    swipe = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: performance.now(), i, below: roomBelow(i), above: roomAbove(i), dir: 0, lock: false };
+  };
+  const onTouchMove = (e: TouchEvent) => {
+    const s = swipe;
+    if (!s) return;
+    const dy = s.y - e.touches[0].clientY;
+    const dx = e.touches[0].clientX - s.x;
+    // Decide once, after a few pixels: vertical, at the edge in that direction, with a page beyond.
+    if (!s.dir && Math.hypot(dx, dy) > 8) {
+      s.dir = dy > 0 ? 1 : -1;
+      s.lock = Math.abs(dy) > Math.abs(dx) && (s.dir > 0 ? s.below : s.above) <= EDGE && !!pageEls[s.i + s.dir];
+    }
+    if (s.lock && e.cancelable) e.preventDefault();
   };
   const onTouchEnd = (e: TouchEvent) => {
     const s = swipe;
     swipe = null;
     const end = e.changedTouches[0];
-    if (!s || !end) return;
+    if (!s || !s.lock || !end) return;
     const dy = s.y - end.clientY;
-    if (Math.abs(dy) <= 45 || Math.abs(dy) <= Math.abs(end.clientX - s.x) || performance.now() - s.t >= 700) return;
-    const dir = dy > 0 ? 1 : -1;
-    // Started inside a tall page with content left in this direction: native scrolling only.
-    if ((dir > 0 ? s.below : s.above) > EDGE) return;
-    const el = pageEls[s.i + dir];
-    if (!el) return;
-    const y = dir < 0 && el.offsetHeight > innerHeight ? bottom(el) - innerHeight : top(el);
+    if (Math.abs(dy) <= 45 || performance.now() - s.t >= 700 || Math.sign(dy) !== s.dir) return;
+    const el = pageEls[s.i + s.dir];
+    const y = s.dir < 0 && el.offsetHeight > innerHeight ? bottom(el) - innerHeight : top(el);
+    history.replaceState(null, '', `#${el.id}`);
     scrollTo({ top: y, behavior: 'smooth' });
   };
   addEventListener('touchstart', onTouchStart, { passive: true });
+  addEventListener('touchmove', onTouchMove, { passive: false });
   addEventListener('touchend', onTouchEnd, { passive: true });
 
   // A refresh restores the old scroll position, often partway into a page. Snap back to the page

@@ -1,17 +1,18 @@
 ---
 import { getDict, getProjects, localize, toLang } from '../i18n';
 
-// Numbered zig-zag timeline (the reference's "parcours" layout): a central rail with one numbered
-// marker per project, cards alternating left and right, the year on the outer side of each card.
+// Zig-zag timeline with the reference's "parcours" layout and spacing (measured in Playwright,
+// see refs/NOTES.md): a central rail with one dot per project, cards alternating left and right,
+// number and year on the outer side of each card, one row per project with 2.5rem between rows.
 // Collection order, flagship first. Below 768px it becomes one column along a left rail.
 const lang = toLang(Astro.currentLocale);
 const { pages, projects: t } = getDict(lang);
 const projects = await getProjects(lang);
 ---
 
-<section id="projects" data-page={pages.projects} class="flex min-h-dvh items-center px-4 py-14 sm:px-6" aria-labelledby="projects-title">
+<section id="projects" data-page={pages.projects} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="projects-title">
   <div class="mx-auto w-full max-w-5xl">
-    <h2 id="projects-title" class="mb-8 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-10">
+    <h2 id="projects-title" class="mb-10 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-12">
       {t.title}<span class="text-accent" aria-hidden="true">.</span>
     </h2>
 
@@ -23,9 +24,7 @@ const projects = await getProjects(lang);
           const num = String(i + 1).padStart(2, '0');
           return (
             <li class:list={['item', `item--${side}`, p.data.featured && 'item--featured']} style={`--i: ${i}`}>
-              <span class="marker" aria-hidden="true">
-                {num}
-              </span>
+              <span class="marker" aria-hidden="true" />
               <div class={`reveal side side--${side}`} style={`--delay: ${i * 120}ms`}>
                 <p class="period">
                   <span class="num-inline" aria-hidden="true">
@@ -39,7 +38,7 @@ const projects = await getProjects(lang);
                     {p.data.title}
                   </h3>
                   <ul class="tech" aria-label={t.stack}>
-                    {(p.data.featured ? p.data.stack.slice(0, 6) : p.data.stack.slice(0, 4)).map((s) => (
+                    {p.data.stack.slice(0, 4).map((s) => (
                       <li>{s}</li>
                     ))}
                   </ul>
@@ -75,13 +74,13 @@ const projects = await getProjects(lang);
     padding-left: 1.15rem;
   }
   .item + .item {
-    margin-top: 1.75rem;
+    margin-top: 2rem;
   }
   .item::before {
     content: '';
     position: absolute;
     top: 0.35rem;
-    bottom: -1.75rem;
+    bottom: -2rem;
     left: 0;
     width: 2px;
     border-radius: 2px;
@@ -94,7 +93,7 @@ const projects = await getProjects(lang);
     display: none;
   }
   .period {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
     font-size: 0.75rem;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
@@ -139,22 +138,19 @@ const projects = await getProjects(lang);
     border-left-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
   }
   .context {
-    margin-bottom: 0.4rem;
-    font-size: 0.6875rem;
-    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
   .title {
-    margin-bottom: 0.7rem;
-    font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
     font-weight: 600;
     line-height: 1.28;
     color: var(--color-fg);
-  }
-  .item--featured .title {
-    font-size: clamp(1.2rem, 2.4vw, 1.45rem);
   }
   .tech {
     display: flex;
@@ -165,7 +161,7 @@ const projects = await getProjects(lang);
     padding: 0;
   }
   .tech li {
-    padding: 0.22rem 0.6rem;
+    padding: 0.28rem 0.65rem;
     border: 1px solid color-mix(in oklab, var(--color-accent) 22%, transparent);
     border-radius: 999px;
     background: var(--color-surface-2);
@@ -176,12 +172,13 @@ const projects = await getProjects(lang);
     color: var(--color-accent);
   }
   .summary {
+    margin-bottom: 0.85rem;
     font-size: 0.875rem;
     line-height: 1.55;
     color: var(--color-muted);
   }
   .highlights {
-    margin-top: 0.6rem;
+    margin-bottom: 0.85rem;
     list-style: none;
     padding: 0;
     font-family: var(--font-mono);
@@ -203,9 +200,8 @@ const projects = await getProjects(lang);
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    margin-top: 0.8rem;
-    font-size: 0.8125rem;
-    font-weight: 700;
+    font-size: 0.8rem;
+    font-weight: 600;
     color: var(--color-accent);
   }
   /* The whole card is the click target; the link stays the only focus stop. */
@@ -235,7 +231,7 @@ const projects = await getProjects(lang);
     .track {
       display: grid;
       grid-template-columns: 1fr 3.5rem 1fr;
-      row-gap: 1rem;
+      row-gap: 2.5rem;
     }
     .track::before {
       content: '';
@@ -256,9 +252,9 @@ const projects = await getProjects(lang);
         transparent 100%
       );
     }
-    /* Each card spans two grid rows; the next one starts one row lower on the other side. */
+    /* One row per project, like the reference (no overlap between consecutive cards). */
     .item {
-      grid-row: calc(var(--i) + 1) / span 2;
+      grid-row: calc(var(--i) + 1);
       padding-left: 0;
     }
     .item + .item {
@@ -273,40 +269,37 @@ const projects = await getProjects(lang);
     .item--right {
       grid-column: 3;
     }
+    /* Rail dot: 0.85rem, 2px ring, 1.85rem below the card's top edge (reference). */
     .marker {
       position: absolute;
-      top: 1.1rem;
+      top: 1.85rem;
       z-index: 1;
-      display: flex;
-      width: 2rem;
-      height: 2rem;
-      align-items: center;
-      justify-content: center;
+      display: block;
+      width: 0.85rem;
+      height: 0.85rem;
       border: 2px solid var(--color-accent);
       border-radius: 50%;
       background: var(--color-bg-from);
       box-shadow:
         0 0 0 4px color-mix(in oklab, var(--color-bg-from) 88%, transparent),
         0 0 20px color-mix(in oklab, var(--color-accent) 35%, transparent);
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      font-weight: 700;
-      color: var(--color-accent);
       transition: transform 0.35s var(--ease-out-soft);
     }
-    /* Centered on the rail: half the 3.5rem gutter plus half the marker. */
+    /* Centered on the rail: half the 3.5rem gutter plus half the dot. */
     .item--left .marker {
-      right: -2.75rem;
+      right: -2.175rem;
     }
     .item--right .marker {
-      left: -2.75rem;
+      left: -2.175rem;
     }
     .item:hover .marker,
     .item:focus-within .marker {
-      transform: scale(1.12);
+      transform: scale(1.2);
     }
+    /* Number on its own line above the year. */
     .num-inline {
-      display: none;
+      display: block;
+      margin: 0 0 0.2rem;
     }
     .side {
       display: flex;
@@ -324,7 +317,7 @@ const projects = await getProjects(lang);
       flex: none;
       max-width: 5.75rem;
       margin: 0;
-      padding-top: 1.55rem;
+      padding-top: 1.35rem;
       line-height: 1.25;
     }
     .side--right .period {
@@ -333,7 +326,7 @@ const projects = await getProjects(lang);
     .card {
       flex: 0 1 auto;
       width: 100%;
-      max-width: 27rem;
+      max-width: 26rem;
     }
     .item--right .card {
       border-left-width: 1px;
@@ -342,12 +335,8 @@ const projects = await getProjects(lang);
     }
   }
 
-  /* Phones: each card snaps to the middle of the screen. */
-  @media (max-width: 767px) and (pointer: coarse) and (prefers-reduced-motion: no-preference) {
-    .item {
-      scroll-snap-align: center;
-    }
-  }
+  /* No per-card snap points: the section is taller than the screen, so it scrolls freely inside
+     and the page snap takes over at its edges (a card snap point trapped short swipes). */
   @media (prefers-reduced-motion: reduce) {
     .card:hover,
     .card:focus-within,
