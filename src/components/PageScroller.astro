@@ -295,15 +295,32 @@ const { pages } = getDict(toLang(Astro.currentLocale));
   // A refresh restores the old scroll position, often partway into a page. Snap back to the page
   // under the middle of the viewport so the next gesture moves exactly one page. Tall pages keep
   // their position (native scrolling inside them is expected).
+  // The position is restored here, not by the browser: Chrome can restore it after `load`, as a
+  // smooth scroll (html has scroll-behavior: smooth), which lands mid-page after this ran.
+  const SAVED = `scroll:${location.pathname}`;
+  if (pagingQuery.matches) history.scrollRestoration = 'manual';
+  addEventListener('pagehide', () => {
+    try {
+      sessionStorage.setItem(SAVED, String(scrollY));
+    } catch {}
+  });
   const alignOnLoad = () => {
     if (!pagingQuery.matches || location.hash) return;
-    const mid = scrollY + innerHeight / 2;
+    let y = scrollY;
+    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    if (nav && (nav.type === 'reload' || nav.type === 'back_forward')) {
+      try {
+        y = Number(sessionStorage.getItem(SAVED)) || y;
+      } catch {}
+    }
+    const mid = y + innerHeight / 2;
     let i = 0;
     pageEls.forEach((el, k) => {
       if (top(el) <= mid) i = k;
     });
     const el = pageEls[i];
-    if (el.offsetHeight <= innerHeight + EDGE && Math.abs(top(el) - scrollY) > EDGE) scrollTo({ top: top(el), behavior: 'instant' });
+    const target = el.offsetHeight <= innerHeight + EDGE ? top(el) : y;
+    if (Math.abs(target - scrollY) > EDGE) scrollTo({ top: target, behavior: 'instant' });
   };
   if (document.readyState === 'complete') requestAnimationFrame(alignOnLoad);
   else addEventListener('load', () => requestAnimationFrame(alignOnLoad), { once: true });
