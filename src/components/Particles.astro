@@ -1,6 +1,6 @@
 ---
-// Floating points behind every section: slow drifting dots, faint lines between close ones.
-// One fixed <canvas>, no library. Color, opacities and sizes come from the theme tokens
+// Floating points behind every section: slow, independent drifting dots (no connecting lines),
+// like the reference's tsParticles setup. One fixed <canvas>, no library. Color, opacities and sizes come from the theme tokens
 // (--particle-* in global.css). Under text the drawing fades to --particle-text-fade, so the
 // contrast script can check text over the worst case (a dot right under a glyph).
 ---
@@ -25,23 +25,21 @@
   if (canvas && ctx) {
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const finePointer = matchMedia('(pointer: fine) and (min-width: 769px)');
-    const LINK = { desktop: 140, mobile: 110 }; // px: max distance for a connecting line
-    const SPEED = 0.18; // px per frame at 60 fps
+    const COUNT = { desktop: 100, mobile: 40 }; // reference: 110 at every size
+    const SPEED = { min: 0.08, max: 0.16 }; // px per frame at 60 fps, measured on the reference
     const CURSOR_RADIUS = 130; // px
     const CURSOR_PUSH = 0.6; // px per frame at the cursor, fading to 0 at the radius
 
-    // r is 0..1 and maps onto the theme's radius range.
-    type Dot = { x: number; y: number; vx: number; vy: number; r: number };
+    // r and a are 0..1 and map onto the theme's radius and opacity ranges (per-dot variation).
+    type Dot = { x: number; y: number; vx: number; vy: number; r: number; a: number };
     type Box = { x: number; y: number; w: number; h: number; fixed: boolean };
     let dots: Dot[] = [];
     let width = 0;
     let height = 0;
-    let link = LINK.desktop;
     let color = '96, 165, 250';
-    let dotAlpha = 0.2;
-    let lineAlpha = 0.1;
+    let alpha = { min: 0.4, max: 0.55 };
     let textFade = 1;
-    let radius = { min: 1.5, max: 2.6 };
+    let radius = { min: 0.75, max: 1.5 };
     let textBoxes: Box[] = [];
     let frame = 0;
     let last = 0;
@@ -57,10 +55,9 @@
       const hex = (style.getPropertyValue('--particle-color') || style.getPropertyValue('--color-accent')).trim();
       const m = /^#([0-9a-f]{6})$/i.exec(hex);
       if (m) color = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16)).join(', ');
-      dotAlpha = num('--particle-dot-alpha', dotAlpha);
-      lineAlpha = num('--particle-line-alpha', lineAlpha);
+      alpha = { min: num('--particle-alpha-min', 0.4), max: num('--particle-alpha-max', 0.55) };
       textFade = num('--particle-text-fade', 1);
-      radius = { min: num('--particle-radius-min', 1.5), max: num('--particle-radius-max', 2.6) };
+      radius = { min: num('--particle-radius-min', 0.75), max: num('--particle-radius-max', 1.5) };
     };
 
     // Boxes around every line of visible text, in page coordinates (viewport ones for text in
@@ -123,36 +120,21 @@
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const desktop = width > 768;
-      link = desktop ? LINK.desktop : LINK.mobile;
-      const count = desktop ? 40 : 18;
+      const count = width > 768 ? COUNT.desktop : COUNT.mobile;
       // Keep existing dots (no jump on mobile URL-bar resizes), wrap them into the new box.
       dots = dots.slice(0, count).map((d) => ({ ...d, x: d.x % width, y: d.y % height }));
       while (dots.length < count) {
         const angle = random(0, Math.PI * 2);
-        const speed = random(0.4, 1) * SPEED;
-        dots.push({ x: random(0, width), y: random(0, height), vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, r: Math.random() });
+        const speed = random(SPEED.min, SPEED.max);
+        dots.push({ x: random(0, width), y: random(0, height), vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, r: Math.random(), a: Math.random() });
       }
     };
 
+    // Solid dots, normal blending, no shadow or glow.
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-      ctx.lineWidth = 1;
-      for (let i = 0; i < dots.length; i++) {
-        const a = dots[i];
-        for (let j = i + 1; j < dots.length; j++) {
-          const b = dots[j];
-          const dist = Math.hypot(a.x - b.x, a.y - b.y);
-          if (dist >= link) continue;
-          ctx.strokeStyle = `rgba(${color}, ${lineAlpha * (1 - dist / link)})`;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-      ctx.fillStyle = `rgba(${color}, ${dotAlpha})`;
       for (const d of dots) {
+        ctx.fillStyle = `rgba(${color}, ${alpha.min + d.a * (alpha.max - alpha.min)})`;
         ctx.beginPath();
         ctx.arc(d.x, d.y, radius.min + d.r * (radius.max - radius.min), 0, Math.PI * 2);
         ctx.fill();

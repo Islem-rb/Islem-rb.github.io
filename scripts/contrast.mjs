@@ -10,9 +10,9 @@ const dark = { ...light, ...block(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/)
 const alphas = (re) => {
   const body = css.match(re)[1];
   const get = (name) => Number(body.match(new RegExp(`--particle-${name}:\\s*([\\d.]+)`))[1]);
-  // Under text, both opacities are scaled by the text fade.
+  // Under text, the most opaque dot is scaled by the text fade. Dots never overlap lines (there are none).
   const fade = get('text-fade');
-  return { dot: get('dot-alpha') * fade, line: get('line-alpha') * fade, color: body.match(/--particle-color:\s*(#[0-9a-f]{6})/i)[1] };
+  return { dot: get('alpha-max') * fade, open: get('alpha-max'), color: body.match(/--particle-color:\s*(#[0-9a-f]{6})/i)[1] };
 };
 light.particles = alphas(/\n:root \{([\s\S]*?)\n\}/);
 dark.particles = alphas(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/);
@@ -29,8 +29,8 @@ const ratio = (a, b) => {
 // Badge background: 10% of the TODO color over the page background.
 const mix = (a, b, t) => '#' + rgb(a).map((v, i) => Math.round(v * t + rgb(b)[i] * (1 - t)).toString(16).padStart(2, '0')).join('');
 
-// Worst case under text that sits directly on the page: a dot with a line crossing it.
-const particleAlpha = ({ dot, line }) => 1 - (1 - dot) * (1 - line);
+// Worst case under text that sits directly on the page: the most opaque dot, faded.
+const particleAlpha = ({ dot }) => dot;
 
 let failed = false;
 for (const [name, t] of [['light', light], ['dark', dark]]) {
@@ -63,9 +63,8 @@ for (const [name, t] of [['light', light], ['dark', dark]]) {
     console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${r.toFixed(2).padStart(5)}:1  ${a} ${ca} on ${b} ${cb}  (target ${target})`);
   }
   // Visibility only (no target): a dot over empty background, at full strength.
-  const fade = Number(css.match(name === 'light' ? /\n:root \{[\s\S]*?--particle-text-fade:\s*([\d.]+)/ : /data-theme="dark"\] \{[\s\S]*?--particle-text-fade:\s*([\d.]+)/)[1]);
   for (const b of ['bg-from', 'bg-to']) {
-    const dot = mix(t.particles.color, t[b], t.particles.dot / fade);
+    const dot = mix(t.particles.color, t[b], t.particles.open);
     console.log(`  info  ${ratio(dot, t[b]).toFixed(2).padStart(5)}:1  particle dot (open area) on ${b}`);
   }
 }

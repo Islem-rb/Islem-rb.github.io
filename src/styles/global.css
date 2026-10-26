@@ -29,14 +29,15 @@
   --shadow-card: 0 4px 20px rgb(15 23 42 / 0.07);
   --shadow-window: 0 8px 30px rgb(15 23 42 / 0.12);
   --halo: color-mix(in oklab, var(--color-accent) 14%, transparent);
-  /* Floating points (Particles.astro). Over empty background they draw at these opacities; under
-     text they fade to --particle-text-fade of them, so text keeps AA. Checked by scripts/contrast.mjs. */
-  --particle-color: #1e40af;
-  --particle-dot-alpha: 0.6;
-  --particle-line-alpha: 0.3;
+  /* Floating points (Particles.astro): independent dots, each with its own opacity and radius in
+     these ranges. Under text they fade to --particle-text-fade of that, so text keeps AA.
+     Checked by scripts/contrast.mjs. */
+  --particle-color: #1d4ed8;
+  --particle-alpha-min: 0.45;
+  --particle-alpha-max: 0.6;
   --particle-text-fade: 0.18;
-  --particle-radius-min: 1.8;
-  --particle-radius-max: 2.8;
+  --particle-radius-min: 0.75;
+  --particle-radius-max: 1.5;
 }
 
 :root[data-theme="dark"] {
@@ -56,11 +57,11 @@
   --shadow-window: 0 8px 30px rgb(0 0 0 / 0.4);
   --halo: color-mix(in oklab, var(--color-accent) 12%, transparent);
   --particle-color: #60a5fa;
-  --particle-dot-alpha: 0.16;
-  --particle-line-alpha: 0.07;
-  --particle-text-fade: 1;
-  --particle-radius-min: 1.5;
-  --particle-radius-max: 2.6;
+  --particle-alpha-min: 0.4;
+  --particle-alpha-max: 0.55;
+  --particle-text-fade: 0.36;
+  --particle-radius-min: 0.75;
+  --particle-radius-max: 1.5;
 }
 
 @layer base {
