@@ -218,14 +218,22 @@
   }
 }
 
-/* Touch devices: pages snap gently (proximity never traps a scroll). Desktop paging is JS,
-   see PageScroller.astro; both are off with reduced motion. */
+/* Touch devices: one swipe moves one page. Mandatory snapping with snap-stop on the pages means
+   a short swipe can't fall back to the page it started on and a fast one can't fly past the next
+   page. Pages taller than the screen still scroll freely inside (snap areas larger than the
+   viewport allow it), and their cards snap to the middle. The footer gets its own end position
+   so it stays reachable. Desktop paging is JS, see PageScroller.astro; both are off with
+   reduced motion. */
 @media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
   html:has([data-page]) {
-    scroll-snap-type: y proximity;
+    scroll-snap-type: y mandatory;
   }
   [data-page] {
     scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  html:has([data-page]) body > footer {
+    scroll-snap-align: end;
   }
 }
 

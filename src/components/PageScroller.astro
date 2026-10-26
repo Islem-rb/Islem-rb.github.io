@@ -74,8 +74,10 @@ const { pages } = getDict(toLang(Astro.currentLocale));
   let animating = false;
   let wheelSum = 0;
   let wheelTimer = 0;
-  let lastNative = 0;
-  let lastWheel = 0;
+  // -Infinity, not 0: performance.now() starts at page load, so a 0 here swallowed a wheel
+  // gesture made in the first 250 ms (EDGE_COOLDOWN) after loading.
+  let lastNative = -Infinity;
+  let lastWheel = -Infinity;
   // Set when a wheel gesture pages; trackpad momentum keeps sending events after the tween,
   // so the lock holds until the stream pauses for WHEEL_RESET (one page per gesture).
   let gestureLock = false;
@@ -247,6 +249,52 @@ const { pages } = getDict(toLang(Astro.currentLocale));
     { passive: true },
   );
   addEventListener('resize', updateDots, { passive: true });
+  // Touch: native scrolling and CSS snapping do the work (global.css), this only makes sure a
+  // swipe that starts at a page's edge lands on the next page. Without it, a short swipe snapped
+  // back to the page it started on and a fast one could fly past the next page. Swipe = the
+  // reference's rule: > 45 px, mostly vertical, < 700 ms. Nothing is prevented.
+  const touchQuery = matchMedia('(pointer: coarse) and (prefers-reduced-motion: no-preference)');
+  let swipe: { x: number; y: number; t: number; i: number; below: number; above: number } | null = null;
+  const onTouchStart = (e: TouchEvent) => {
+    swipe = null;
+    if (!touchQuery.matches || e.touches.length !== 1) return;
+    const i = currentIndex();
+    swipe = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: performance.now(), i, below: roomBelow(i), above: roomAbove(i) };
+  };
+  const onTouchEnd = (e: TouchEvent) => {
+    const s = swipe;
+    swipe = null;
+    const end = e.changedTouches[0];
+    if (!s || !end) return;
+    const dy = s.y - end.clientY;
+    if (Math.abs(dy) <= 45 || Math.abs(dy) <= Math.abs(end.clientX - s.x) || performance.now() - s.t >= 700) return;
+    const dir = dy > 0 ? 1 : -1;
+    // Started inside a tall page with content left in this direction: native scrolling only.
+    if ((dir > 0 ? s.below : s.above) > EDGE) return;
+    const el = pageEls[s.i + dir];
+    if (!el) return;
+    const y = dir < 0 && el.offsetHeight > innerHeight ? bottom(el) - innerHeight : top(el);
+    scrollTo({ top: y, behavior: 'smooth' });
+  };
+  addEventListener('touchstart', onTouchStart, { passive: true });
+  addEventListener('touchend', onTouchEnd, { passive: true });
+
+  // A refresh restores the old scroll position, often partway into a page. Snap back to the page
+  // under the middle of the viewport so the next gesture moves exactly one page. Tall pages keep
+  // their position (native scrolling inside them is expected).
+  const alignOnLoad = () => {
+    if (!pagingQuery.matches || location.hash) return;
+    const mid = scrollY + innerHeight / 2;
+    let i = 0;
+    pageEls.forEach((el, k) => {
+      if (top(el) <= mid) i = k;
+    });
+    const el = pageEls[i];
+    if (el.offsetHeight <= innerHeight + EDGE && Math.abs(top(el) - scrollY) > EDGE) scrollTo({ top: top(el), behavior: 'instant' });
+  };
+  if (document.readyState === 'complete') requestAnimationFrame(alignOnLoad);
+  else addEventListener('load', () => requestAnimationFrame(alignOnLoad), { once: true });
+
   addEventListener('wheel', onWheel, { passive: false });
   addEventListener('keydown', onKey);
   document.addEventListener('click', onClick);

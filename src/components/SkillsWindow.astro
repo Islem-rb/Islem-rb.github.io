@@ -6,7 +6,7 @@ const { tagline, availability } = getDict(toLang(Astro.currentLocale));
 const [first] = tagline.sentences;
 ---
 
-<div class="mx-auto mt-20 w-full max-w-[26.25rem] px-10 text-left sm:px-0" aria-label={tagline.file} role="group">
+<div class="mx-auto mt-20 w-full [@media(max-height:50rem)]:mt-12 max-w-[26.25rem] px-10 text-left sm:px-0" aria-label={tagline.file} role="group">
   <div class="code-window">
     <div class="flex h-11 items-center gap-2 border-b border-line px-4">
       <span class="size-3 rounded-full bg-[#ff5f57]" aria-hidden="true"></span>
