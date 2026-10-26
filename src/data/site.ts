@@ -83,7 +83,7 @@ export const sections = {
     form: {
       name: 'Name',
       email: 'Email',
-          message: 'Message',
+      message: 'Message',
       placeholder: 'Your internship offer, project or question…',
       submit: 'Send',
       subject: 'Portfolio contact from',
