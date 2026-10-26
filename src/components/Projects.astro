@@ -10,7 +10,7 @@ const { pages, projects: t } = getDict(lang);
 const projects = await getProjects(lang);
 ---
 
-<section id="projects" data-page={pages.projects} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="projects-title">
+<section id="projects" data-bg="projects" data-page={pages.projects} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="projects-title">
   <div class="mx-auto w-full max-w-5xl">
     <h2 id="projects-title" class="mb-10 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-12">
       {t.title}<span class="text-accent" aria-hidden="true">.</span>
@@ -99,12 +99,12 @@ const projects = await getProjects(lang);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-on-tint);
   }
   .num-inline {
     margin-right: 0.6rem;
     font-family: var(--font-mono);
-    color: var(--color-muted);
+    color: var(--color-muted-on-tint);
   }
 
   /* ---- Card ---- */
@@ -279,9 +279,9 @@ const projects = await getProjects(lang);
       height: 0.85rem;
       border: 2px solid var(--color-accent);
       border-radius: 50%;
-      background: var(--color-bg-from);
+      background: var(--color-bg);
       box-shadow:
-        0 0 0 4px color-mix(in oklab, var(--color-bg-from) 88%, transparent),
+        0 0 0 4px color-mix(in oklab, var(--color-bg) 88%, transparent),
         0 0 20px color-mix(in oklab, var(--color-accent) 35%, transparent);
       transition: transform 0.35s var(--ease-out-soft);
     }

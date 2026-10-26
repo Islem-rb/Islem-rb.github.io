@@ -2,12 +2,12 @@
 
 /* Design tokens. Every color, font and motion value used on the site lives here.
    The values in @theme are the light theme (the default); [data-theme="dark"] overrides them.
-   Starting point: the reference's measured palette (light bg #f3f4f6 / accent #3b82f6,
-   dark bg #1f2937 / accent #60a5fa), shifted to a blue-tinted gradient background. */
+   Backgrounds are the reference's, measured live (refs/COLORS.md): a flat page color plus one
+   gradient per section, all mixed from --color-tint (the reference's accent). --color-accent
+   is mine and only colors text, links and buttons. */
 @theme {
-  --color-bg: #f4f7ff;
-  --color-bg-from: #ffffff;
-  --color-bg-to: #e8f0ff;
+  --color-bg: #f3f4f6;
+  --color-tint: #3b82f6;
   --color-surface: #ffffff;
   --color-surface-2: #eef3fd;
   --color-line: #d3dcec;
@@ -15,6 +15,10 @@
   --color-muted: #4b5568;
   --color-accent: #1d4ed8;
   --color-accent-ink: #ffffff;
+  /* Labels that sit straight on the deepest gradient stop (timeline dates, years, block titles):
+     the smallest shift of accent / muted that keeps AA there (refs/COLORS.md). */
+  --color-accent-on-tint: #183fb0;
+  --color-muted-on-tint: #434c5e;
   --color-todo: #92400e;
 
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -28,38 +32,49 @@
   color-scheme: light;
   --shadow-card: 0 4px 20px rgb(15 23 42 / 0.07);
   --shadow-window: 0 8px 30px rgb(15 23 42 / 0.12);
-  --halo: color-mix(in oklab, var(--color-accent) 14%, transparent);
+  /* Section backgrounds, copied stop for stop from the reference (refs/COLORS.md). They scroll
+     with their section (no fixed attachment) and are painted by [data-bg]::before, under the
+     floating dots. Deep and mid are the reference's 1/3 and 1/6 tint mixes. */
+  --bg-deep: color-mix(in srgb, var(--color-tint) 33.333%, var(--color-bg));
+  --bg-mid: color-mix(in srgb, var(--color-tint) 16.666%, var(--color-bg));
+  --bg-hero: radial-gradient(30rem 80rem at 100% 0%, color-mix(in oklab, var(--color-tint) 18%, transparent) 0%, color-mix(in oklab, var(--color-tint) 6%, transparent) 45%, transparent 120%);
+  --bg-about-halo: radial-gradient(30rem 80rem at 100% 0%, color-mix(in oklab, var(--color-tint) 8%, transparent) 0%, color-mix(in oklab, var(--color-tint) 2%, transparent) 45%, transparent 90%);
+  --bg-about: linear-gradient(180deg, color-mix(in oklab, var(--color-bg) 0%, transparent) 0%, color-mix(in oklab, var(--color-bg) 30%, transparent) 30%, var(--color-bg) 60%);
+  --bg-projects: linear-gradient(180deg, var(--color-bg) 0%, var(--bg-deep) 100%);
+  --bg-experience: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+  --bg-contact: linear-gradient(180deg, var(--bg-mid) 0%, var(--color-bg) 70%);
+  --bg-contact-md: linear-gradient(180deg, var(--bg-deep) 0%, var(--color-bg) 70%);
   /* Floating points (Particles.astro): independent dots, each with its own opacity and radius in
      these ranges. Under text they fade to --particle-text-fade of that, so text keeps AA.
      Checked by scripts/contrast.mjs. */
   --particle-color: #1d4ed8;
   --particle-alpha-min: 0.45;
   --particle-alpha-max: 0.6;
-  --particle-text-fade: 0.18;
+  --particle-text-fade: 0.1;
   --particle-radius-min: 0.75;
   --particle-radius-max: 1.5;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-bg: #0d1729;
-  --color-bg-from: #0b1220;
-  --color-bg-to: #0f1b33;
-  --color-surface: #131f37;
-  --color-surface-2: #1a2844;
-  --color-line: #263755;
+  --color-bg: #1f2937;
+  --color-tint: #60a5fa;
+  --color-surface: #243143;
+  --color-surface-2: #29364a;
+  --color-line: #3a4a61;
   --color-fg: #f3f4f6;
   --color-muted: #a8b3c5;
   --color-accent: #60a5fa;
   --color-accent-ink: #0b1220;
+  --color-accent-on-tint: #a8cefc;
+  --color-muted-on-tint: #c3cbd7;
   --color-todo: #f2c66d;
   --shadow-card: 0 4px 20px rgb(0 0 0 / 0.3);
   --shadow-window: 0 8px 30px rgb(0 0 0 / 0.4);
-  --halo: color-mix(in oklab, var(--color-accent) 12%, transparent);
-  --particle-color: #60a5fa;
+  --particle-color: #93c5fd;
   --particle-alpha-min: 0.4;
   --particle-alpha-max: 0.55;
-  --particle-text-fade: 0.36;
+  --particle-text-fade: 0.08;
   --particle-radius-min: 0.75;
   --particle-radius-max: 1.5;
 }
@@ -80,14 +95,29 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* One fixed gradient layer behind the whole page, so it doesn't restart per section. */
-  body::before {
+  /* Section backgrounds: one layer per section, below the floating dots (z-index -1) and the
+     content. The section is positioned but makes no stacking context, so -2 lands under the canvas. */
+  [data-bg] {
+    position: relative;
+  }
+  [data-bg]::before {
     content: '';
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: -2;
     pointer-events: none;
-    background: linear-gradient(180deg, var(--color-bg-from), var(--color-bg-to));
+    background: var(--section-bg);
+  }
+  [data-bg="hero"] { --section-bg: var(--bg-hero); }
+  [data-bg="about"] { --section-bg: var(--bg-about-halo) top / 100% 500px no-repeat, var(--bg-about); }
+  [data-bg="projects"] { --section-bg: var(--bg-projects); }
+  [data-bg="experience"] { --section-bg: var(--bg-experience); }
+  [data-bg="contact"] { --section-bg: var(--bg-contact); }
+  /* From md up the reference has one contact page fading deep -> bg; below md it splits it in two
+     (deep -> mid, mid -> bg). Experience takes the first half on phones and holds deep on desktop. */
+  @media (min-width: 48rem) {
+    [data-bg="experience"] { --section-bg: var(--bg-deep); }
+    [data-bg="contact"] { --section-bg: var(--bg-contact-md); }
   }
 
   h1, h2, h3, h4 {

@@ -97,7 +97,7 @@ const { class: className } = Astro.props;
     document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((b) => {
       b.setAttribute('aria-pressed', String(dark));
     });
-    meta?.setAttribute('content', dark ? '#0b1220' : '#ffffff');
+    meta?.setAttribute('content', dark ? '#1f2937' : '#f3f4f6');
   };
   document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((b) => {
     b.addEventListener('click', () => {

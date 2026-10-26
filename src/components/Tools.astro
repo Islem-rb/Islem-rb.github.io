@@ -38,7 +38,7 @@ const icons = [
 
 // Brand colors, unless a color is too faint on a theme's tile (WCAG 3:1 for graphics):
 // then that theme falls back to the text color. Tile colors match --color-surface.
-const tiles = { light: '#ffffff', dark: '#131f37' };
+const tiles = { light: '#ffffff', dark: '#243143' };
 const luminance = (hex: string) => {
   const [r, g, b] = [0, 2, 4].map((i) => {
     const v = parseInt(hex.slice(i, i + 2), 16) / 255;

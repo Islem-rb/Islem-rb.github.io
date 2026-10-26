@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 
 const css = fs.readFileSync(new URL('../src/styles/global.css', import.meta.url), 'utf8');
+// Section gradient stops (refs/COLORS.md): bg, then the tint mixed into it at 1/6 (mid) and 1/3 (deep).
 const block = (re) => Object.fromEntries([...css.match(re)[1].matchAll(/--color-([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
 const light = block(/@theme \{([\s\S]*?)\n\}/);
 const dark = { ...light, ...block(/:root\[data-theme="dark"\] \{([\s\S]*?)\n\}/) };
@@ -34,25 +35,27 @@ const particleAlpha = ({ dot }) => dot;
 
 let failed = false;
 for (const [name, t] of [['light', light], ['dark', dark]]) {
-  console.log(`\n${name}`);
+  t.mid = mix(t.tint, t.bg, 1 / 6);
+  t.deep = mix(t.tint, t.bg, 1 / 3);
+  console.log(`\n${name}  (bg ${t.bg}, mid ${t.mid}, deep ${t.deep})`);
+  // Text straight on the page: body text on every stop, accent and muted on bg (hero, about,
+  // top of projects), the -on-tint label colors on the deepest stop.
   const pairs = [
-    ['fg', t.fg, 'bg-from', t['bg-from'], 4.5],
-    ['fg', t.fg, 'bg-to', t['bg-to'], 4.5],
-    ['muted', t.muted, 'bg-from', t['bg-from'], 4.5],
-    ['muted', t.muted, 'bg-to', t['bg-to'], 4.5],
+    ...['bg', 'mid', 'deep'].map((b) => ['fg', t.fg, b, t[b], 4.5]),
+    ['muted', t.muted, 'bg', t.bg, 4.5],
+    ['accent', t.accent, 'bg', t.bg, 4.5],
+    ['muted-on-tint', t['muted-on-tint'], 'deep', t.deep, 4.5],
+    ['accent-on-tint', t['accent-on-tint'], 'deep', t.deep, 4.5],
     ['muted', t.muted, 'surface', t.surface, 4.5],
-    ['accent', t.accent, 'bg-from', t['bg-from'], 4.5],
-    ['accent', t.accent, 'bg-to', t['bg-to'], 4.5],
     ['accent', t.accent, 'surface', t.surface, 4.5],
     ['accent', t.accent, 'surface-2', t['surface-2'], 4.5],
     ['accent-ink', t['accent-ink'], 'accent', t.accent, 4.5],
-    ['todo', t.todo, 'todo badge', mix(t.todo, t['bg-to'], 0.1), 4.5],
-    ...['fg', 'muted', 'accent'].flatMap((k) =>
-      ['bg-from', 'bg-to'].map((b) => {
-        const under = mix(t.particles.color, t[b], particleAlpha(t.particles));
-        return [k, t[k], `particle on ${b}`, under, 4.5];
-      }),
-    ),
+    ['todo', t.todo, 'todo badge', mix(t.todo, t.bg, 0.1), 4.5],
+    // Worst case with the most opaque dot under the text, faded.
+    ...[['fg', 'bg'], ['muted', 'bg'], ['accent', 'bg'], ['fg', 'deep'], ['muted-on-tint', 'deep'], ['accent-on-tint', 'deep']].map(([k, b]) => {
+      const under = mix(t.particles.color, t[b], particleAlpha(t.particles));
+      return [k, t[k], `particle on ${b}`, under, 4.5];
+    }),
     ['line (UI)', t.line, 'surface', t.surface, 1.2],
     ['muted (UI, icons)', t.muted, 'surface', t.surface, 3],
   ];
@@ -63,7 +66,7 @@ for (const [name, t] of [['light', light], ['dark', dark]]) {
     console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${r.toFixed(2).padStart(5)}:1  ${a} ${ca} on ${b} ${cb}  (target ${target})`);
   }
   // Visibility only (no target): a dot over empty background, at full strength.
-  for (const b of ['bg-from', 'bg-to']) {
+  for (const b of ['bg', 'deep']) {
     const dot = mix(t.particles.color, t[b], t.particles.open);
     console.log(`  info  ${ratio(dot, t[b]).toFixed(2).padStart(5)}:1  particle dot (open area) on ${b}`);
   }

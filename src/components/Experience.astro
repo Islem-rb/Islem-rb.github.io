@@ -6,7 +6,7 @@ const { pages, experience: t } = getDict(lang);
 const { items: experience, schools: education } = t;
 ---
 
-<section id="experience" data-page={pages.experience} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="experience-title">
+<section id="experience" data-bg="experience" data-page={pages.experience} class="flex min-h-dvh items-center px-4 py-16 sm:px-6" aria-labelledby="experience-title">
   <div class="mx-auto w-full max-w-6xl">
     <h2 id="experience-title" class="mb-10 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-12">
       {t.title}
@@ -72,11 +72,11 @@ const { items: experience, schools: education } = t;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-muted-on-tint);
   }
   .block-title::before {
     content: '// ';
-    color: var(--color-accent);
+    color: var(--color-accent-on-tint);
   }
   /* Vertical rail with one accent dot per internship. */
   .track {
@@ -115,7 +115,7 @@ const { items: experience, schools: education } = t;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-on-tint);
   }
   .entry {
     margin-top: 0.625rem;
