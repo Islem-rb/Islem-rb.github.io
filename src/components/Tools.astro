@@ -1,0 +1,57 @@
+---
+import {
+  siAnsible,
+  siArgo,
+  siDocker,
+  siGithubactions,
+  siGrafana,
+  siHelm,
+  siJenkins,
+  siKubernetes,
+  siLinux,
+  siOpenstack,
+  siPrometheus,
+  siPython,
+  siTerraform,
+} from 'simple-icons';
+import { toolsLabel } from '../data/site';
+
+// Only tools listed in content/cv.md. simple-icons has no AWS logo, so AWS is a text mark.
+const tools = [
+  { title: 'Kubernetes', path: siKubernetes.path },
+  { title: 'Docker', path: siDocker.path },
+  { title: 'Terraform', path: siTerraform.path },
+  { title: 'Ansible', path: siAnsible.path },
+  { title: 'Jenkins', path: siJenkins.path },
+  { title: 'GitHub Actions', path: siGithubactions.path },
+  { title: 'Argo CD', path: siArgo.path },
+  { title: 'Helm', path: siHelm.path },
+  { title: 'Prometheus', path: siPrometheus.path },
+  { title: 'Grafana', path: siGrafana.path },
+  { title: 'AWS', path: null },
+  { title: 'OpenStack', path: siOpenstack.path },
+  { title: 'Linux', path: siLinux.path },
+  { title: 'Python', path: siPython.path },
+];
+---
+
+<ul class="flex flex-wrap justify-center gap-2.5 sm:gap-4" aria-label={toolsLabel}>
+  {
+    tools.map((t) => (
+      <li
+        class="group flex size-14 items-center justify-center rounded-xl border border-line bg-surface text-muted shadow-sm transition-[color,border-color,transform] duration-300 hover:scale-110 hover:border-accent/50 hover:text-accent sm:size-[3.875rem] motion-reduce:hover:scale-100"
+        title={t.title}
+      >
+        {t.path ? (
+          <svg viewBox="0 0 24 24" class="size-8 sm:size-9" role="img" aria-label={t.title}>
+            <path d={t.path} fill="currentColor" />
+          </svg>
+        ) : (
+          <span class="font-mono text-sm font-bold tracking-wide">
+            {t.title}
+          </span>
+        )}
+      </li>
+    ))
+  }
+</ul>

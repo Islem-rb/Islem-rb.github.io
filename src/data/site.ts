@@ -27,7 +27,6 @@ export const seo = {
 
 export const nav = [
   { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
   { label: 'Experience', href: '#experience' },
   { label: 'Contact', href: '#contact' },
 ];
@@ -98,16 +97,14 @@ export const cvSkills = [
   { group: 'Development', items: 'Java, Python, JavaScript, C, Spring Boot, Node.js, Angular, React' },
 ];
 
+export const toolsLabel = 'Tools I work with';
+
 export const sections = {
   projects: {
     kicker: '// projects',
     title: 'Selected projects',
     intro: 'From Terraform modules to progressive delivery on Kubernetes.',
     cta: 'Read case study',
-  },
-  skills: {
-    kicker: '// skills',
-    title: 'Toolbox',
   },
   experience: {
     kicker: '// experience & education',
@@ -129,47 +126,6 @@ export const labels = {
   backToTop: 'Back to top ↑',
   skipLink: 'Skip to content',
 };
-
-// Grouped from the "Skills" section of cv.md. Items are copied verbatim.
-export const skillGroups = [
-  {
-    title: 'Cloud & IaC',
-    icon: 'cloud',
-    items: ['AWS (EC2, VPC, S3, IAM, EKS)', 'OpenStack', 'KVM', 'Hyper-V', 'Terraform', 'Ansible'],
-  },
-  {
-    title: 'Containers & Orchestration',
-    icon: 'box',
-    items: ['Docker', 'Kubernetes', 'Docker Swarm', 'Helm'],
-  },
-  {
-    title: 'CI/CD & GitOps',
-    icon: 'flow',
-    items: ['GitHub Actions', 'Jenkins', 'Argo CD'],
-  },
-  {
-    title: 'Observability & Security',
-    icon: 'pulse',
-    items: ['Prometheus', 'Grafana', 'Loki', 'Zabbix', 'Nagios', 'Trivy', 'Gitleaks'],
-  },
-  {
-    title: 'Languages & Other',
-    icon: 'code',
-    items: [
-      'Java',
-      'Python',
-      'JavaScript',
-      'C',
-      'Spring Boot',
-      'Node.js',
-      'Angular',
-      'React',
-      'Linux (Ubuntu, CentOS, RHEL)',
-      'Networking',
-      'Server hardening',
-    ],
-  },
-] as const;
 
 // Experience and education, most recent first. Dates copied exactly from cv.md.
 export const timeline = [

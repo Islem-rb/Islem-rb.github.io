@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import placeholder from '../assets/profile-placeholder.svg?url';
+import Tools from './Tools.astro';
 import { about, profile, tagline, todos } from '../data/site';
 
 // Drop src/assets/profile.{jpg,jpeg,png,webp} in place and it replaces the placeholder.
@@ -26,7 +27,7 @@ const photo = Object.values(photos)[0]?.default;
   </div>
 </div>
 
-<section id="about" class="flex min-h-dvh items-center px-6 py-16" aria-labelledby="about-title">
+<section id="about" class="flex min-h-dvh flex-col items-center justify-center gap-16 px-4 py-16 sm:px-6" aria-labelledby="about-title">
   <div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 md:grid-cols-2">
     <div class="flex flex-col items-center gap-8 text-center">
       <h2 id="about-title" class="text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg">
@@ -55,8 +56,10 @@ const photo = Object.values(photos)[0]?.default;
           <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
         </a>
       </p>
-      <slot />
     </div>
+  </div>
+  <div class="mx-auto w-full max-w-6xl">
+    <Tools />
   </div>
 </section>
 
