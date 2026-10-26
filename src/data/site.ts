@@ -101,6 +101,7 @@ export const labels = {
   linkedin: 'LinkedIn',
   newTab: '(opens in a new tab)',
   skipLink: 'Skip to content',
+  darkTheme: 'Dark theme',
 };
 
 // Home timeline entries that have no project page (projects come from the content collection).

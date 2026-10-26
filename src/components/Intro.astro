@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import placeholder from '../assets/profile-placeholder.svg?url';
+import Placeholder from '../assets/profile-placeholder.svg';
 import Tools from './Tools.astro';
 import { about, profile, tagline, todos } from '../data/site';
 
@@ -19,7 +19,7 @@ const photo = Object.values(photos)[0]?.default;
     </div>
     <p class="min-h-[6.5rem] px-5 pt-5 pb-6 font-mono text-[0.95rem] text-fg">
       <span class="sr-only">{`${tagline.prefix} ${tagline.words.join(', ')}`}</span>
-      <span aria-hidden="true"><span class="text-muted">&gt;&nbsp;</span>{tagline.prefix}&nbsp;<span
+      <span aria-hidden="true"><span class="text-accent">&gt;&nbsp;</span>{tagline.prefix}&nbsp;<span
         id="tagline-word"
         data-words={JSON.stringify(tagline.words)}>{tagline.words.join(', ')}</span
       ><span class="caret"></span></span>
@@ -34,12 +34,12 @@ const photo = Object.values(photos)[0]?.default;
         {about.title[0]}<br />{about.title[1]}
       </h2>
       <div class="flex flex-col items-center gap-3">
-        <div class="size-48 overflow-hidden rounded-full shadow-lg ring-2 ring-fg/25 md:size-56">
+        <div class="size-48 overflow-hidden rounded-full shadow-lg ring-2 ring-accent/60 md:size-56">
           {
             photo ? (
               <Image src={photo} alt={about.photoAlt} width={448} height={448} class="size-full object-cover" />
             ) : (
-              <img src={placeholder} alt="" width="224" height="224" class="size-full object-cover" />
+              <Placeholder class="placeholder size-full" aria-hidden="true" />
             )
           }
         </div>
@@ -65,11 +65,23 @@ const photo = Object.values(photos)[0]?.default;
 
 <style>
   .code-window {
-    border: 1px solid var(--color-line);
-    border-radius: 0.875rem;
-    background: var(--color-surface);
-    box-shadow: 0 20px 40px rgb(0 0 0 / 0.45);
+    border: 1px solid color-mix(in oklab, var(--color-fg) 18%, transparent);
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+    box-shadow: var(--shadow-window);
+    backdrop-filter: blur(6px);
     overflow: hidden;
+  }
+  .code-window > div:first-child {
+    border-color: color-mix(in oklab, var(--color-fg) 12%, transparent);
+  }
+  /* The placeholder SVG is inlined, so its shapes follow the theme colors. */
+  :global(.placeholder rect) {
+    fill: var(--color-surface-2);
+  }
+  :global(.placeholder circle),
+  :global(.placeholder path) {
+    fill: var(--color-line);
   }
   .caret {
     display: inline-block;

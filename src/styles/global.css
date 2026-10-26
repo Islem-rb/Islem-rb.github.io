@@ -1,16 +1,21 @@
 @import "tailwindcss";
 
-/* Design tokens. Every color, font and motion value used on the site lives here. */
+/* Design tokens. Every color, font and motion value used on the site lives here.
+   The values in @theme are the light theme (the default); [data-theme="dark"] overrides them.
+   Starting point: the reference's measured palette (light bg #f3f4f6 / accent #3b82f6,
+   dark bg #1f2937 / accent #60a5fa), shifted to a blue-tinted gradient background. */
 @theme {
-  --color-bg: #0a0a0a;
-  --color-surface: #121212;
-  --color-surface-2: #181818;
-  --color-line: #262626;
-  --color-fg: #ededed;
-  --color-muted: #a3a3a3;
-  --color-accent: #3dd6b0;
-  --color-accent-ink: #062a21;
-  --color-todo: #f2c66d;
+  --color-bg: #f4f7ff;
+  --color-bg-from: #ffffff;
+  --color-bg-to: #e8f0ff;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef3fd;
+  --color-line: #d3dcec;
+  --color-fg: #1e293b;
+  --color-muted: #4b5568;
+  --color-accent: #2563eb;
+  --color-accent-ink: #ffffff;
+  --color-todo: #92400e;
 
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -19,9 +24,33 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+:root {
+  color-scheme: light;
+  --shadow-card: 0 4px 20px rgb(15 23 42 / 0.07);
+  --shadow-window: 0 8px 30px rgb(15 23 42 / 0.12);
+  --halo: color-mix(in oklab, var(--color-accent) 14%, transparent);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #0d1729;
+  --color-bg-from: #0b1220;
+  --color-bg-to: #0f1b33;
+  --color-surface: #131f37;
+  --color-surface-2: #1a2844;
+  --color-line: #263755;
+  --color-fg: #f3f4f6;
+  --color-muted: #a8b3c5;
+  --color-accent: #60a5fa;
+  --color-accent-ink: #0b1220;
+  --color-todo: #f2c66d;
+  --shadow-card: 0 4px 20px rgb(0 0 0 / 0.3);
+  --shadow-window: 0 8px 30px rgb(0 0 0 / 0.4);
+  --halo: color-mix(in oklab, var(--color-accent) 12%, transparent);
+}
+
 @layer base {
   html {
-    color-scheme: dark;
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
@@ -30,10 +59,21 @@
   body {
     background-color: var(--color-bg);
     color: var(--color-fg);
+    transition: color 0.3s;
     font-family: var(--font-sans);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* One fixed gradient layer behind the whole page, so it doesn't restart per section. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background: linear-gradient(180deg, var(--color-bg-from), var(--color-bg-to));
   }
 
   h1, h2, h3, h4 {
@@ -81,14 +121,14 @@
     background: color-mix(in oklab, var(--color-surface) 92%, transparent);
     border: 1px solid color-mix(in oklab, var(--color-accent) 16%, var(--color-line));
     border-radius: var(--radius-card);
-    box-shadow: 0 4px 20px rgb(0 0 0 / 0.25);
+    box-shadow: var(--shadow-card);
     transition: transform 0.35s var(--ease-out-soft), box-shadow 0.35s, border-color 0.35s;
   }
   .card-link:hover,
   .card-link:focus-within {
     transform: translateY(-3px);
     border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
-    box-shadow: 0 16px 40px rgb(0 0 0 / 0.4), 0 0 0 1px color-mix(in oklab, var(--color-accent) 12%, transparent);
+    box-shadow: var(--shadow-window), 0 0 0 1px color-mix(in oklab, var(--color-accent) 12%, transparent);
   }
 
   .tag {

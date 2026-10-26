@@ -17,29 +17,53 @@ import {
 import { toolsLabel } from '../data/site';
 
 // Only tools listed in content/cv.md. simple-icons has no AWS logo, so AWS is a text mark.
-const tools = [
-  { title: 'Kubernetes', path: siKubernetes.path },
-  { title: 'Docker', path: siDocker.path },
-  { title: 'Terraform', path: siTerraform.path },
-  { title: 'Ansible', path: siAnsible.path },
-  { title: 'Jenkins', path: siJenkins.path },
-  { title: 'GitHub Actions', path: siGithubactions.path },
-  { title: 'Argo CD', path: siArgo.path },
-  { title: 'Helm', path: siHelm.path },
-  { title: 'Prometheus', path: siPrometheus.path },
-  { title: 'Grafana', path: siGrafana.path },
-  { title: 'AWS', path: null },
-  { title: 'OpenStack', path: siOpenstack.path },
-  { title: 'Linux', path: siLinux.path },
-  { title: 'Python', path: siPython.path },
-];
+const icons = [
+  ['Kubernetes', siKubernetes],
+  ['Docker', siDocker],
+  ['Terraform', siTerraform],
+  ['Ansible', siAnsible],
+  ['Jenkins', siJenkins],
+  ['GitHub Actions', siGithubactions],
+  ['Argo CD', siArgo],
+  ['Helm', siHelm],
+  ['Prometheus', siPrometheus],
+  ['Grafana', siGrafana],
+  ['AWS', null],
+  ['OpenStack', siOpenstack],
+  ['Linux', siLinux],
+  ['Python', siPython],
+] as const;
+
+// Brand colors, unless a color is too faint on a theme's tile (WCAG 3:1 for graphics):
+// then that theme falls back to the text color. Tile colors match --color-surface.
+const tiles = { light: '#ffffff', dark: '#131f37' };
+const luminance = (hex: string) => {
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const v = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a: string, b: string) => {
+  const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+};
+const pick = (hex: string, tile: string) => (contrast(hex, tile.slice(1)) >= 3 ? `#${hex}` : 'var(--color-fg)');
+
+const tools = icons.map(([title, icon]) => ({
+  title,
+  path: icon?.path ?? null,
+  light: icon ? pick(icon.hex, tiles.light) : 'var(--color-fg)',
+  dark: icon ? pick(icon.hex, tiles.dark) : 'var(--color-fg)',
+}));
 ---
 
 <ul class="flex flex-wrap justify-center gap-2.5 sm:gap-4" aria-label={toolsLabel}>
   {
     tools.map((t) => (
       <li
-        class="group flex size-14 items-center justify-center rounded-xl border border-line bg-surface text-muted shadow-sm transition-[color,border-color,transform] duration-300 hover:scale-110 hover:border-accent/50 hover:text-accent sm:size-[3.875rem] motion-reduce:hover:scale-100"
+        class="tool flex size-14 items-center justify-center rounded-xl border border-accent/20 bg-surface shadow-sm transition-[border-color,transform] duration-300 hover:scale-110 hover:border-accent/50 sm:size-[3.875rem] motion-reduce:hover:scale-100"
+        style={`--tool-light:${t.light};--tool-dark:${t.dark}`}
         title={t.title}
       >
         {t.path ? (
@@ -55,3 +79,12 @@ const tools = [
     ))
   }
 </ul>
+
+<style>
+  .tool {
+    color: var(--tool-light);
+  }
+  :global([data-theme='dark']) .tool {
+    color: var(--tool-dark);
+  }
+</style>
