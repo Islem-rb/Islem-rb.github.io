@@ -81,6 +81,15 @@ export const sections = {
   },
 };
 
+export const labels = {
+  email: 'Email',
+  github: 'GitHub',
+  linkedin: 'LinkedIn',
+  newTab: '(opens in a new tab)',
+  backToTop: 'Back to top ↑',
+  skipLink: 'Skip to content',
+};
+
 // Grouped from the "Skills" section of cv.md. Items are copied verbatim.
 export const skillGroups = [
   {

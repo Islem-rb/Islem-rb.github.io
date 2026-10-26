@@ -1,0 +1,23 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import SkillGroup from './SkillGroup.astro';
+import { sections, skillGroups } from '../data/site';
+---
+
+<section id="skills" class="border-y border-line/60 bg-surface/40" aria-labelledby="skills-title">
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+    <SectionHeading id="skills-title" {...sections.skills} />
+    <ul class="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        skillGroups.map((group, i) => (
+          <li
+            class:list={['reveal min-w-0', i === skillGroups.length - 1 && 'md:col-span-2']}
+            style={`transition-delay:${i * 60}ms`}
+          >
+            <SkillGroup {...group} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

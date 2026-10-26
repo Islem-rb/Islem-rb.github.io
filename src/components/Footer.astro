@@ -1,5 +1,5 @@
 ---
-import { footer, links, profile } from '../data/site';
+import { footer, labels, links, profile } from '../data/site';
 
 const year = new Date().getFullYear();
 ---
@@ -13,10 +13,10 @@ const year = new Date().getFullYear();
       {`${year} ${profile.name}. ${footer.note}`}
     </p>
     <ul class="flex flex-wrap gap-x-5 gap-y-2">
-      <li><a class="hover:text-accent" href={`mailto:${links.email}`}>Email</a></li>
-      <li><a class="hover:text-accent" href={links.github} rel="me noopener" target="_blank">GitHub</a></li>
-      <li><a class="hover:text-accent" href={links.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
-      <li><a class="hover:text-accent" href="#top">Back to top ↑</a></li>
+      <li><a class="hover:text-accent" href={`mailto:${links.email}`}>{labels.email}</a></li>
+      <li><a class="hover:text-accent" href={links.github} rel="me noopener" target="_blank">{labels.github}</a></li>
+      <li><a class="hover:text-accent" href={links.linkedin} rel="me noopener" target="_blank">{labels.linkedin}</a></li>
+      <li><a class="hover:text-accent" href="#top">{labels.backToTop}</a></li>
     </ul>
   </div>
 </footer>

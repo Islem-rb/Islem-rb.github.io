@@ -106,16 +106,25 @@ const href = (anchor: string) => (isHome ? anchor : `/${anchor}`);
   const sections = [...navLinks]
     .map((a) => document.getElementById(a.dataset.nav!))
     .filter((s): s is HTMLElement => s !== null);
-  if (sections.length && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          navLinks.forEach((a) => a.setAttribute('aria-current', String(a.dataset.nav === e.target.id)));
-        }
+  const updateActive = () => {
+    const line = window.innerHeight * 0.45;
+    const current = sections.filter((s) => s.getBoundingClientRect().top <= line).pop();
+    navLinks.forEach((a) => a.setAttribute('aria-current', String(a.dataset.nav === current?.id)));
+  };
+  if (sections.length) {
+    let ticking = false;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateActive();
+          ticking = false;
+        });
       },
-      { rootMargin: '-45% 0px -50% 0px' },
+      { passive: true },
     );
-    sections.forEach((s) => io.observe(s));
+    updateActive();
   }
 </script>

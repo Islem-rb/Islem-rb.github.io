@@ -1,0 +1,158 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { sections, timeline } from '../data/site';
+---
+
+<section id="experience" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28" aria-labelledby="experience-title">
+  <SectionHeading id="experience-title" {...sections.experience} />
+
+  <ol class="track mt-12 md:mt-16">
+    {
+      timeline.map((entry, i) => (
+        <li class:list={['item reveal', i % 2 === 0 ? 'item--left' : 'item--right']}>
+          <span class="dot" aria-hidden="true" />
+          <div class="side">
+            <p class="period">
+              {entry.period}
+              {entry.current && <span class="sr-only"> (current)</span>}
+            </p>
+            <article class="card entry">
+              <p class="context">
+                <span class:list={[entry.kind === 'Experience' ? 'text-accent' : 'text-[#7cc4ff]']}>{entry.kind}</span>
+                <span aria-hidden="true"> · </span>
+                {entry.org}
+              </p>
+              <h3 class="mt-2 text-lg font-bold text-fg">{entry.title}</h3>
+              {entry.text && <p class="mt-2 text-sm text-muted">{entry.text}</p>}
+              {entry.link && (
+                <a href={entry.link.href} class="cta-arrow mt-3 inline-block font-mono text-sm font-semibold text-accent">
+                  {entry.link.label}
+                </a>
+              )}
+            </article>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  /* Mobile: single column with a rail on the left. */
+  .track {
+    position: relative;
+    list-style: none;
+    padding: 0;
+  }
+  .track::before {
+    content: '';
+    position: absolute;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    left: 0.4rem;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      color-mix(in oklab, var(--color-accent) 55%, transparent) 6%,
+      color-mix(in oklab, var(--color-accent) 30%, transparent) 94%,
+      transparent
+    );
+  }
+  .item {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .item + .item {
+    margin-top: 1.75rem;
+  }
+  .dot {
+    position: absolute;
+    left: 0;
+    top: 0.25rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 2px solid var(--color-accent);
+    box-shadow:
+      0 0 0 4px var(--color-bg),
+      0 0 18px color-mix(in oklab, var(--color-accent) 40%, transparent);
+  }
+  .period {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.6rem;
+  }
+  .entry {
+    padding: 1.15rem 1.3rem 1.25rem;
+    border-left: 3px solid var(--color-accent);
+  }
+  .entry:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
+    border-left-color: var(--color-accent);
+    transform: translateY(-3px);
+  }
+  .context {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Desktop: centred rail, entries alternate left and right. */
+  @media (min-width: 48rem) {
+    .track::before {
+      left: 50%;
+      margin-left: -1px;
+    }
+    .item {
+      padding-left: 0;
+      width: 50%;
+    }
+    .item + .item {
+      margin-top: -1.5rem;
+    }
+    .item--left {
+      padding-right: 2.75rem;
+    }
+    .item--right {
+      margin-left: 50%;
+      padding-left: 2.75rem;
+    }
+    .dot {
+      top: 0.15rem;
+    }
+    .item--left .dot {
+      left: auto;
+      right: -0.45rem;
+    }
+    .item--right .dot {
+      left: -0.45rem;
+    }
+    .item--left .period {
+      text-align: right;
+    }
+    .item--right .entry {
+      border-left: 1px solid color-mix(in oklab, var(--color-accent) 16%, var(--color-line));
+      border-right: 3px solid var(--color-accent);
+    }
+    .item--right .entry:hover {
+      border-right-color: var(--color-accent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entry:hover {
+      transform: none;
+    }
+  }
+</style>
