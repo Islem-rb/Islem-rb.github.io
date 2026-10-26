@@ -10,8 +10,7 @@ stack:
   - Spring Boot
   - Angular
   - Cloudflare Tunnel
-# TODO: exact repository URL (cv.md only gives https://github.com/Islem-rb)
-repo: null
+repo: https://github.com/Islem-rb/cityvoice
 order: 3
 year: '2026'
 inProgress: false

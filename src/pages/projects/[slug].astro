@@ -2,7 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DeliveryFlow from '../../components/DeliveryFlow.astro';
-import { links, profile, projectPage, todos } from '../../data/site';
+import { profile, projectPage, todos } from '../../data/site';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -47,25 +47,18 @@ const showFlow = project.id === 'gitops-eks-platform';
           <ul class="flex flex-wrap gap-1.5">{stack.map((s) => <li class="tag">{s}</li>)}</ul>
         </dd>
       </div>
-      <div>
-        <dt class="section-kicker !text-left">{projectPage.repository}</dt>
-        <dd class="mt-3 flex flex-col items-start gap-2">
-          {
-            repo ? (
+      {
+        repo && (
+          <div>
+            <dt class="section-kicker !text-left">{projectPage.repository}</dt>
+            <dd class="mt-3">
               <a href={repo} class="cta-arrow font-mono text-sm text-accent hover:underline" rel="noopener" target="_blank">
                 {repo.replace('https://', '')}
               </a>
-            ) : (
-              <>
-                <span class="todo">{todos.repo}</span>
-                <a href={links.github} class="cta-arrow font-mono text-sm text-accent hover:underline" rel="noopener" target="_blank">
-                  {projectPage.profileFallback}
-                </a>
-              </>
-            )
-          }
-        </dd>
-      </div>
+            </dd>
+          </div>
+        )
+      }
     </dl>
 
     {

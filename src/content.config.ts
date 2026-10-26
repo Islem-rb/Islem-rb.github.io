@@ -10,7 +10,7 @@ const projects = defineCollection({
     // Short label from cv.md, e.g. "civic engagement platform".
     kind: z.string().optional(),
     stack: z.array(z.string()).min(1),
-    // null = exact repository URL not in cv.md yet; rendered as a visible TODO.
+    // null = no public repository; the project page then shows no repo link.
     repo: z.url().nullable(),
     order: z.number().int(),
     // Year shown on the home timeline; the timeline is sorted on it, newest first.

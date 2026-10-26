@@ -152,7 +152,6 @@ export const projectPage = {
   back: 'All projects',
   stack: 'Stack',
   repository: 'Repository',
-  profileFallback: 'GitHub profile',
   flowTitle: 'Delivery flow',
   flowCaption: 'From a commit to production on EKS, then into the observability stack.',
   results: 'Results',
@@ -184,7 +183,6 @@ export const footer = {
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
   formspree: 'TODO: Formspree endpoint (the form uses a mailto fallback for now)',
-  repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
   photo: 'TODO: add profile photo (src/assets/profile.jpg)',
 };

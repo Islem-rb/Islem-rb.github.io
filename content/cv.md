@@ -20,7 +20,7 @@ Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia an
 - GitOps deployments with Argo CD and progressive delivery with Argo Rollouts.
 - Observability with Prometheus, Grafana, Loki and Alertmanager.
 - Delivery flow: git push, GitHub Actions (OIDC, Trivy, SBOM, Cosign), ECR, Argo CD, EKS (Argo Rollouts), observability.
-- Repo: https://github.com/Islem-rb
+- Repo: https://github.com/Islem-rb/gitops-eks-platform
 
 ### DevOps Observability Platform
 - Year: 2026 (finished)
@@ -28,7 +28,7 @@ Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia an
 - 3 microservices on a kind cluster, deployed with Helm, monitored with Prometheus and Grafana, logs centralised with Loki/Promtail.
 - Jenkins CI/CD pipeline with DevSecOps scans (Gitleaks, Trivy) and automated GitOps deployment via Argo CD.
 - AWS infrastructure provisioned with Terraform.
-- Repo: https://github.com/Islem-rb
+- Repo: https://github.com/Islem-rb/devops-platform
 
 ### CityVoice (civic engagement platform)
 - Year: 2026 (finished)
@@ -36,13 +36,14 @@ Looking for: PFE internship in Cloud / DevOps / Platform Engineering (Tunisia an
 - Full IaaS on OpenStack; Kubernetes cluster automated with Ansible (7 roles).
 - Jenkins CI/CD with GitHub webhooks; public exposure through Cloudflare Tunnel on a custom domain.
 - JWT + OAuth2 authentication, AI-based name filtering (Groq), photo moderation, real-time notifications (WebSocket).
-- Repo: https://github.com/Islem-rb
+- Repo: https://github.com/Islem-rb/cityvoice
 
 ### Carnova (automotive marketplace, internship project)
 - Year: 2025 (finished)
 - Stack: Spring Boot, Angular, PostgreSQL, Docker, Stripe, Ollama
 - REST API, JWT + role-based access, Stripe Checkout, seller "Showroom" space.
 - AI features: background removal (Rembg) and an LLM assistant (Gemma via Ollama).
+- Repo: https://github.com/Islem-rb/carnova
 
 ## Skills
 - Cloud & infrastructure: AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V

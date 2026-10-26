@@ -14,8 +14,7 @@ stack:
   - Terraform
   - Gitleaks
   - Trivy
-# TODO: exact repository URL (cv.md only gives https://github.com/Islem-rb)
-repo: null
+repo: https://github.com/Islem-rb/devops-platform
 order: 2
 year: '2026'
 inProgress: false
