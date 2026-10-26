@@ -25,38 +25,6 @@ export const seo = {
     'Islem Rebhi, Cloud & DevOps engineering student at ESPRIT. Platform engineering: infrastructure as code, GitOps, Kubernetes, observability. Open to PFE internships.',
 };
 
-export const nav = [
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Contact', href: '#contact' },
-];
-
-export const hero = {
-  ctas: {
-    projects: 'View projects',
-    cv: 'Download CV',
-    contact: 'Contact',
-  },
-  terminal: {
-    file: 'islem@esprit: ~',
-    // Each command and its output lines, rendered by TerminalCard.
-    session: [
-      { cmd: 'whoami', out: [['', 'islem-rebhi']] },
-      {
-        cmd: 'cat profile.yaml',
-        out: [
-          ['role', 'Cloud & DevOps engineering student'],
-          ['school', 'ESPRIT (Tunis, Tunisia)'],
-          ['focus', '[IaC, GitOps, Kubernetes, observability]'],
-          ['looking_for', 'PFE internship: Cloud / DevOps / Platform'],
-          ['where', 'Tunisia, Europe'],
-          ['languages', '[ar, fr, en]'],
-        ],
-      },
-    ],
-  },
-};
-
 // skills.txt window under the header. The prefix stays, the focus areas from cv.md are typed in turn.
 export const tagline = {
   file: 'skills.txt',
@@ -114,8 +82,7 @@ export const sections = {
     text: 'Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.',
     form: {
       name: 'Name',
-      email: 'Email',
-      message: 'Message',
+          message: 'Message',
       placeholder: 'Your internship offer, project or question…',
       submit: 'Send',
       subject: 'Portfolio contact from',
@@ -126,11 +93,9 @@ export const sections = {
 
 export const labels = {
   contact: 'Contact',
-  email: 'Email',
   github: 'GitHub',
   linkedin: 'LinkedIn',
   newTab: '(opens in a new tab)',
-  backToTop: 'Back to top ↑',
   skipLink: 'Skip to content',
 };
 
@@ -212,12 +177,12 @@ export const notFound = {
 };
 
 export const footer = {
-  note: 'Built with Astro and Tailwind CSS. Deployed on GitHub Pages.',
+  about: 'About',
+  cv: 'CV',
 };
 
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
-  repoShort: 'TODO: repo URL',
   year: 'TODO: year',
   formspree: 'TODO: Formspree endpoint (the form uses a mailto fallback for now)',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
