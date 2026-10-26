@@ -190,6 +190,13 @@ export const deliveryFlow = [
   { title: 'Observability', detail: ['Prometheus', 'Grafana', 'Loki', 'Alertmanager'] },
 ];
 
+export const notFound = {
+  title: 'Page not found',
+  command: 'cd ./this-page',
+  error: 'No such file or directory',
+  back: 'Back to home',
+};
+
 export const footer = {
   note: 'Built with Astro and Tailwind CSS. Deployed on GitHub Pages.',
 };
@@ -199,5 +206,4 @@ export const todos = {
   repoShort: 'TODO: repo URL',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
-  ogImage: 'TODO: Open Graph preview image',
 };

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://islem-rb.github.io/sitemap-index.xml

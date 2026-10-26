@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { notFound, profile } from '../data/site';
+---
+
+<BaseLayout title={`${notFound.title} | ${profile.name}`} description={notFound.title}>
+  <section class="mx-auto flex max-w-2xl flex-col items-center px-4 py-28 text-center sm:px-6">
+    <p class="font-mono text-6xl font-extrabold text-accent">404</p>
+    <h1 class="mt-4 text-2xl font-bold">{notFound.title}</h1>
+    <p class="card mt-8 w-full px-5 py-4 text-left font-mono text-sm">
+      <span class="block"><span class="text-accent" aria-hidden="true">$ </span>{notFound.command}</span>
+      <span class="block text-muted">{notFound.error}</span>
+    </p>
+    <a href="/" class="btn btn-primary mt-8">{notFound.back}</a>
+  </section>
+</BaseLayout>
