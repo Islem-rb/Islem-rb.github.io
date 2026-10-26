@@ -53,7 +53,7 @@
     "dismiss": "Fermer"
   },
   "about": {
-    "title": ["Platform", "engineering."],
+    "title": ["Comprendre", "Construire"],
     "photoAlt": "Islem Rebhi",
     "intro": "Élève ingénieur Cloud & DevOps à ESPRIT (Ariana, Tunisie), axé sur le platform engineering : infrastructure as code, GitOps, Kubernetes et observabilité. À la recherche d'un stage PFE en Cloud / DevOps / Platform Engineering, en Tunisie ou en Europe.",
     "link": "En savoir plus",

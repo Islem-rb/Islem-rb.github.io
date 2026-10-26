@@ -53,7 +53,7 @@
     "dismiss": "Dismiss"
   },
   "about": {
-    "title": ["Platform", "engineering."],
+    "title": ["Understand", "Build"],
     "photoAlt": "Islem Rebhi",
     "intro": "Cloud & DevOps engineering student at ESPRIT (Ariana, Tunisia), focused on platform engineering: infrastructure as code, GitOps, Kubernetes and observability. Looking for a PFE internship in Cloud / DevOps / Platform Engineering, in Tunisia or Europe.",
     "link": "More about me",
