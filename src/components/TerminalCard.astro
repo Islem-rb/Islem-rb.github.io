@@ -1,0 +1,50 @@
+---
+import { hero } from '../data/site';
+
+const { file, session } = hero.terminal;
+---
+
+<figure class="card mx-auto w-full max-w-xl overflow-hidden text-left" aria-label="Profile summary, shown as terminal output">
+  <div class="flex items-center gap-2 border-b border-line bg-surface-2/70 px-4 py-2.5">
+    <span class="size-3 rounded-full bg-[#ff5f57]" aria-hidden="true"></span>
+    <span class="size-3 rounded-full bg-[#febc2e]" aria-hidden="true"></span>
+    <span class="size-3 rounded-full bg-[#28c840]" aria-hidden="true"></span>
+    <span class="ml-3 font-mono text-xs text-muted">{file}</span>
+  </div>
+  <div class="space-y-3 px-4 py-4 font-mono text-[0.8125rem] leading-relaxed break-words sm:px-5 sm:text-sm">
+    {
+      session.map(({ cmd, out }) => (
+        <div>
+          <p>
+            <span class="text-accent" aria-hidden="true">$ </span>
+            <span class="text-fg">{cmd}</span>
+          </p>
+          {out.map(([key, value]) =>
+            key ? (
+              <p class="pl-[2ch] -indent-[2ch] text-fg/90">
+                <span class="text-[#7cc4ff]">{key}</span>: {value}
+              </p>
+            ) : (
+              <p class="text-fg/90">{value}</p>
+            ),
+          )}
+        </div>
+      ))
+    }
+    <p aria-hidden="true">
+      <span class="text-accent">$ </span><span class="cursor inline-block h-[1.1em] w-[0.55em] translate-y-[0.2em] bg-accent"
+      ></span>
+    </p>
+  </div>
+</figure>
+
+<style>
+  .cursor {
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

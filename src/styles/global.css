@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+/* Design tokens. Every color, font and motion value used on the site lives here. */
+@theme {
+  --color-bg: #0d1117;
+  --color-surface: #131a23;
+  --color-surface-2: #182230;
+  --color-line: #263040;
+  --color-fg: #e6edf3;
+  --color-muted: #9aa7b4;
+  --color-accent: #3dd6b0;
+  --color-accent-ink: #062a21;
+  --color-todo: #f2c66d;
+
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-card: 1.05rem;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-mono);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Section heading: mono title ending with an accent dot. */
+  .section-title {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    text-align: center;
+  }
+  .section-title::after {
+    content: ".";
+    color: var(--color-accent);
+  }
+  .section-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-align: center;
+  }
+
+  /* Card surface shared by projects, skills and timeline entries. */
+  .card {
+    position: relative;
+    display: block;
+    background: color-mix(in oklab, var(--color-surface) 92%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 16%, var(--color-line));
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.25);
+    transition: transform 0.35s var(--ease-out-soft), box-shadow 0.35s, border-color 0.35s;
+  }
+  .card-link:hover,
+  .card-link:focus-within {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
+    box-shadow: 0 16px 40px rgb(0 0 0 / 0.4), 0 0 0 1px color-mix(in oklab, var(--color-accent) 12%, transparent);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: color-mix(in oklab, var(--color-accent) 92%, var(--color-fg));
+    background: color-mix(in oklab, var(--color-accent) 9%, var(--color-bg));
+    border: 1px solid color-mix(in oklab, var(--color-accent) 24%, transparent);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    white-space: nowrap;
+  }
+
+  .cta-arrow::after {
+    content: "→";
+    display: inline-block;
+    margin-left: 0.35rem;
+    transition: transform 0.25s var(--ease-out-soft);
+  }
+  .card-link:hover .cta-arrow::after,
+  .cta-arrow:hover::after,
+  .cta-arrow:focus-visible::after {
+    transform: translateX(4px);
+  }
+
+  /* Visible placeholder for anything missing from content/cv.md. */
+  .todo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-todo);
+    background: color-mix(in oklab, var(--color-todo) 10%, transparent);
+    border: 1px dashed color-mix(in oklab, var(--color-todo) 55%, transparent);
+    border-radius: 0.375rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.6rem 1.15rem;
+    border-radius: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid var(--color-line);
+    color: var(--color-fg);
+    background: var(--color-surface);
+    transition: transform 0.25s var(--ease-out-soft), border-color 0.25s, background-color 0.25s, color 0.25s;
+  }
+  .btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+  .btn-primary:hover {
+    background: color-mix(in oklab, var(--color-accent) 85%, white);
+    color: var(--color-accent-ink);
+  }
+}
+
+/* Scroll reveal: only hides content once JS has confirmed it can reveal it again. */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s var(--ease-out-soft), transform 0.6s var(--ease-out-soft);
+}
+html.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html.js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .card-link:hover,
+  .btn:hover {
+    transform: none;
+  }
+}

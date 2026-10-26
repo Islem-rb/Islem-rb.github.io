@@ -1,0 +1,121 @@
+---
+import { links, nav, profile, hero } from '../data/site';
+
+// On sub-pages, anchors must point back to the home page.
+const isHome = Astro.url.pathname === '/';
+const href = (anchor: string) => (isHome ? anchor : `/${anchor}`);
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40 border-b border-transparent bg-bg/70 backdrop-blur-md transition-colors duration-300 data-[scrolled]:border-line"
+>
+  <nav aria-label="Main" class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+    <a href="/" class="group font-mono text-sm font-semibold tracking-tight text-fg">
+      <span class="text-accent">~/</span>{profile.handle}<span
+        class="ml-0.5 inline-block w-2 animate-pulse text-accent motion-reduce:animate-none"
+        aria-hidden="true">_</span
+      >
+      <span class="sr-only">, home</span>
+    </a>
+
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={href(item.href)}
+              data-nav={item.href.slice(1)}
+              class="rounded-md px-3 py-2 font-mono text-sm text-muted transition-colors hover:text-fg aria-[current=true]:text-accent"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="ml-2">
+        <a href={links.cv} class="btn !min-h-9 !px-3 !py-1.5 !text-xs" download>
+          {hero.ctas.cv}
+        </a>
+      </li>
+    </ul>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="inline-flex size-11 items-center justify-center rounded-md border border-line text-fg md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="sr-only">Open menu</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path class="menu-open" d="M4 7h16M4 12h16M4 17h16"></path>
+        <path class="menu-close hidden" d="M6 6l12 12M18 6L6 18"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <div id="mobile-menu" class="hidden border-t border-line bg-bg/95 md:hidden">
+    <ul class="mx-auto flex max-w-6xl flex-col px-4 py-3">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={href(item.href)} class="block rounded-md px-2 py-3 font-mono text-base text-fg hover:text-accent">
+              <span class="text-accent" aria-hidden="true">
+                ${' '}
+              </span>
+              {item.label.toLowerCase()}
+            </a>
+          </li>
+        ))
+      }
+      <li class="pt-2 pb-1">
+        <a href={links.cv} class="btn w-full" download>{hero.ctas.cv}</a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  const setOpen = (open: boolean) => {
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.sr-only')!.textContent = open ? 'Close menu' : 'Open menu';
+    toggle.querySelector('.menu-open')!.classList.toggle('hidden', open);
+    toggle.querySelector('.menu-close')!.classList.toggle('hidden', !open);
+    menu.classList.toggle('hidden', !open);
+  };
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Highlight the nav link of the section currently in view.
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('[data-nav]');
+  const sections = [...navLinks]
+    .map((a) => document.getElementById(a.dataset.nav!))
+    .filter((s): s is HTMLElement => s !== null);
+  if (sections.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          navLinks.forEach((a) => a.setAttribute('aria-current', String(a.dataset.nav === e.target.id)));
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>

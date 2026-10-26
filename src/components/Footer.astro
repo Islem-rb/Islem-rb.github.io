@@ -1,0 +1,23 @@
+---
+import { footer, links, profile } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line">
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 font-mono text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6"
+  >
+    <p>
+      <span class="text-accent" aria-hidden="true">©</span>
+      {year}
+      {profile.name}. {footer.note}
+    </p>
+    <ul class="flex flex-wrap gap-x-5 gap-y-2">
+      <li><a class="hover:text-accent" href={`mailto:${links.email}`}>Email</a></li>
+      <li><a class="hover:text-accent" href={links.github} rel="me noopener" target="_blank">GitHub</a></li>
+      <li><a class="hover:text-accent" href={links.linkedin} rel="me noopener" target="_blank">LinkedIn</a></li>
+      <li><a class="hover:text-accent" href="#top">Back to top ↑</a></li>
+    </ul>
+  </div>
+</footer>
