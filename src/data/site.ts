@@ -101,10 +101,9 @@ export const toolsLabel = 'Tools I work with';
 
 export const sections = {
   projects: {
-    kicker: '// projects',
-    title: 'Selected projects',
-    intro: 'From Terraform modules to progressive delivery on Kubernetes.',
-    cta: 'Read case study',
+    title: 'Projects & experience',
+    cta: 'Detailed report',
+    inProgress: 'In progress',
   },
   experience: {
     kicker: '// experience & education',
@@ -126,6 +125,17 @@ export const labels = {
   backToTop: 'Back to top ↑',
   skipLink: 'Skip to content',
 };
+
+// Home timeline entries that have no project page (projects come from the content collection).
+export const timelineExtra = [
+  {
+    year: '2024',
+    context: 'Abajim',
+    title: 'Mobile Developer Intern',
+    tech: ['React Native', 'Node.js', 'MongoDB'],
+    summary: 'React Native accessibility app for visually impaired users, OCR and text-to-speech APIs, Node.js + MongoDB backend.',
+  },
+];
 
 // Experience and education, most recent first. Dates copied exactly from cv.md.
 export const timeline = [
@@ -200,6 +210,7 @@ export const footer = {
 // Shown in the UI wherever a fact is missing from cv.md. Mirrored in TODO.md.
 export const todos = {
   repoShort: 'TODO: repo URL',
+  year: 'TODO: year',
   repo: 'TODO: exact repo URL (cv.md only links the GitHub profile)',
   metrics: 'TODO: measurable results (cv.md has no metrics for this project)',
   photo: 'TODO: add profile photo (src/assets/profile.jpg)',

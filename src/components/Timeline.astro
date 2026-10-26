@@ -1,44 +1,66 @@
 ---
-import SectionHeading from './SectionHeading.astro';
-import { sections, timeline } from '../data/site';
+import { getCollection } from 'astro:content';
+import { sections, timelineExtra, todos } from '../data/site';
+
+// Projects first (collection order, newest first as far as cv.md tells), then entries without a project page.
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+const entries = [
+  ...projects.map((p) => ({
+    year: p.data.year,
+    inProgress: p.data.inProgress,
+    context: p.data.kind ?? '',
+    title: p.data.title,
+    tech: p.data.stack.slice(0, 4),
+    summary: p.data.summary,
+    href: `/projects/${p.id}`,
+  })),
+  ...timelineExtra.map((e) => ({ ...e, inProgress: false, href: null })),
+];
 ---
 
-<section id="experience" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28" aria-labelledby="experience-title">
-  <SectionHeading id="experience-title" {...sections.experience} />
+<section id="projects" class="px-4 py-16 sm:px-6 md:py-24" aria-labelledby="projects-title">
+  <div class="mx-auto w-full max-w-5xl">
+    <h2 id="projects-title" class="mb-10 text-center text-[clamp(1.8rem,3vw,2.5rem)] leading-tight font-semibold text-fg md:mb-12">
+      {sections.projects.title}
+    </h2>
 
-  <ol class="track mt-12 md:mt-16">
-    {
-      timeline.map((entry, i) => (
-        <li class:list={['item reveal', i % 2 === 0 ? 'item--left' : 'item--right']}>
-          <span class="dot" aria-hidden="true" />
-          <div class="side">
-            <p class="period">
-              {entry.period}
-              {entry.current && <span class="sr-only"> (current)</span>}
-            </p>
-            <article class="card entry">
-              <p class="context">
-                <span class:list={[entry.kind === 'Experience' ? 'text-accent' : 'text-[#7cc4ff]']}>{entry.kind}</span>
-                <span aria-hidden="true"> · </span>
-                {entry.org}
-              </p>
-              <h3 class="mt-2 text-lg font-bold text-fg">{entry.title}</h3>
-              {entry.text && <p class="mt-2 text-sm text-muted">{entry.text}</p>}
-              {entry.link && (
-                <a href={entry.link.href} class="cta-arrow mt-3 inline-block font-mono text-sm font-semibold text-accent">
-                  {entry.link.label}
-                </a>
-              )}
-            </article>
-          </div>
-        </li>
-      ))
-    }
-  </ol>
+    <ol class="track">
+      {
+        entries.map((e, i) => {
+          const side = i % 2 === 0 ? 'left' : 'right';
+          const Card = e.href ? 'a' : 'div';
+          return (
+            <li class:list={['item reveal', `item--${side}`]}>
+              <span class="num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div class="side">
+                <p class="period">
+                  {e.inProgress ? sections.projects.inProgress : e.year ?? <span class="todo">{todos.year}</span>}
+                </p>
+                <Card href={e.href ?? undefined} class:list={['entry', e.href && 'entry--link']}>
+                  {e.context && <p class="context">{e.context}</p>}
+                  <h3 class="title">{e.title}</h3>
+                  <ul class="tech" aria-label="Tech">
+                    {e.tech.map((t) => (
+                      <li>{t}</li>
+                    ))}
+                  </ul>
+                  <p class="summary">{e.summary}</p>
+                  {e.href && <span class="cta">{sections.projects.cta}</span>}
+                </Card>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
 </section>
 
 <style>
-  /* Mobile: single column with a rail on the left. */
+  /* Mobile: rail on the left, period above each card. */
   .track {
     position: relative;
     list-style: none;
@@ -47,112 +69,182 @@ import { sections, timeline } from '../data/site';
   .track::before {
     content: '';
     position: absolute;
-    top: 0.4rem;
-    bottom: 0.4rem;
-    left: 0.4rem;
+    top: 0;
+    bottom: 0;
+    left: 1rem;
     width: 2px;
-    border-radius: 2px;
-    background: linear-gradient(
-      180deg,
-      transparent,
-      color-mix(in oklab, var(--color-accent) 55%, transparent) 6%,
-      color-mix(in oklab, var(--color-accent) 30%, transparent) 94%,
-      transparent
-    );
+    background: var(--color-line);
   }
   .item {
     position: relative;
-    padding-left: 2rem;
+    padding-left: 3rem;
   }
   .item + .item {
-    margin-top: 1.75rem;
+    margin-top: 2.5rem;
   }
-  .dot {
+  .num {
     position: absolute;
+    top: 0;
     left: 0;
-    top: 0.25rem;
-    width: 0.9rem;
-    height: 0.9rem;
-    border-radius: 50%;
+    display: flex;
+    width: 2.125rem;
+    height: 2.125rem;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--color-muted);
+    border-radius: 999px;
     background: var(--color-bg);
-    border: 2px solid var(--color-accent);
-    box-shadow:
-      0 0 0 4px var(--color-bg),
-      0 0 18px color-mix(in oklab, var(--color-accent) 40%, transparent);
-  }
-  .period {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 700;
+    color: var(--color-fg);
+  }
+  .period {
+    min-height: 2.125rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    font-variant-numeric: tabular-nums;
-    margin-bottom: 0.6rem;
-  }
-  .entry {
-    padding: 1.15rem 1.3rem 1.25rem;
-    border-left: 3px solid var(--color-accent);
-  }
-  .entry:hover {
-    border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
-    border-left-color: var(--color-accent);
-    transform: translateY(-3px);
-  }
-  .context {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
-
-  /* Desktop: centred rail, entries alternate left and right. */
-  @media (min-width: 48rem) {
-    .track::before {
-      left: 50%;
-      margin-left: -1px;
-    }
-    .item {
-      padding-left: 0;
-      width: 50%;
-    }
-    .item + .item {
-      margin-top: -1.5rem;
-    }
-    .item--left {
-      padding-right: 2.75rem;
-    }
-    .item--right {
-      margin-left: 50%;
-      padding-left: 2.75rem;
-    }
-    .dot {
-      top: 0.15rem;
-    }
-    .item--left .dot {
-      left: auto;
-      right: -0.45rem;
-    }
-    .item--right .dot {
-      left: -0.45rem;
-    }
-    .item--left .period {
-      text-align: right;
-    }
-    .item--right .entry {
-      border-left: 1px solid color-mix(in oklab, var(--color-accent) 16%, var(--color-line));
-      border-right: 3px solid var(--color-accent);
-    }
-    .item--right .entry:hover {
-      border-right-color: var(--color-accent);
-    }
+  .entry {
+    display: block;
+    margin-top: 0.75rem;
+    padding: 1.25rem 1.375rem 1.375rem;
+    border: 1px solid var(--color-line);
+    border-left: 3px solid var(--color-muted);
+    border-radius: 1.125rem;
+    background: var(--color-surface);
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+    transition: border-color 0.3s, transform 0.3s var(--ease-out-soft);
+  }
+  .entry--link:hover,
+  .entry--link:focus-visible {
+    border-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
+    border-left-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+  .context {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .title {
+    margin-top: 0.5rem;
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--color-fg);
+  }
+  .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.875rem;
+    list-style: none;
+    padding: 0;
+  }
+  .tech li {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-fg);
+  }
+  .summary {
+    margin-top: 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+  .cta {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .cta::after {
+    content: '→';
+    display: inline-block;
+    margin-left: 0.35rem;
+    transition: transform 0.25s var(--ease-out-soft);
+  }
+  .entry--link:hover .cta::after {
+    transform: translateX(4px);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .entry:hover {
-      transform: none;
+  /* Desktop: centered rail, cards alternate left and right with the period on the outer side. */
+  @media (min-width: 768px) {
+    .track::before {
+      left: 50%;
+      transform: translateX(-1px);
     }
+    .item {
+      display: grid;
+      grid-template-columns: 1fr 4rem 1fr;
+      padding-left: 0;
+    }
+    .item + .item {
+      margin-top: 2.5rem;
+    }
+    .num {
+      position: relative;
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      margin-top: 1.25rem;
+    }
+    .side {
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      align-items: start;
+    }
+    .item--left .side {
+      grid-column: 1;
+    }
+    .item--right .side {
+      grid-column: 3;
+      grid-template-columns: 1fr 5.5rem;
+    }
+    .period {
+      margin-top: 1.25rem;
+      padding-right: 0.75rem;
+    }
+    .item--right .period {
+      grid-column: 2;
+      grid-row: 1;
+      justify-content: flex-end;
+      text-align: right;
+      padding-right: 0;
+      padding-left: 0.75rem;
+    }
+    .item--right .entry {
+      grid-column: 1;
+      grid-row: 1;
+      border-left-width: 1px;
+      border-right: 3px solid var(--color-muted);
+    }
+    .item--right .entry--link:hover,
+    .item--right .entry--link:focus-visible {
+      border-left-color: color-mix(in oklab, var(--color-accent) 45%, var(--color-line));
+      border-right-color: var(--color-accent);
+    }
+    .entry {
+      margin-top: 0;
+    }
+  }
+  .period .todo {
+    letter-spacing: 0;
+    text-transform: none;
   }
 </style>

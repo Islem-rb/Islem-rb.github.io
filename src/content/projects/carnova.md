@@ -12,6 +12,8 @@ stack:
 # TODO: repository URL (cv.md gives none for Carnova)
 repo: null
 order: 4
+# From cv.md: Full-Stack Developer Intern, Al Idhafa Group, Jul 2025 to Aug 2025.
+year: '2025'
 featured: false
 ---
 
