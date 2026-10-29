@@ -28,6 +28,9 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+/** Font CSS variables, shared with app/global-not-found.tsx. */
+export const fontVariables = `${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`;
+
 export const siteViewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
@@ -49,7 +52,7 @@ export function SiteShell({
   return (
     <html lang={lang} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
+        className={`${fontVariables} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <Providers>
           <div className="site-frame site-frame--top" aria-hidden="true" />

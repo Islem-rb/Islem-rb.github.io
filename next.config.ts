@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: { unoptimized: true },
   productionBrowserSourceMaps: false,
+  // Lets app/global-not-found.tsx serve 404s across both root layouts.
+  experimental: { globalNotFound: true },
 };
 
 export default nextConfig;

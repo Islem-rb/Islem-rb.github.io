@@ -111,6 +111,12 @@ const en = {
     lookingForValue: "PFE internship · Tunisia or Europe",
     emailLabel: "Email",
   },
+  notFound: {
+    title: "This page was never deployed.",
+    body: "The link may be outdated, or the address has a typo. Everything else is up and running.",
+    home: "Back to home",
+    projects: "See projects",
+  },
   meta: {
     homeTitle: "Islem Rebhi · Cloud & DevOps Engineering Student",
     description:
@@ -219,6 +225,12 @@ const fr: Dictionary = {
     lookingFor: "Recherche",
     lookingForValue: "Stage PFE · Tunisie ou Europe",
     emailLabel: "E-mail",
+  },
+  notFound: {
+    title: "Cette page n’a jamais été déployée.",
+    body: "Le lien est peut-être obsolète, ou l’adresse contient une faute. Tout le reste fonctionne.",
+    home: "Retour à l’accueil",
+    projects: "Voir les projets",
   },
   meta: {
     homeTitle: "Islem Rebhi · Étudiant ingénieur Cloud & DevOps",
