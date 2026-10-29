@@ -14,15 +14,18 @@ import {
   type ReactNode,
 } from "react";
 
+import { localePath, stripLocale, type Dictionary } from "@/lib/i18n";
+import { useLang } from "@/lib/use-lang";
+
 type NavItem = {
-  label: string;
+  key: keyof Pick<Dictionary["nav"], "home" | "projects" | "about">;
   href: string;
 };
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
+  { key: "home", href: "/" },
+  { key: "projects", href: "/projects" },
+  { key: "about", href: "/about" },
 ];
 
 function useIsMounted(): boolean {
@@ -33,7 +36,7 @@ function useIsMounted(): boolean {
   );
 }
 
-function NavThemeToggle(): ReactNode {
+function NavThemeToggle({ t }: { t: Dictionary["nav"] }): ReactNode {
   const mounted = useIsMounted();
   const { setTheme, resolvedTheme } = useTheme();
   const isDark = mounted && resolvedTheme === "dark";
@@ -84,9 +87,9 @@ function NavThemeToggle(): ReactNode {
       aria-label={
         mounted
           ? isDark
-            ? "Switch to light theme"
-            : "Switch to dark theme"
-          : "Toggle theme"
+            ? t.toLight
+            : t.toDark
+          : t.toggleTheme
       }
       aria-pressed={mounted ? isDark : undefined}
       className="focus-ring relative inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background ring-1 ring-foreground/8 transition-colors"
@@ -121,27 +124,40 @@ export function Nav(): ReactNode {
   } | null>(null);
   const [hasMeasured, setHasMeasured] = useState(false);
 
+  const { lang, t: dict } = useLang();
+  const t = dict.nav;
+  const basePath = stripLocale(pathname);
+  const otherLang = lang === "en" ? "fr" : "en";
+
   const activeIndex = NAV_ITEMS.findIndex((item) =>
     item.href === "/"
-      ? pathname === "/"
-      : pathname === item.href || pathname.startsWith(`${item.href}/`)
+      ? basePath === "/"
+      : basePath === item.href || basePath.startsWith(`${item.href}/`)
   );
 
+  // Measure the active item from a ResizeObserver callback: it fires once on
+  // observe and again whenever fonts or the viewport change the item widths.
   useLayoutEffect(() => {
     const list = listRef.current;
-    const activeEl =
-      activeIndex >= 0 ? itemRefs.current[activeIndex] : null;
-    if (!list || !activeEl) {
-      setPillRect(null);
-      return;
-    }
-    const listRect = list.getBoundingClientRect();
-    const itemRect = activeEl.getBoundingClientRect();
-    setPillRect({
-      x: itemRect.left - listRect.left,
-      width: itemRect.width,
-    });
-  }, [activeIndex, pathname]);
+    if (!list) return;
+    const measure = (): void => {
+      const activeEl =
+        activeIndex >= 0 ? itemRefs.current[activeIndex] : null;
+      if (!activeEl) {
+        setPillRect(null);
+        return;
+      }
+      const listRect = list.getBoundingClientRect();
+      const itemRect = activeEl.getBoundingClientRect();
+      setPillRect({
+        x: itemRect.left - listRect.left,
+        width: itemRect.width,
+      });
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, [activeIndex, lang]);
 
   useEffect(() => {
     if (!pillRect) return;
@@ -151,7 +167,7 @@ export function Nav(): ReactNode {
 
   return (
     <nav
-      aria-label="Primary"
+      aria-label={t.label}
       className="fixed left-1/2 top-6 z-50 -translate-x-1/2"
     >
       <div className="flex items-center gap-1 rounded-full bg-background p-1.5 shadow-sm border border-foreground/8">
@@ -181,9 +197,9 @@ export function Nav(): ReactNode {
                 className="relative"
               >
                 <Link
-                  href={item.href}
+                  href={localePath(lang, item.href)}
                   aria-current={isActive ? "page" : undefined}
-                  className="focus-ring relative inline-flex cursor-pointer items-center justify-center rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-300"
+                  className="focus-ring relative inline-flex cursor-pointer items-center justify-center rounded-full px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors duration-300 sm:px-4"
                 >
                   <span
                     className={
@@ -192,14 +208,24 @@ export function Nav(): ReactNode {
                         : "relative z-10 text-foreground/60 hover:text-foreground"
                     }
                   >
-                    {item.label}
+                    {t[item.key]}
                   </span>
                 </Link>
               </li>
             );
           })}
         </ul>
-        <NavThemeToggle />
+        <a
+          href={localePath(otherLang, basePath)}
+          hrefLang={otherLang}
+          lang={otherLang}
+          aria-label={t.switchLang}
+          title={t.switchLang}
+          className="focus-ring inline-flex h-8 min-w-8 cursor-pointer items-center justify-center rounded-full px-1.5 font-mono text-[11px] font-medium text-foreground/60 transition-colors hover:text-foreground"
+        >
+          {t.switchLangShort}
+        </a>
+        <NavThemeToggle t={t} />
       </div>
     </nav>
   );

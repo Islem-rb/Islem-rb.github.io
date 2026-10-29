@@ -1,196 +1,123 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
-type Entry = {
-  company: string;
-  role: string;
-  period: string;
-  slug?: string;
-  brand?: string;
-};
+import { getExperience } from "@/lib/content";
+import { localePath } from "@/lib/i18n";
+import { useLang } from "@/lib/use-lang";
 
-const ENTRIES: Entry[] = [
-  {
-    company: "Linear",
-    role: "Senior Design Engineer",
-    period: "Mar 2024 – Present",
-    slug: "linear",
-    brand: "#5E6AD2",
-  },
-  {
-    company: "Vercel",
-    role: "Product Designer",
-    period: "Aug 2022 – Feb 2024",
-    slug: "vercel",
-    brand: "#0a0a0a",
-  },
-  {
-    company: "Stripe",
-    role: "Design Engineer",
-    period: "Jun 2021 – Jul 2022",
-    slug: "stripe",
-    brand: "#635BFF",
-  },
-  {
-    company: "Figma",
-    role: "UI Engineer",
-    period: "Sep 2019 – May 2021",
-    slug: "figma",
-    brand: "#A259FF",
-  },
-  {
-    company: "Notion",
-    role: "Product Designer",
-    period: "Jan 2018 – Aug 2019",
-    slug: "notion",
-    brand: "#111111",
-  },
-  {
-    company: "Airbnb",
-    role: "Design Intern",
-    period: "May 2017 – Dec 2017",
-    slug: "airbnb",
-    brand: "#FF5A5F",
-  },
-  {
-    company: "Freelance",
-    role: "Designer & Developer",
-    period: "2015 – 2017",
-    brand: "#0AE448",
-  },
-];
-
-const COLLAPSED_COUNT = 2.5;
-const ROW_HEIGHT = 64;
-const ROW_GAP = 8;
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function Experience(): ReactNode {
-  const [open, setOpen] = useState(false);
-  const collapsedHeight =
-    Math.floor(COLLAPSED_COUNT) * ROW_HEIGHT +
-    Math.floor(COLLAPSED_COUNT) * ROW_GAP +
-    (COLLAPSED_COUNT % 1) * ROW_HEIGHT;
-  const hiddenCount = ENTRIES.length - Math.floor(COLLAPSED_COUNT);
+  const { lang, t } = useLang();
+  const entries = getExperience(lang);
+  const [open, setOpen] = useState<number | null>(0);
 
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="text-foreground text-[15px] font-semibold tracking-tight">
-        Experience
-      </h3>
-      <div
-        className={`border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative overflow-hidden rounded-4xl border px-2 pt-2 sm:px-4 sm:pt-4 ${
-          open ? "pb-2 sm:pb-4" : "pb-0"
-        }`}
-      >
-        <motion.div
-          className="relative"
-          initial={false}
-          animate={{
-            height: open ? "auto" : collapsedHeight,
-          }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          style={{ overflow: "hidden" }}
-        >
-          <ul className="flex flex-col gap-2">
-            {ENTRIES.map((entry) => (
+      <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
+        {t.about.experience}
+      </h2>
+      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 rounded-4xl border p-2 sm:p-4">
+        <ul className="flex flex-col gap-2">
+          {entries.map((entry, i) => {
+            const isOpen = open === i;
+            const panelId = `exp-panel-${i}`;
+            return (
               <li
-                key={`${entry.company}-${entry.period}`}
-                className="bg-background border-foreground/5 flex items-center gap-4 rounded-3xl border p-2"
-                style={{ minHeight: ROW_HEIGHT }}
+                key={entry.company}
+                className="bg-background border-foreground/5 rounded-3xl border"
               >
-                <CompanyLogo entry={entry} />
-                <div className="flex min-w-0 flex-col">
-                  <span className="text-foreground text-[17px] font-semibold tracking-tight sm:text-[18px]">
-                    {entry.company}
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  className="focus-ring flex w-full cursor-pointer items-center gap-4 rounded-3xl p-2 text-left"
+                >
+                  {"logo" in entry ? (
+                    <img
+                      src={entry.logo}
+                      alt=""
+                      width={48}
+                      height={48}
+                      draggable={false}
+                      className="ring-foreground/8 h-12 w-12 shrink-0 ring-1 dark:ring-white/10"
+                      style={{ borderRadius: 14 }}
+                    />
+                  ) : (
+                    <span
+                      className="ring-foreground/8 inline-flex h-12 w-12 shrink-0 items-center justify-center bg-foreground ring-1 dark:ring-white/10"
+                      style={{ borderRadius: 14 }}
+                      aria-hidden="true"
+                    >
+                      <span className="text-background text-[18px] font-semibold tracking-tight">
+                        {entry.company.charAt(0)}
+                      </span>
+                    </span>
+                  )}
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="text-foreground text-[17px] font-semibold tracking-tight sm:text-[18px]">
+                      {entry.company}
+                    </span>
+                    <span className="text-foreground/65 mt-0.5 text-[14px] tracking-tight sm:text-[15px]">
+                      {entry.role}
+                      <span className="text-foreground/30 mx-2">•</span>
+                      <span className="text-foreground/55">{entry.period}</span>
+                    </span>
                   </span>
-                  <span className="text-foreground/65 mt-0.5 text-[14px] tracking-tight sm:text-[15px]">
-                    {entry.role}
-                    <span className="text-foreground/30 mx-2">•</span>
-                    <span className="text-foreground/55">{entry.period}</span>
-                  </span>
-                </div>
+                  <motion.span
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="text-foreground/50 mr-2 inline-flex"
+                  >
+                    <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={panelId}
+                      key="panel"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.45, ease: EASE }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex flex-col gap-3 px-4 pt-1 pb-5 sm:pl-[4.5rem]">
+                        <ul className="flex flex-col gap-2">
+                          {entry.points.map((point) => (
+                            <li
+                              key={point}
+                              className="text-foreground/70 relative pl-4 text-[15px] leading-[1.55] tracking-tight before:bg-foreground/30 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2"
+                            >
+                              {point}
+                            </li>
+                          ))}
+                        </ul>
+                        {"project" in entry ? (
+                          <Link
+                            href={localePath(lang, `/projects/${entry.project}`)}
+                            className="focus-ring text-foreground group inline-flex w-fit items-center gap-1 rounded-md text-[14px] font-medium tracking-tight"
+                          >
+                            {t.about.seeProject}
+                            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                          </Link>
+                        ) : null}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </li>
-            ))}
-          </ul>
-        </motion.div>
-
-        <AnimatePresence>
-          {!open && (
-            <motion.div
-              key="fade"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 bottom-0"
-              style={{
-                height: ROW_HEIGHT,
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-                maskImage:
-                  "linear-gradient(to bottom, transparent 0%, black 80%)",
-                WebkitMaskImage:
-                  "linear-gradient(to bottom, transparent 0%, black 80%)",
-              }}
-            />
-          )}
-        </AnimatePresence>
-
-        {hiddenCount > 0 && (
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            className={`focus-ring text-foreground flex w-full cursor-pointer items-center justify-center gap-1.5 bg-transparent text-[15px] font-medium tracking-tight ${
-              open
-                ? "relative mt-4"
-                : "absolute inset-x-0 bottom-0 z-10 py-3 sm:py-4"
-            }`}
-          >
-            {open ? "Show less" : `Show ${hiddenCount} more`}
-            <motion.span
-              animate={{ rotate: open ? 180 : 0 }}
-              transition={{ duration: 0.25 }}
-              className="inline-flex"
-            >
-              <ChevronDown className="h-4 w-4" aria-hidden="true" />
-            </motion.span>
-          </button>
-        )}
+            );
+          })}
+        </ul>
       </div>
     </div>
-  );
-}
-
-function CompanyLogo({ entry }: { entry: Entry }): ReactNode {
-  const initials = entry.company.charAt(0);
-  return (
-    <span
-      className="ring-foreground/8 inline-flex h-12 w-12 shrink-0 items-center justify-center bg-white ring-1 dark:ring-white/10"
-      aria-hidden="true"
-      style={{
-        borderRadius: 14,
-        ...(entry.slug ? {} : { backgroundColor: entry.brand }),
-      }}
-    >
-      {entry.slug ? (
-        <img
-          src={`https://cdn.simpleicons.org/${entry.slug}`}
-          alt=""
-          width={24}
-          height={24}
-          className="h-6 w-6"
-          draggable={false}
-        />
-      ) : (
-        <span className="text-[18px] font-semibold tracking-tight text-white">
-          {initials}
-        </span>
-      )}
-    </span>
   );
 }

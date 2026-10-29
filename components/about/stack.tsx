@@ -3,6 +3,8 @@
 import { RotateCcw } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+import { useLang } from "@/lib/use-lang";
+
 type Chip = {
   label: string;
   slug: string;
@@ -12,22 +14,26 @@ type Chip = {
 };
 
 const CHIPS: Chip[] = [
+  { label: "Kubernetes", slug: "kubernetes", bg: "#326CE5", fg: "#ffffff" },
+  { label: "Terraform", slug: "terraform", bg: "#7B42BC", fg: "#ffffff" },
   {
-    label: "Figma",
-    slug: "figma",
-    bg: "#1f1f1f",
+    label: "AWS",
+    slug: "aws",
+    bg: "#232F3E",
     fg: "#ffffff",
-    iconUrl: "https://svgl.app/library/figma.svg",
+    iconUrl: "https://svgl.app/library/aws_light.svg",
   },
-  { label: "React", slug: "react", bg: "#1FB6CB", fg: "#ffffff" },
-  { label: "Next.js", slug: "nextdotjs", bg: "#1f1f1f", fg: "#ffffff" },
-  { label: "TypeScript", slug: "typescript", bg: "#2F74C0", fg: "#ffffff" },
-  { label: "shadcn/ui", slug: "shadcnui", bg: "#5b54ff", fg: "#ffffff" },
-  { label: "Cursor", slug: "cursor", bg: "#111111", fg: "#ffffff" },
-  { label: "GSAP", slug: "gsap", bg: "#0AE448", fg: "#0a0a0a" },
-  { label: "GitHub", slug: "github", bg: "#181717", fg: "#ffffff" },
-  { label: "Vercel", slug: "vercel", bg: "#0a0a0a", fg: "#ffffff" },
-  { label: "Tailwind CSS", slug: "tailwindcss", bg: "#2BBCF5", fg: "#ffffff" },
+  { label: "Argo CD", slug: "argo", bg: "#EF7B4D", fg: "#ffffff" },
+  { label: "Docker", slug: "docker", bg: "#1D63ED", fg: "#ffffff" },
+  { label: "Ansible", slug: "ansible", bg: "#1a1a1a", fg: "#ffffff" },
+  { label: "Prometheus", slug: "prometheus", bg: "#E6522C", fg: "#ffffff" },
+  { label: "Grafana", slug: "grafana", bg: "#1f1f1f", fg: "#ffffff" },
+  { label: "GitHub Actions", slug: "githubactions", bg: "#2088FF", fg: "#ffffff" },
+  { label: "Jenkins", slug: "jenkins", bg: "#335061", fg: "#ffffff" },
+  { label: "Helm", slug: "helm", bg: "#0F1689", fg: "#ffffff" },
+  { label: "OpenStack", slug: "openstack", bg: "#ED1944", fg: "#ffffff" },
+  { label: "Linux", slug: "linux", bg: "#1f1f1f", fg: "#ffffff" },
+  { label: "Spring Boot", slug: "springboot", bg: "#4E9A2A", fg: "#ffffff" },
 ];
 
 const CHIP_RADIUS = 14;
@@ -46,6 +52,7 @@ export function Stack(): ReactNode {
   const measureRef = useRef<HTMLDivElement | null>(null);
   const chipRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [resetKey, setResetKey] = useState(0);
+  const { t } = useLang();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -213,16 +220,19 @@ export function Stack(): ReactNode {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <h3 className="text-foreground text-[15px] font-semibold tracking-tight">
-          Stack
-        </h3>
+        <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
+          {t.about.stack}
+        </h2>
+        <span className="text-foreground/45 font-mono text-[11px] tracking-tight">
+          {t.about.dragHint}
+        </span>
       </div>
 
-      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative h-40 overflow-hidden rounded-4xl border sm:h-64">
+      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative h-72 overflow-hidden rounded-4xl border sm:h-72">
         <button
           type="button"
           onClick={() => setResetKey((k) => k + 1)}
-          aria-label="Reset stack"
+          aria-label={t.about.resetStack}
           className="focus-ring border-foreground/8 bg-background text-foreground/70 hover:text-foreground absolute top-3 right-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-colors"
         >
           <RotateCcw

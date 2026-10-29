@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Github, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -6,11 +6,14 @@ import type { ReactNode } from "react";
 import { ContactCardCtas } from "./contact-card-ctas";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { ShaderFlow } from "../shaders/shader-flow";
+import { profile } from "@/lib/content";
+import { getDictionary, type Lang } from "@/lib/i18n";
 
 const CARD_FADE_MASK =
   "radial-gradient(ellipse 90% 110% at 50% 50%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.92) 40%, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.4) 90%, rgba(0,0,0,0.15) 100%)";
 
-export function ContactCard(): ReactNode {
+export function ContactCard({ lang }: { lang: Lang }): ReactNode {
+  const t = getDictionary(lang).contact;
   return (
     <section className="mx-auto my-12 w-full max-w-275 px-6 sm:my-20 sm:px-10">
       <FadeIn>
@@ -30,11 +33,10 @@ export function ContactCard(): ReactNode {
             <div className="relative grid gap-8 p-6 sm:gap-10 sm:p-7 md:grid-cols-[1.2fr_1fr] md:items-stretch md:gap-6 md:p-6">
               <div className="flex flex-col gap-5">
                 <h2 className="font-serif text-[2.25rem] font-medium leading-[1.05] tracking-tight text-foreground sm:text-[2.75rem] lg:text-[3.25rem]">
-                  Let&rsquo;s connect
+                  {t.heading}
                 </h2>
                 <p className="max-w-[29ch] text-[18px] leading-[1.4] tracking-tight text-foreground/65 sm:text-[22px] mb-6">
-                  I&rsquo;m always open to discussing new projects, creative
-                  ideas, or opportunities to be part of your visions. Just reach out!
+                  {t.body}
                 </p>
                 <ContactCardCtas />
               </div>
@@ -42,27 +44,27 @@ export function ContactCard(): ReactNode {
               <div className="border-foreground/8 flex flex-col items-center justify-center gap-6 rounded-[1.1rem] border bg-background p-6 sm:p-8">
                 <div className="flex items-center gap-3 opacity-75">
                   <SocialIcon
-                    href="mailto:hello@example.com"
-                    label="Email"
+                    href={`mailto:${profile.email}?subject=${encodeURIComponent(t.subject)}`}
+                    label={t.email}
                     lucideIcon={Mail}
                   />
                   <SocialIcon
-                    href="https://www.linkedin.com"
+                    href={profile.linkedin}
                     label="LinkedIn"
                     imageSrc="/linkedin.svg"
                   />
                   <SocialIcon
-                    href="https://x.com"
-                    label="X"
-                    imageSrc="/x.svg"
+                    href={profile.github}
+                    label="GitHub"
+                    lucideIcon={Github}
                   />
                 </div>
                 <div className="flex flex-col items-center gap-1 text-center">
                   <p className="text-[13px] tracking-tight text-foreground/70">
-                    2026 &copy; Built with Next.js
+                    &copy; {new Date().getFullYear()} {profile.name}
                   </p>
                   <p className="text-[12px] tracking-tight text-foreground/45">
-                    By React Bits Pro
+                    {t.credit}
                   </p>
                 </div>
               </div>

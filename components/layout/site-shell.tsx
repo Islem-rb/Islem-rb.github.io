@@ -1,12 +1,13 @@
+import { Analytics } from "@/components/layout/analytics";
 import { Nav } from "@/components/layout/nav";
 import { PageBackdrop } from "@/components/layout/page-backdrop";
 import { Providers } from "@/components/layout/providers";
 import { SkipToContent } from "@/components/layout/skip-to-content";
-import { baseMetadata } from "@/lib/metadata";
-import type { Metadata, Viewport } from "next";
+import type { Lang } from "@/lib/i18n";
+import type { Viewport } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
-import "./globals.css";
+import "@/app/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +28,7 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-export const metadata: Metadata = baseMetadata;
-
-export const viewport: Viewport = {
+export const siteViewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
@@ -39,13 +38,16 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-export default function RootLayout({
+/** The <html> document shared by the English and French root layouts. */
+export function SiteShell({
+  lang,
   children,
 }: Readonly<{
+  lang: Lang;
   children: ReactNode;
 }>): ReactNode {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
@@ -59,11 +61,12 @@ export default function RootLayout({
           <svg className="site-corner site-corner--top-right" width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/>
           </svg>
-          <SkipToContent />
+          <SkipToContent lang={lang} />
           <PageBackdrop />
           <Nav />
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

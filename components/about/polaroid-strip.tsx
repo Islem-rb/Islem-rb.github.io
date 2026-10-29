@@ -4,19 +4,25 @@ import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { useRef, useSyncExternalStore, type ReactNode } from "react";
 
 import { DottedPattern } from "@/components/ui/dotted-pattern";
+import { profile } from "@/lib/content";
+import type { Lang } from "@/lib/i18n";
+import { useLang } from "@/lib/use-lang";
 
 type Polaroid = {
   id: string;
   rotate: number;
+  caption: Record<Lang, string>;
+  image?: { light: string; dark: string };
+  lines?: string[];
 };
 
 const PHOTOS: Polaroid[] = [
-  { id: "a", rotate: -8 },
-  { id: "b", rotate: 6 },
-  { id: "c", rotate: -4 },
-  { id: "d", rotate: 7 },
-  { id: "e", rotate: -6 },
-  { id: "f", rotate: 5 },
+  { id: "me", rotate: -8, caption: { en: "me", fr: "moi" }, image: profile.portrait },
+  { id: "pods", rotate: 6, caption: { en: "every morning", fr: "chaque matin" }, lines: ["$ kubectl", "get pods", "-A"] },
+  { id: "road", rotate: -4, caption: { en: "the road so far", fr: "le parcours" }, lines: ["Kasserine", "↓", "Sousse", "↓", "Ariana"] },
+  { id: "dither", rotate: 7, caption: { en: "rendered", fr: "en rendu" }, image: profile.portraitAlt },
+  { id: "langs", rotate: -6, caption: { en: "I speak", fr: "je parle" }, lines: ["العربية", "Français", "English"] },
+  { id: "apply", rotate: 5, caption: { en: "on repeat", fr: "en boucle" }, lines: ["$ terraform", "plan", "&& apply"] },
 ];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -24,9 +30,11 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 function PolaroidCard({
   photo,
   index,
+  lang,
 }: {
   photo: Polaroid;
   index: number;
+  lang: Lang;
 }): ReactNode {
   const ref = useRef<HTMLDivElement | null>(null);
   const mx = useMotionValue(0);
@@ -72,14 +80,44 @@ function PolaroidCard({
         y: ty,
         rotate: photo.rotate,
       }}
-      className="relative aspect-[3/4] w-[clamp(6rem,11vw,9rem)] shrink-0 overflow-hidden rounded-2xl border-6 border-neutral-300/40 bg-white p-1.5 dark:border-white/15 dark:bg-neutral-900"
+      className="relative flex aspect-[3/4] w-[clamp(6rem,11vw,9rem)] shrink-0 flex-col overflow-hidden rounded-2xl border-6 border-neutral-300/40 bg-white p-1.5 pb-0 dark:border-white/15 dark:bg-neutral-900"
     >
-      <DottedPattern className="relative h-full w-full overflow-hidden rounded-xl" />
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-xl">
+        {photo.image ? (
+          <>
+            <img
+              src={photo.image.light}
+              alt=""
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-cover select-none dark:hidden"
+            />
+            <img
+              src={photo.image.dark}
+              alt=""
+              draggable={false}
+              className="absolute inset-0 hidden h-full w-full object-cover select-none dark:block"
+            />
+          </>
+        ) : (
+          <>
+            <DottedPattern className="absolute inset-0" />
+            <div className="relative flex h-full flex-col items-center justify-center gap-0.5 px-1 text-center font-mono text-[clamp(8px,0.85vw,11px)] leading-tight tracking-tight text-foreground/75">
+              {photo.lines?.map((line, i) => (
+                <span key={i}>{line}</span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      <span className="block py-[clamp(4px,0.6vw,8px)] text-center font-serif text-[clamp(9px,0.95vw,12px)] italic tracking-tight text-foreground/60">
+        {photo.caption[lang]}
+      </span>
     </motion.div>
   );
 }
 
 export function PolaroidStrip(): ReactNode {
+  const { lang, t } = useLang();
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -91,9 +129,13 @@ export function PolaroidStrip(): ReactNode {
   }
 
   return (
-    <div className="flex flex-wrap w-full items-start justify-center gap-1 px-4 sm:gap-1.5 sm:px-8">
+    <div
+      aria-label={t.about.snapshotsLabel}
+      role="img"
+      className="flex flex-wrap w-full items-start justify-center gap-1 px-4 sm:gap-1.5 sm:px-8"
+    >
       {PHOTOS.map((photo, i) => (
-        <PolaroidCard key={photo.id} photo={photo} index={i} />
+        <PolaroidCard key={photo.id} photo={photo} index={i} lang={lang} />
       ))}
     </div>
   );

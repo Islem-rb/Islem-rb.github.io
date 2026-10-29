@@ -1,159 +1,77 @@
 import {
+  Activity,
   ArrowRight,
-  Bot,
-  Compass,
-  Layers,
-  LineChart,
-  Sparkles,
-  Wand2,
+  ArrowUpRight,
+  BrainCircuit,
+  Building2,
+  Car,
+  Cloud,
+  Github,
+  Sprout,
+  Stethoscope,
 } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import { FadeIn } from "@/components/ui/motion-primitives";
+import { getProjects, type Project } from "@/lib/content";
+import { getDictionary, localePath, type Dictionary, type Lang } from "@/lib/i18n";
 
-/**
- * Project imagery below is mockup-only. All visuals are sourced from
- * Dribbble and credit belongs to the original creators on dribbble.com.
- * Replace these with your own work before shipping.
- */
-
-type Project = {
-  id: string;
-  icon: ComponentType<{ className?: string }>;
-  iconLabel: string;
-  title: string;
-  description: string;
-  meta: string;
-  imageRatio: number;
-  image: string;
-  imageAlt: string;
+export const PROJECT_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  "gitops-eks-platform": Cloud,
+  "devops-observability-platform": Activity,
+  cityvoice: Building2,
+  carnova: Car,
+  dawrek: Stethoscope,
+  "automotive-ml": BrainCircuit,
+  sabeel: Sprout,
 };
 
-const PROJECTS: Project[] = [
-  {
-    id: "loom",
-    icon: Sparkles,
-    iconLabel: "LOOM",
-    title:
-      "An AI writing companion that thinks alongside you, allowing you to capture ideas, edits, and drafts in one focused space.",
-    description:
-      "I designed Loom, a focused writing surface where ideas, edits, and drafts coexist without the chat clutter.",
-    meta: "Design Engineer, 2024",
-    imageRatio: 752 / 497,
-    image:
-      "https://cdn.dribbble.com/userupload/46128964/file/b92b9d268dd928642ca94bd49e32923a.jpg?resize=752x497&vertical=center",
-    imageAlt: "Loom AI writing companion mockup",
-  },
-  {
-    id: "atlas",
-    icon: Compass,
-    iconLabel: "Atlas Studio",
-    title: "A two week brand and product sprint for a creative studio.",
-    description:
-      "End to end identity, marketing site, and a small product surface designed to feel quietly confident across every touchpoint.",
-    meta: "Product & Brand Designer, 2025",
-    imageRatio: 1024 / 768,
-    image:
-      "https://cdn.dribbble.com/userupload/24599416/file/original-1ae5075dcd129aebb16bdbca24b41ac7.png?resize=1024x768&vertical=center",
-    imageAlt: "Atlas Studio brand and product sprint mockup",
-  },
-  {
-    id: "rhythm",
-    icon: LineChart,
-    iconLabel: "Rhythm",
-    title: "Calm analytics for indie founders.",
-    description:
-      "A weekly digest that turns raw product data into a simple narrative. Built so you can read it on a Sunday with coffee.",
-    meta: "Founder & Designer, 2024",
-    imageRatio: 1024 / 768,
-    image:
-      "https://cdn.dribbble.com/userupload/47357856/file/75841fa59f32f05ca6c5ddf02d08dfe6.png?resize=1024x768&vertical=center",
-    imageAlt: "Rhythm calm analytics mockup",
-  },
-  {
-    id: "groove",
-    icon: Wand2,
-    iconLabel: "Groove",
-    title:
-      "Reimagining the booking flow for a music school, asisting thousands of students in finding the right lessons.",
-    description:
-      "I led a redesign of the lesson booking experience, cutting drop off in half and making the schedule feel like a calendar people actually want to open.",
-    meta: "Lead Designer, 2023",
-    imageRatio: 1024 / 768,
-    image:
-      "https://cdn.dribbble.com/userupload/43955214/file/original-d4cde1de803e84b97d8892e3444c04b0.png?resize=1024x768&vertical=center",
-    imageAlt: "Groove music school booking flow mockup",
-  },
-  {
-    id: "fieldnote",
-    icon: Layers,
-    iconLabel: "Fieldnote",
-    title:
-      "A pocket sized research tool for design teams that want to get out of their docs and into the world.",
-    description:
-      "Capture quotes, tag patterns, and synthesize themes in one place. The interface stays out of the way so the thinking can happen.",
-    meta: "Design Engineer, 2024",
-    imageRatio: 1024 / 768,
-    image:
-      "https://cdn.dribbble.com/userupload/30310902/file/original-621e7fe47be9d11ee14544456c693bec.png?resize=1024x768&vertical=center",
-    imageAlt: "Fieldnote pocket sized research tool mockup",
-  },
-  {
-    id: "talkback",
-    icon: Bot,
-    iconLabel: "Talkback",
-    title: "A friendlier interface for talking to language models.",
-    description:
-      "An exploration of how AI chat could feel less like a terminal and more like a conversation with a curious friend.",
-    meta: "Independent Project, 2025",
-    imageRatio: 1024 / 768,
-    image:
-      "https://cdn.dribbble.com/userupload/16560717/file/original-c6f745d50302d66609bfe080f99f5396.png?resize=1024x768&vertical=center",
-    imageAlt: "Talkback friendlier AI chat interface mockup",
-  },
-];
-
 export type ProjectsProps = {
+  lang: Lang;
   withHeadline?: boolean;
   viewMoreVisible?: boolean;
 };
 
 export function Projects({
+  lang,
   withHeadline = false,
   viewMoreVisible = false,
 }: ProjectsProps): ReactNode {
-  const items = viewMoreVisible ? PROJECTS.slice(0, 4) : PROJECTS;
+  const t = getDictionary(lang);
+  const all = getProjects(lang);
+  const items = viewMoreVisible ? all.filter((p) => p.featured) : all;
 
   return (
-    <section className="relative w-full">
+    <section className="relative w-full" aria-labelledby={withHeadline ? "projects-heading" : undefined}>
       <div className="mx-auto w-full max-w-275 px-6 sm:px-10">
         {withHeadline ? (
-          <FadeIn className="flex flex-col items-center gap-5 pt-12 pb-10 text-center sm:pt-20 sm:pb-14">
-            <h2 className="font-serif text-[2.5rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[3rem] lg:text-[3.5rem]">
-              My projects
+          <FadeIn className="flex flex-col items-center gap-5 pt-4 pb-10 text-center sm:pt-6 sm:pb-14">
+            <h2
+              id="projects-heading"
+              className="font-serif text-[2.5rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[3rem] lg:text-[3.5rem]"
+            >
+              {t.projects.heading}
             </h2>
-            <p className="max-w-[33ch] text-[18px] leading-[1.45] tracking-tight text-foreground/65 sm:text-[20px]">
-              From playful experiments to thoughtful systems, a look at the
-              work I&rsquo;m proud to have shipped.
+            <p className="max-w-[36ch] text-[18px] leading-[1.45] tracking-tight text-foreground/65 sm:text-[20px]">
+              {t.projects.intro}
             </p>
           </FadeIn>
         ) : null}
 
         <div className="columns-1 gap-6 md:columns-2 md:gap-7">
           {items.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <ProjectCard key={project.slug} project={project} index={index} lang={lang} t={t} />
           ))}
         </div>
 
         {viewMoreVisible ? (
           <div className="mt-12 flex justify-center sm:mt-16">
             <Link
-              href="/projects"
-              className="border border-foreground/8 focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
+              href={localePath(lang, "/projects")}
+              className="focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl border border-foreground/8 bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5"
             >
-              View all projects
+              {t.projects.all(all.length)}
               <ArrowRight
                 className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
                 aria-hidden="true"
@@ -169,55 +87,126 @@ export function Projects({
 function ProjectCard({
   project,
   index,
+  lang,
+  t,
 }: {
   project: Project;
   index: number;
+  lang: Lang;
+  t: Dictionary;
 }): ReactNode {
-  const Icon = project.icon;
+  const Icon = PROJECT_ICONS[project.slug] ?? Cloud;
   return (
     <FadeIn
       delay={Math.min(index * 0.06, 0.3)}
       className="mb-6 break-inside-avoid md:mb-7"
     >
-      <article className="project-card flex cursor-pointer flex-col gap-4 rounded-3xl border border-foreground/8 bg-background p-3 sm:p-3.5">
+      <article className="project-card group/card relative flex flex-col gap-4 rounded-3xl border border-foreground/8 bg-background p-3 sm:p-3.5">
         <header className="flex items-center gap-2.5 px-1 pt-2">
-          <span className="border-foreground/10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-background">
+          <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-foreground/10 bg-background">
             <Icon className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
           </span>
           <span className="text-sm font-medium tracking-tight text-foreground">
-            {project.iconLabel}
+            {project.name}
+          </span>
+          <span className="ml-auto shrink-0 font-mono text-[11px] tracking-tight text-foreground/45">
+            <span className="hidden sm:inline">{project.kind} · </span>
+            {project.year}
           </span>
         </header>
 
-        <div
-          className="project-card__image ring-foreground/5 relative w-full overflow-hidden rounded-2xl bg-foreground/5 ring-1"
-          style={{ aspectRatio: project.imageRatio }}
-        >
-          <div className="project-card__image-inner">
-            <Image
-              src={project.image}
-              alt={project.imageAlt}
-              fill
-              sizes="(min-width: 1024px) 540px, (min-width: 768px) 45vw, 100vw"
-              className="object-cover"
-              priority={index < 2}
-            />
-          </div>
-        </div>
+        <FlowPanel project={project} />
 
         <div className="flex flex-col gap-2.5 px-1 pb-1">
           <h3 className="text-[20px] font-medium leading-[1.2] tracking-tight text-foreground sm:text-[22px]">
-            {project.title}
+            <Link
+              href={localePath(lang, `/projects/${project.slug}`)}
+              className="focus-ring rounded-md after:absolute after:inset-0 after:rounded-3xl after:content-['']"
+            >
+              {project.headline}
+            </Link>
           </h3>
           <p className="text-[14px] leading-normal tracking-tight text-foreground/65 sm:text-[15px]">
-            {project.description}
+            {project.summary}
           </p>
         </div>
 
-        <p className="px-1 pb-2 text-[12px] tracking-tight text-foreground/50">
-          {project.meta}
-        </p>
+        <ul className="flex flex-wrap gap-1.5 px-1" aria-label={t.projects.highlights}>
+          {project.highlights.map((h) => (
+            <li
+              key={h}
+              className="rounded-md border border-foreground/8 bg-foreground/2 px-2 py-1 font-mono text-[11px] tracking-tight text-foreground/70"
+            >
+              {h}
+            </li>
+          ))}
+        </ul>
+
+        <footer className="flex items-center gap-3 px-1 pb-1.5">
+          <span className="text-[12px] tracking-tight text-foreground/50">
+            {project.meta}
+          </span>
+          <span className="ml-auto inline-flex items-center gap-1 text-[13px] font-medium tracking-tight text-foreground/70 transition-colors group-hover/card:text-foreground">
+            {t.projects.caseStudy}
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5" aria-hidden="true" />
+          </span>
+          {project.repo ? (
+            <a
+              href={project.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.projects.source(project.name)}
+              className="focus-ring relative z-10 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-foreground/8 text-foreground/60 transition-colors hover:border-foreground/15 hover:text-foreground"
+            >
+              <Github className="h-4 w-4" aria-hidden="true" />
+            </a>
+          ) : null}
+        </footer>
       </article>
     </FadeIn>
+  );
+}
+
+/**
+ * The project's delivery path, drawn like a CI run. On card hover each
+ * stage completes in turn.
+ */
+export function FlowPanel({ project }: { project: Project }): ReactNode {
+  return (
+    <div
+      className="relative overflow-hidden rounded-2xl bg-foreground/[0.035] ring-1 ring-foreground/5 dark:bg-foreground/5"
+      aria-hidden="true"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 text-foreground/10"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, currentColor 1px, transparent 1px)",
+          backgroundSize: "12px 12px",
+        }}
+      />
+      <div className="relative flex items-center justify-between border-b border-foreground/6 px-4 py-2.5 font-mono text-[11px] tracking-tight text-foreground/45">
+        <span>{project.slug}</span>
+        <span className="flow-status">main</span>
+      </div>
+      <ol className="relative flex flex-col px-4 py-3.5">
+        {project.flow.map((step, i) => (
+          <li
+            key={step}
+            className="flow-step flex items-center gap-3 py-[5px]"
+            style={{ "--i": i } as React.CSSProperties}
+          >
+            <span className="flow-dot relative z-10 inline-flex h-[11px] w-[11px] shrink-0 rounded-full border border-foreground/25 bg-background" />
+            <span className="font-mono text-[12.5px] tracking-tight text-foreground/75">
+              {step}
+            </span>
+            <span className="flow-rule h-px flex-1 bg-foreground/8" />
+            <span className="flow-check font-mono text-[11px] text-foreground/35">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
