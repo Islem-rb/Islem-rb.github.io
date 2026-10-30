@@ -129,6 +129,49 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
       },
     ],
   },
+  "verdustry-social": {
+    kind: "SaaS IA · Stage",
+    headline:
+      "Une plateforme de gestion des réseaux sociaux où l’IA planifie la stratégie et Celery publie à l’heure.",
+    summary:
+      "Réalisée pendant mon stage ingénieur chez Verdustry : un backend FastAPI avec des workers Celery, un tableau de bord Next.js, la génération de contenu et de stratégies par IA, et la publication sur Facebook, Instagram et TikTok.",
+    meta: "Stagiaire ingénieur chez Verdustry, 2026",
+    highlights: [
+      "96 endpoints API · 14 tables",
+      "Facebook, Instagram, TikTok",
+      "Publications dues vérifiées toutes les 60 s",
+    ],
+    sections: [
+      {
+        title: "Backend",
+        items: [
+          "API REST FastAPI : 96 endpoints répartis sur 18 routeurs, sur PostgreSQL avec 14 tables.",
+          "Espaces multi-marques avec rôles administrateur et manager, invitations, notifications et journal d’audit administrateur.",
+        ],
+      },
+      {
+        title: "IA & publication",
+        items: [
+          "Génération de contenus, de publications et de stratégies marketing via Groq (gpt-oss-120b), transformées en calendrier éditorial.",
+          "Publication sur Facebook, Instagram et TikTok, avec analytique et métriques de performance par publication.",
+          "Workers Celery avec Redis : une planification beat vérifie les publications dues toutes les 60 secondes, à côté des tâches d’analytique et de stratégie.",
+        ],
+      },
+      {
+        title: "Sécurité",
+        items: [
+          "Jetons des comptes sociaux chiffrés au repos avec Fernet, et connexions OAuth sécurisées par PKCE.",
+          "Limitation de débit et contrôle de sécurité des liens fournis par les utilisateurs.",
+        ],
+      },
+      {
+        title: "Tableau de bord",
+        items: [
+          "Application Next.js avec connexion NextAuth, espaces administrateur et manager séparés, et analytique Recharts.",
+        ],
+      },
+    ],
+  },
   carnova: {
     kind: "Full-stack · Stage",
     headline:
@@ -167,29 +210,48 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
     ],
   },
   dawrek: {
-    kind: "SaaS temps réel",
+    kind: "IA · SaaS temps réel",
     headline:
-      "Des files d’attente de cliniques que les patients suivent depuis leur téléphone, pas depuis la salle d’attente.",
+      "Des files d’attente de cliniques suivies depuis le téléphone, avec un assistant qui parle tunisien.",
     summary:
-      "Suivi de file en direct via Socket.io pour les cliniques tunisiennes, avec alertes SMS Twilio en arabe et en français.",
-    meta: "Projet personnel",
+      "Les patients prennent un ticket par QR code, suivent leur tour en direct et posent leurs questions à l’écrit ou à la voix en darija, arabe, français ou anglais. Les vues accueil, salle d’attente et direction tournent sur le même backend FastAPI.",
+    meta: "Projet personnel, 2026",
     highlights: [
-      "Sessions de file en temps réel",
-      "SMS en arabe et en français",
-      "4 plateformes managées, TLS de bout en bout",
+      "5 langues, darija en écriture arabe et latine",
+      "Questions vocales via Whisper",
+      "28 tests automatisés",
     ],
     sections: [
       {
-        title: "Produit",
+        title: "Patients",
         items: [
-          "Suivi en temps réel de la file des patients via Socket.io, avec gestion des sessions en direct.",
-          "Notifications SMS Twilio avec normalisation des numéros tunisiens et messages en arabe et en français.",
+          "Un ticket depuis le téléphone en scannant un QR code, sans application à installer ni compte.",
+          "Position et attente estimée en direct, puis écran vert, sonnerie et vibration à l’appel, même téléphone verrouillé (Web Push).",
+          "Installable en PWA, avec un mode grand texte pour les personnes âgées et malvoyantes.",
         ],
       },
       {
-        title: "Déploiement",
+        title: "Assistant",
         items: [
-          "Front sur Vercel, API sur Render, PostgreSQL sur Supabase et Redis sur Upstash, le tout en TLS.",
+          "Détecte la darija tunisienne (écriture arabe ou arabizi), l’arabe, le français et l’anglais, et répond dans le même style.",
+          "Répond à partir du ticket en direct du patient et d’une base de connaissances rédigée en arabe standard, en darija et en français, via Groq gpt-oss-120b.",
+          "Questions vocales transcrites par Groq Whisper et réponses lues à voix haute.",
+          "Les symptômes urgents contournent l’IA et orientent vers les urgences / SAMU 190. Sans clé API, il répond en mode hors ligne.",
+        ],
+      },
+      {
+        title: "Côté clinique",
+        items: [
+          "Une console d’accueil pour appeler, terminer, rappeler ou marquer absent, et confirmer les rendez-vous, servis en priorité avec un patient sans rendez-vous tous les deux.",
+          "Des estimations d’attente qui apprennent de la médiane des passages du jour, divisée par le nombre de guichets ouverts.",
+          "Un écran de salle d’attente avec annonces vocales, et un tableau de bord direction sur les heures de pointe, les attentes, les absences, les langues et les sujets.",
+        ],
+      },
+      {
+        title: "Livraison",
+        items: [
+          "Image Docker déployée sur Render via un Blueprint, avec des limites par visiteur pour protéger le quota IA gratuit.",
+          "28 tests pytest couvrant la file, l’assistant, la voix, les rendez-vous, les réglages et les alertes téléphone.",
         ],
       },
     ],
@@ -253,6 +315,16 @@ export const EXPERIENCE_FR: Record<
   string,
   { role: string; period: string; points: string[] }
 > = {
+  Verdustry: {
+    role: "Stagiaire ingénieur · Full-stack & IA",
+    period: "juil. 2026 – août 2026",
+    points: [
+      "Développement de Verdustry Social, un SaaS de gestion des réseaux sociaux propulsé par l’IA, sur FastAPI, PostgreSQL et Next.js.",
+      "Génération de contenus et de stratégies marketing par LLM via Groq, transformées en calendrier éditorial.",
+      "Publication sur Facebook, Instagram et TikTok via leurs API, planifiée par des workers Celery sur Redis.",
+      "Chiffrement des jetons sociaux au repos, OAuth sécurisé par PKCE, limitation de débit et journal d’audit administrateur.",
+    ],
+  },
   "Al Idhafa Group": {
     role: "Stagiaire développeur full-stack",
     period: "juil. 2025 – août 2025",

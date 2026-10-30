@@ -111,16 +111,61 @@ const ARCHITECTURE: Record<string, ArchitectureSource> = {
       fr: "Chaque service conteneurisé avec Docker",
     },
   },
+  "verdustry-social": {
+    lanes: [
+      {
+        title: { en: "Dashboard", fr: "Tableau de bord" },
+        nodes: ["Next.js", "NextAuth", "Recharts"],
+      },
+      {
+        title: { en: "API · FastAPI", fr: "API · FastAPI" },
+        nodes: ["96 endpoints · 18 routers", "Admin · manager roles", "Fernet · PKCE"],
+      },
+      {
+        title: { en: "AI", fr: "IA" },
+        nodes: ["Groq · gpt-oss-120b", "Strategy calendar"],
+      },
+      {
+        title: { en: "Workers", fr: "Workers" },
+        nodes: ["Celery + beat", "Redis"],
+      },
+      {
+        title: { en: "Platforms", fr: "Plateformes" },
+        nodes: ["Facebook", "Instagram", "TikTok"],
+      },
+    ],
+    feedback: {
+      en: "Post metrics flow back from the platforms into the analytics",
+      fr: "Les métriques des publications remontent des plateformes vers l’analytique",
+    },
+    note: {
+      en: "PostgreSQL, 14 tables",
+      fr: "PostgreSQL, 14 tables",
+    },
+  },
   dawrek: {
     lanes: [
-      { title: { en: "Clients", fr: "Clients" }, nodes: ["React · Vercel", "Patients’ phones"] },
       {
-        title: { en: "Realtime API", fr: "API temps réel" },
-        nodes: ["Node.js · Render", "Socket.io", "Twilio SMS · AR/FR"],
+        title: { en: "Patients", fr: "Patients" },
+        nodes: ["QR code", "PWA · Web Push", "Voice · Whisper"],
       },
-      { title: { en: "Data", fr: "Données" }, nodes: ["PostgreSQL · Supabase", "Redis · Upstash"] },
+      {
+        title: { en: "API · FastAPI", fr: "API · FastAPI" },
+        nodes: ["Queue engine", "Learned wait times", "Appointment priority"],
+      },
+      {
+        title: { en: "Assistant", fr: "Assistant" },
+        nodes: ["Language detection", "Emergency guardrail", "Groq · gpt-oss-120b"],
+      },
+      {
+        title: { en: "Clinic", fr: "Clinique" },
+        nodes: ["Staff console", "Waiting-room screen", "Manager insights"],
+      },
     ],
-    note: { en: "TLS end to end", fr: "TLS de bout en bout" },
+    note: {
+      en: "Docker image on Render; offline answers when no AI key is set",
+      fr: "Image Docker sur Render ; réponses hors ligne sans clé IA",
+    },
   },
   "automotive-ml": {
     lanes: [
@@ -222,21 +267,39 @@ const LESSONS: Record<string, LessonsSource> = {
       },
     ],
   },
-  dawrek: {
+  "verdustry-social": {
     learned: [
       {
-        en: "Real-time UX depends as much on reconnects and missed events as on the socket itself.",
-        fr: "L’expérience temps réel dépend autant des reconnexions et des événements manqués que du socket lui-même.",
+        en: "Publishing on a schedule belongs in a worker, not in the request: Celery keeps posting on time even when nobody has the dashboard open.",
+        fr: "Publier à heure fixe relève d’un worker, pas de la requête : Celery continue de publier à l’heure même quand personne n’a le tableau de bord ouvert.",
       },
       {
-        en: "Normalizing local phone formats was essential for SMS to reach patients reliably.",
-        fr: "Normaliser les formats de numéros locaux était indispensable pour que les SMS arrivent aux patients.",
+        en: "Storing third-party tokens means owning their security: encryption at rest and PKCE were part of the design, not an afterthought.",
+        fr: "Stocker des jetons tiers, c’est en assumer la sécurité : le chiffrement au repos et PKCE faisaient partie de la conception, pas d’un ajout tardif.",
       },
     ],
     next: [
       {
-        en: "Containerize the API and add uptime monitoring with alerting.",
-        fr: "Conteneuriser l’API et ajouter une surveillance de disponibilité avec alertes.",
+        en: "Add a CI pipeline and container images so the platform can be deployed the way my DevOps projects are.",
+        fr: "Ajouter un pipeline CI et des images conteneurs pour déployer la plateforme comme mes projets DevOps.",
+      },
+    ],
+  },
+  dawrek: {
+    learned: [
+      {
+        en: "An AI assistant in a clinic must know when not to answer: emergencies bypass the model entirely.",
+        fr: "Un assistant IA en clinique doit savoir quand ne pas répondre : les urgences contournent complètement le modèle.",
+      },
+      {
+        en: "Supporting Darija meant handling Arabizi too, because that is how most Tunisians actually type.",
+        fr: "Prendre en charge la darija impliquait aussi l’arabizi, parce que c’est ainsi que la plupart des Tunisiens écrivent vraiment.",
+      },
+    ],
+    next: [
+      {
+        en: "Move the queue from memory to a database, and add SMS or WhatsApp alerts for patients without a smartphone.",
+        fr: "Passer la file de la mémoire à une base de données, et ajouter des alertes SMS ou WhatsApp pour les patients sans smartphone.",
       },
     ],
   },

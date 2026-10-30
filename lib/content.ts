@@ -239,6 +239,67 @@ export const PROJECTS: Project[] = [
     live: "https://cityvoice-peach.vercel.app",
   },
   {
+    slug: "verdustry-social",
+    name: "Verdustry Social",
+    kind: "AI SaaS · Internship",
+    year: "2026",
+    headline:
+      "A social media management platform where AI plans the strategy and Celery publishes on time.",
+    summary:
+      "Built during my engineering internship at Verdustry: a FastAPI backend with Celery workers, a Next.js dashboard, AI content and strategy generation, and publishing to Facebook, Instagram and TikTok.",
+    meta: "Engineering Intern at Verdustry, 2026",
+    featured: true,
+    stack: [
+      "FastAPI",
+      "PostgreSQL",
+      "Celery",
+      "Redis",
+      "Next.js",
+      "NextAuth",
+      "Recharts",
+      "Groq (gpt-oss-120b)",
+      "Meta Graph API",
+      "TikTok API",
+      "Docker",
+    ],
+    flow: ["Next.js", "FastAPI", "Groq", "Celery", "Social APIs"],
+    highlights: [
+      "96 API endpoints · 14 tables",
+      "Facebook, Instagram, TikTok",
+      "Scheduler checks due posts every 60 s",
+    ],
+    sections: [
+      {
+        title: "Backend",
+        items: [
+          "FastAPI REST API: 96 endpoints across 18 routers, on PostgreSQL with 14 tables.",
+          "Multi-brand workspaces with admin and manager roles, invitations, notifications and an admin audit log.",
+        ],
+      },
+      {
+        title: "AI & publishing",
+        items: [
+          "Content, post and marketing-strategy generation through Groq (gpt-oss-120b), turned into an editorial calendar.",
+          "Publishing to Facebook, Instagram and TikTok, plus analytics and performance metrics per post.",
+          "Celery workers with Redis: a beat schedule checks due posts every 60 seconds, alongside analytics and strategy tasks.",
+        ],
+      },
+      {
+        title: "Security",
+        items: [
+          "Social account tokens encrypted at rest with Fernet, and OAuth connections secured with PKCE.",
+          "Rate limiting and URL safety checks on user-supplied links.",
+        ],
+      },
+      {
+        title: "Dashboard",
+        items: [
+          "Next.js app with NextAuth sign-in, separate admin and manager areas, and Recharts analytics.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "carnova",
     name: "Carnova",
     kind: "Full-stack · Internship",
@@ -294,47 +355,68 @@ export const PROJECTS: Project[] = [
   {
     slug: "dawrek",
     name: "Dawrek",
-    kind: "Real-time SaaS",
+    kind: "AI · Real-time SaaS",
     year: "2026",
     headline:
-      "Clinic queues that patients can follow from their phone instead of a waiting room.",
+      "Clinic queues that patients follow from their phone, with an assistant that speaks Tunisian.",
     summary:
-      "Live queue tracking over Socket.io for Tunisian clinics, with Twilio SMS alerts in Arabic and French.",
-    meta: "Personal project",
+      "Patients take a ticket by QR code, follow their turn live and ask questions by text or voice in Darija, Arabic, French or English. Staff, waiting-room and manager views run on the same FastAPI backend.",
+    meta: "Personal project, 2026",
     featured: false,
     stack: [
-      "Node.js",
-      "React",
-      "Socket.io",
-      "PostgreSQL",
-      "Redis",
-      "Twilio",
-      "Vercel",
+      "Python",
+      "FastAPI",
+      "Groq (gpt-oss-120b)",
+      "Whisper",
+      "Web Push",
+      "PWA",
+      "Vanilla JS",
+      "Docker",
       "Render",
-      "Supabase",
-      "Upstash",
+      "pytest",
     ],
-    flow: ["React", "Socket.io", "Node.js", "Redis", "Twilio"],
+    flow: ["QR code", "Phone", "FastAPI", "Groq", "Web Push"],
     highlights: [
-      "Real-time queue sessions",
-      "SMS in Arabic and French",
-      "4 managed platforms, TLS end to end",
+      "5 languages, Darija in Arabic and Latin script",
+      "Voice questions through Whisper",
+      "28 automated tests",
     ],
     sections: [
       {
-        title: "Product",
+        title: "Patients",
         items: [
-          "Real-time patient queue tracking over Socket.io with live session management.",
-          "Twilio SMS notifications with Tunisian phone-number normalization and AR/FR messages.",
+          "A ticket from the phone by scanning a QR code, with no app to install and no account.",
+          "Live position and estimated wait, then a green screen, ring and vibration when called, even with the phone locked (Web Push).",
+          "Installable as a PWA, with a large-text mode for elderly and low-vision patients.",
         ],
       },
       {
-        title: "Deployment",
+        title: "Assistant",
         items: [
-          "Front end on Vercel, API on Render, PostgreSQL on Supabase and Redis on Upstash, all over TLS.",
+          "Detects Tunisian Darija (Arabic script or Arabizi), Arabic, French and English, and answers in the same style.",
+          "Answers from the patient's live ticket and a knowledge base written in MSA, Darija and French, through Groq gpt-oss-120b.",
+          "Voice questions transcribed by Groq Whisper and answers read aloud.",
+          "Urgent symptoms skip the AI and point to emergency / SAMU 190. Without an API key it answers in offline mode.",
+        ],
+      },
+      {
+        title: "Clinic side",
+        items: [
+          "A staff console to call, finish, recall or mark absent, and to confirm appointments, which are served first with one walk-in after every two.",
+          "Wait estimates that learn from the median of the day's visits, divided by the desks open.",
+          "A waiting-room screen with voice announcements, and manager insights on peak hours, waits, no-shows, languages and topics.",
+        ],
+      },
+      {
+        title: "Delivery",
+        items: [
+          "Docker image deployed on Render from a Blueprint, with per-visitor rate limits to protect the free AI quota.",
+          "28 pytest tests covering the queue, the assistant, voice, appointments, settings and phone alerts.",
         ],
       },
     ],
+    repo: "https://github.com/Islem-rb/dawrek-ai",
+    live: "https://dawrek.onrender.com",
   },
   {
     slug: "automotive-ml",
@@ -405,6 +487,19 @@ export const PROJECTS: Project[] = [
 ];
 
 export const EXPERIENCE = [
+  {
+    company: "Verdustry",
+    role: "Engineering Intern · Full-Stack & AI",
+    period: "Jul 2026 – Aug 2026",
+    location: "Sfax",
+    points: [
+      "Built Verdustry Social, an AI-powered social media management SaaS, on FastAPI, PostgreSQL and Next.js.",
+      "Generated content and marketing strategies with an LLM through Groq, and turned them into an editorial calendar.",
+      "Published to Facebook, Instagram and TikTok through their APIs, scheduled by Celery workers on Redis.",
+      "Encrypted social tokens at rest, secured OAuth with PKCE, and added rate limiting and an admin audit log.",
+    ],
+    project: "verdustry-social",
+  },
   {
     company: "Al Idhafa Group",
     role: "Full-Stack Developer Intern",

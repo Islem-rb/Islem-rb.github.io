@@ -7,6 +7,7 @@ import {
   Car,
   Cloud,
   Github,
+  Megaphone,
   Sprout,
   Stethoscope,
 } from "lucide-react";
@@ -21,6 +22,7 @@ export const PROJECT_ICONS: Record<string, ComponentType<{ className?: string }>
   "gitops-eks-platform": Cloud,
   "devops-observability-platform": Activity,
   cityvoice: Building2,
+  "verdustry-social": Megaphone,
   carnova: Car,
   dawrek: Stethoscope,
   "automotive-ml": BrainCircuit,
