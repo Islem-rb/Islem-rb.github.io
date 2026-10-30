@@ -1,5 +1,6 @@
 import { Play } from "lucide-react";
 import type { ReactNode } from "react";
+import { preload } from "react-dom";
 
 import type { Demo } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
@@ -20,6 +21,8 @@ export function DemoMedia({
 }): ReactNode {
   const t = getDictionary(lang).projects;
   const { video, shots } = demo;
+  // The poster is usually the largest element in view: fetch it early.
+  if (video) preload(video.poster, { as: "image", fetchPriority: "high" });
 
   return (
     <div className="flex flex-col gap-5">
