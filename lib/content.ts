@@ -52,6 +52,13 @@ export type Project = {
   repo?: string;
   live?: string;
   result?: string;
+  demo?: Demo;
+};
+
+/** Self-hosted demo media under public/demos/<slug>/. */
+export type Demo = {
+  video?: { src: string; poster: string; duration: string; lang: Lang };
+  shots?: { src: string; width: number; height: number; alt: Record<Lang, string> }[];
 };
 
 export const PROJECTS: Project[] = [
@@ -121,6 +128,14 @@ export const PROJECTS: Project[] = [
       },
     ],
     repo: "https://github.com/Islem-rb/gitops-eks-platform",
+    demo: {
+      video: {
+        src: "/demos/gitops-eks-platform/demo.mp4",
+        poster: "/demos/gitops-eks-platform/poster.webp",
+        duration: "1:38",
+        lang: "en",
+      },
+    },
   },
   {
     slug: "devops-observability-platform",
@@ -298,6 +313,52 @@ export const PROJECTS: Project[] = [
         ],
       },
     ],
+    demo: {
+      video: {
+        src: "/demos/verdustry-social/demo.mp4",
+        poster: "/demos/verdustry-social/poster.webp",
+        duration: "2:52",
+        lang: "fr",
+      },
+      shots: [
+        {
+          src: "/demos/verdustry-social/shot-1.webp",
+          width: 1600,
+          height: 900,
+          alt: {
+            en: "Dashboard: the brand's week, scheduled posts and recent activity",
+            fr: "Tableau de bord : la semaine de la marque, les publications programmées et l’activité récente",
+          },
+        },
+        {
+          src: "/demos/verdustry-social/shot-2.webp",
+          width: 1600,
+          height: 900,
+          alt: {
+            en: "AI strategy: the weekly rhythm per network and the editorial calendar",
+            fr: "Stratégie IA : le rythme hebdomadaire par réseau et le calendrier éditorial",
+          },
+        },
+        {
+          src: "/demos/verdustry-social/shot-3.webp",
+          width: 1600,
+          height: 900,
+          alt: {
+            en: "Post editor with the AI assistant proposing captions",
+            fr: "Éditeur de publication avec l’assistant IA qui propose des textes",
+          },
+        },
+        {
+          src: "/demos/verdustry-social/shot-4.webp",
+          width: 1600,
+          height: 900,
+          alt: {
+            en: "Statistics: engagement, reach and performance per post",
+            fr: "Statistiques : engagement, portée et performance par publication",
+          },
+        },
+      ],
+    },
   },
   {
     slug: "carnova",
@@ -417,6 +478,52 @@ export const PROJECTS: Project[] = [
     ],
     repo: "https://github.com/Islem-rb/dawrek-ai",
     live: "https://dawrek.onrender.com",
+    demo: {
+      shots: [
+        {
+          src: "/demos/dawrek/home-tn.webp",
+          width: 600,
+          height: 1436,
+          alt: { en: "Patient app in Tunisian Darija", fr: "Application patient en darija tunisienne" },
+        },
+        {
+          src: "/demos/dawrek/chat.webp",
+          width: 600,
+          height: 1298,
+          alt: { en: "Assistant answering in Darija", fr: "L’assistant qui répond en darija" },
+        },
+        {
+          src: "/demos/dawrek/voice.webp",
+          width: 600,
+          height: 1298,
+          alt: { en: "Asking a question by voice", fr: "Poser une question à la voix" },
+        },
+        {
+          src: "/demos/dawrek/called.webp",
+          width: 600,
+          height: 1298,
+          alt: { en: "The phone when it is the patient's turn", fr: "Le téléphone quand c’est le tour du patient" },
+        },
+        {
+          src: "/demos/dawrek/staff.webp",
+          width: 1366,
+          height: 860,
+          alt: { en: "Staff console", fr: "Console de l’accueil" },
+        },
+        {
+          src: "/demos/dawrek/screen.webp",
+          width: 1600,
+          height: 900,
+          alt: { en: "Waiting-room screen", fr: "Écran de la salle d’attente" },
+        },
+        {
+          src: "/demos/dawrek/insights.webp",
+          width: 1440,
+          height: 1092,
+          alt: { en: "Manager insights", fr: "Tableau de bord de la direction" },
+        },
+      ],
+    },
   },
   {
     slug: "automotive-ml",

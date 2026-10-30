@@ -8,6 +8,7 @@ import {
   Cloud,
   Github,
   Megaphone,
+  Play,
   Sprout,
   Stethoscope,
 } from "lucide-react";
@@ -111,6 +112,12 @@ function ProjectCard({
           <span className="text-sm font-medium tracking-tight text-foreground">
             {project.name}
           </span>
+          {project.demo ? (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-foreground/10 px-1.5 py-0.5 font-mono text-[10px] tracking-tight text-foreground/70">
+              {project.demo.video ? <Play className="h-2.5 w-2.5" aria-hidden="true" /> : null}
+              {t.projects.demo}
+            </span>
+          ) : null}
           <span className="ml-auto shrink-0 font-mono text-[11px] tracking-tight text-foreground/45">
             <span className="hidden sm:inline">{project.kind} · </span>
             {project.year}

@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 
 import { ContactCard } from "@/components/contact/contact-card";
 import { ArchitectureDiagram } from "@/components/projects/architecture-diagram";
+import { DemoMedia } from "@/components/projects/demo";
 import { FlowPanel, PROJECT_ICONS } from "@/components/projects/projects";
 import { getArchitecture, getLessons } from "@/lib/case-studies";
 import { FadeIn } from "@/components/ui/motion-primitives";
@@ -97,6 +98,23 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
           </div>
         </FadeIn>
       </section>
+
+      {project.demo ? (
+        <section
+          aria-labelledby="demo-heading"
+          className="mx-auto w-full max-w-275 px-6 pt-14 sm:px-10 sm:pt-20"
+        >
+          <FadeIn delay={0.1} className="flex flex-col gap-5">
+            <h2
+              id="demo-heading"
+              className="font-mono text-[12px] tracking-tight text-foreground/50 uppercase"
+            >
+              {t.demo}
+            </h2>
+            <DemoMedia demo={project.demo} name={project.name} lang={lang} />
+          </FadeIn>
+        </section>
+      ) : null}
 
       {architecture ? (
         <section
