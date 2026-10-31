@@ -435,6 +435,7 @@ export const PROJECTS: Project[] = [
       },
     ],
     repo: "https://github.com/Islem-rb/carnova",
+    live: "https://carnova-z7d2.onrender.com",
   },
   {
     slug: "dawrek",
