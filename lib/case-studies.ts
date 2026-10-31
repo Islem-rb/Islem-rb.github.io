@@ -95,20 +95,20 @@ const ARCHITECTURE: Record<string, ArchitectureSource> = {
   },
   carnova: {
     lanes: [
-      { title: { en: "Client", fr: "Client" }, nodes: ["Angular 16", "three.js 3D models"] },
+      { title: { en: "Client", fr: "Client" }, nodes: ["Angular 22 · signals", "three.js studio"] },
       {
-        title: { en: "API · Spring Boot 3.3", fr: "API · Spring Boot 3.3" },
-        nodes: ["10 controllers · 24 endpoints", "JWT · 3 roles", "Dealer Showroom"],
+        title: { en: "API · Spring Boot 3.5", fr: "API · Spring Boot 3.5" },
+        nodes: ["10 controllers · 42 endpoints", "JWT · revocable sessions", "Dealer showrooms"],
       },
       {
         title: { en: "Data & payments", fr: "Données & paiements" },
-        nodes: ["PostgreSQL · JPA", "Stripe PaymentIntents"],
+        nodes: ["PostgreSQL 17 · Flyway", "Stripe test · mock"],
       },
-      { title: { en: "AI", fr: "IA" }, nodes: ["Ollama · gemma3:1b", "Rembg"] },
+      { title: { en: "Hosting", fr: "Hébergement" }, nodes: ["Render · one image", "Neon Postgres"] },
     ],
     note: {
-      en: "Every service containerized with Docker",
-      fr: "Chaque service conteneurisé avec Docker",
+      en: "GitHub Actions tests every push; Render deploys only once all checks pass",
+      fr: "GitHub Actions teste chaque push ; Render ne déploie qu’une fois tous les contrôles réussis",
     },
   },
   "verdustry-social": {
@@ -252,18 +252,18 @@ const LESSONS: Record<string, LessonsSource> = {
   carnova: {
     learned: [
       {
-        en: "Running the LLM locally with Ollama keeps data in-house; a provider switch keeps OpenAI available when quality matters more.",
-        fr: "Faire tourner le LLM en local avec Ollama garde les données en interne ; un sélecteur de fournisseur garde OpenAI disponible quand la qualité prime.",
+        en: "Build-time optimisations change behaviour: Spring AOT froze a property switch and silently disabled the demo data, so CI now boots the real image.",
+        fr: "Les optimisations au build changent le comportement : Spring AOT a figé une option et désactivé sans bruit les données de démo, donc la CI démarre maintenant la vraie image.",
       },
       {
-        en: "Role-based access is easy to design in early and painful to retrofit.",
-        fr: "Le contrôle d’accès par rôles est simple à prévoir dès le départ et pénible à ajouter après coup.",
+        en: "Behind a proxy, every visitor shares one address: the rate limiter has to read the header the proxy sets, never one the client can write.",
+        fr: "Derrière un proxy, tous les visiteurs partagent une adresse : le limiteur de débit doit lire l’en-tête posé par le proxy, jamais un que le client peut écrire.",
       },
     ],
     next: [
       {
-        en: "Add a CI pipeline with tests and image scanning, reusing what I built in my DevOps projects.",
-        fr: "Ajouter un pipeline CI avec tests et scan d’images, en réutilisant ce que j’ai construit dans mes projets DevOps.",
+        en: "Move uploads to free object storage so visitors’ photos survive restarts.",
+        fr: "Déplacer les fichiers envoyés vers un stockage objet gratuit pour que les photos des visiteurs survivent aux redémarrages.",
       },
     ],
   },

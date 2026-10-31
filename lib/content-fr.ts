@@ -176,36 +176,38 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   carnova: {
     kind: "Full-stack · Stage",
     headline:
-      "Une marketplace automobile avec showroom pour concessionnaires, paiements Stripe et assistant IA local.",
+      "Une marketplace automobile avec showrooms pour concessionnaires, un studio 3D three.js et des comptes sécurisés, en ligne sur un hébergement gratuit.",
     summary:
-      "Réalisée pendant mon stage chez Al Idhafa Group : une API REST Spring Boot, un front Angular avec des modèles 3D de voitures, et des fonctions IA sur Ollama.",
-    meta: "Stagiaire full-stack chez Al Idhafa Group, 2025",
+      "Commencée pendant mon stage chez Al Idhafa Group, puis reconstruite en 2026 sur Angular 22 et Spring Boot 3.5 : annonces, showrooms, un studio 3D avec un mode conduite, et des comptes avec vérification d’e-mail et réinitialisation du mot de passe. Testée en CI à chaque push et déployée gratuitement sur Render et Neon.",
+    meta: "Stagiaire full-stack chez Al Idhafa Group, 2025 · reconstruite en 2026",
     highlights: [
-      "10 contrôleurs · 24 endpoints",
-      "JWT avec 3 rôles",
-      "Assistant Gemma via Ollama",
+      "10 contrôleurs · 42 endpoints",
+      "Tests unitaires + navigateur en CI",
+      "Démarrage à froid 233 s → 100 s",
     ],
     sections: [
       {
         title: "Backend",
         items: [
-          "API REST Spring Boot 3.3 sur Java 17 : 10 contrôleurs, 24 endpoints, PostgreSQL via JPA.",
-          "Authentification JWT avec 3 rôles : admin, professionnel et utilisateur.",
-          "Paiements via Stripe PaymentIntents. Chaque service conteneurisé avec Docker.",
+          "API REST Spring Boot 3.5 sur Java 17 : 10 contrôleurs, 42 endpoints, PostgreSQL 17 avec migrations Flyway.",
+          "Sessions JWT révoquées au changement de mot de passe, vérification d’e-mail et réinitialisation par jetons hachés à usage unique, limitation de débit et CSP stricte.",
+          "Paiement Stripe en mode test, avec un mode simulé pour la démo publique.",
         ],
       },
       {
         title: "Produit",
         items: [
-          "Un espace Showroom où les concessionnaires présentent leur stock.",
-          "Front Angular 16 avec des modèles 3D de voitures rendus par three.js.",
+          "Annonces avec recherche, assistant de publication en quatre étapes, showrooms de concessionnaires et tableau de bord administrateur.",
+          "Front Angular 22 avec signals et un studio three.js : rotation, couleurs de peinture et mode conduite, avec un mode allégé pour les machines sans GPU.",
+          "Un assistant qui fonctionne hors ligne par défaut, avec un modèle Ollama local en option.",
         ],
       },
       {
-        title: "Fonctions IA",
+        title: "Livraison",
         items: [
-          "Un assistant sur un modèle Ollama local (gemma3:1b), avec OpenAI comme fournisseur alternatif.",
-          "Suppression automatique de l’arrière-plan des photos d’annonces avec Rembg.",
+          "GitHub Actions exécute 69 tests backend, les tests unitaires du front, des tests navigateur et d’accessibilité Playwright, et démarre l’image de production.",
+          "Une seule image Docker sert l’API et l’application Angular sur l’offre gratuite de Render, avec la base de données sur Neon.",
+          "Spring AOT et une archive de partage de classes ramènent le démarrage à froid sur 0,1 CPU de 233 s à environ 100 s.",
         ],
       },
     ],
