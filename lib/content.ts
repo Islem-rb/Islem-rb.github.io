@@ -187,12 +187,35 @@ export const PROJECTS: Project[] = [
         title: "GitOps & monitoring",
         items: [
           "A separate devops-platform-gitops repository, synced by Argo CD with automated prune and self-heal.",
-          "kube-prometheus-stack and Loki with Promtail installed through Helm, configured by 4 values files.",
+          "kube-prometheus-stack and Loki with Promtail installed through Helm.",
+          "A Grafana dashboard kept as code: request rate, p95 latency, error rate, JVM heap, CPU and the Loki logs of all 3 services.",
           "Supporting AWS infrastructure provisioned with Terraform.",
         ],
       },
     ],
     repo: "https://github.com/Islem-rb/devops-platform",
+    demo: {
+      shots: [
+        {
+          src: "/demos/devops-observability-platform/grafana-dashboard.webp",
+          width: 1600,
+          height: 1180,
+          alt: {
+            en: "Grafana dashboard: request rate, p95 latency, error rate, JVM heap, CPU and Loki logs for the 3 services",
+            fr: "Dashboard Grafana : débit, latence p95, taux d’erreur, heap JVM, CPU et logs Loki des 3 services",
+          },
+        },
+        {
+          src: "/demos/devops-observability-platform/argocd-sync.webp",
+          width: 1600,
+          height: 900,
+          alt: {
+            en: "Argo CD: the devops-platform app synced from the GitOps repo and healthy",
+            fr: "Argo CD : l’application devops-platform synchronisée depuis le dépôt GitOps et saine",
+          },
+        },
+      ],
+    },
   },
   {
     slug: "cityvoice",

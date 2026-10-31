@@ -84,7 +84,8 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
         title: "GitOps & monitoring",
         items: [
           "Un dépôt devops-platform-gitops séparé, synchronisé par Argo CD avec prune et self-heal automatiques.",
-          "kube-prometheus-stack et Loki avec Promtail installés via Helm, configurés par 4 fichiers values.",
+          "kube-prometheus-stack et Loki avec Promtail installés via Helm.",
+          "Un dashboard Grafana versionné dans le dépôt : débit, latence p95, taux d’erreur, heap JVM, CPU et logs Loki des 3 services.",
           "Infrastructure AWS associée provisionnée avec Terraform.",
         ],
       },
