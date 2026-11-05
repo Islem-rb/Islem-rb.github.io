@@ -26,15 +26,15 @@ const ARCHITECTURE: Record<string, ArchitectureSource> = {
       },
       {
         title: { en: "Registry & GitOps", fr: "Registre & GitOps" },
-        nodes: ["Amazon ECR", "GitOps tag bump", "Argo CD · 11 apps"],
+        nodes: ["Amazon ECR", "GitOps tag bump", "Argo CD · 13 apps"],
       },
       {
         title: { en: "AWS · Terraform", fr: "AWS · Terraform" },
-        nodes: ["VPC", "EKS", "IAM · OIDC", "Argo Rollouts canary", "Kyverno · NetworkPolicies"],
+        nodes: ["VPC", "EKS", "IAM · OIDC", "Argo Rollouts canary", "NetworkPolicies"],
       },
       {
         title: { en: "Observability", fr: "Observabilité" },
-        nodes: ["Prometheus", "Grafana", "Loki", "Alertmanager"],
+        nodes: ["Prometheus", "Grafana", "Loki", "Alertmanager", "Incident agent"],
       },
     ],
     feedback: {
@@ -202,11 +202,23 @@ const LESSONS: Record<string, LessonsSource> = {
         fr: "Un canary ne vaut que la métrique qui le valide. L’essentiel du travail a été de rendre fiable la requête Prometheus sur le taux d’erreur.",
       },
       {
-        en: "OIDC from CI to AWS and keyless Cosign removed long-lived secrets from the pipeline entirely.",
-        fr: "OIDC entre la CI et AWS, et Cosign en keyless, ont supprimé tout secret longue durée du pipeline.",
+        en: "OIDC from CI to AWS and keyless Cosign mean CI holds no AWS or signing keys. It does keep one deploy key, to commit to the protected main branch.",
+        fr: "OIDC entre la CI et AWS, et Cosign en keyless, évitent à la CI de détenir des clés AWS ou de signature. Elle garde une clé de déploiement, pour committer sur la branche main protégée.",
+      },
+      {
+        en: "End-to-end tests find what unit tests can't. A real abort peaked at 3.9% overall errors, under the 5% alert, so no alert fired until aborts got their own.",
+        fr: "Les tests de bout en bout trouvent ce que les tests unitaires ne voient pas. Une vraie annulation a culminé à 3,9 % d’erreurs globales, sous l’alerte à 5 %, et aucune alerte n’a sonné avant d’en créer une dédiée.",
+      },
+      {
+        en: "An agent can be useful without changing production. Mine reads and proposes, the rules choose the commit, and a person merges.",
+        fr: "Un agent peut être utile sans modifier la production. Le mien lit et propose, les règles choisissent le commit, et une personne fusionne.",
       },
     ],
     next: [
+      {
+        en: "Find the root cause of the DNS failure after restores on EKS, and run the agent's revert pull requests there.",
+        fr: "Trouver la cause de la panne DNS après les restaurations sur EKS, et y exécuter les pull requests de revert de l’agent.",
+      },
       {
         en: "Add Karpenter for node autoscaling and cost visibility per namespace.",
         fr: "Ajouter Karpenter pour l’autoscaling des nœuds et une visibilité des coûts par namespace.",

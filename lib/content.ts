@@ -19,7 +19,7 @@ export const profile = {
   role: "Cloud & DevOps Engineering Student",
   school: "ESPRIT",
   location: "Ariana, Tunisia",
-  email: "islem.rebhi@esprit.tn",
+  email: "rebhiislem800@gmail.com",
   github: "https://github.com/Islem-rb",
   linkedin: "https://www.linkedin.com/in/rebhi-islem/",
   cv: { en: "/cv-en.pdf", fr: "/cv-fr.pdf" },
@@ -68,9 +68,9 @@ export const PROJECTS: Project[] = [
     kind: "Cloud platform",
     year: "2026",
     headline:
-      "A commit-to-production platform on AWS, where a bad release rolls itself back.",
+      "A commit-to-production platform on AWS, where a bad release stops itself before it reaches everyone.",
     summary:
-      "Terraform-provisioned EKS, a signed and scanned supply chain in GitHub Actions, and Argo CD delivering canaries gated by Prometheus.",
+      "Terraform-provisioned EKS, a signed and scanned supply chain in GitHub Actions, Argo CD delivering canaries gated by Prometheus, and an incident agent that proposes the fix for a person to approve.",
     meta: "Personal project, 2026",
     featured: true,
     stack: [
@@ -86,12 +86,14 @@ export const PROJECTS: Project[] = [
       "Grafana",
       "Loki",
       "Alertmanager",
+      "Velero",
+      "Python (FastAPI)",
     ],
     flow: ["git push", "Actions", "ECR", "Argo CD", "EKS", "Prometheus"],
     highlights: [
-      "5 Terraform modules · 39 AWS resources",
-      "11 Argo CD applications",
+      "5 Terraform modules · 39 resource blocks",
       "Canary 20% → 60% → 100%",
+      "Incident agent that proposes reverts",
     ],
     result:
       "A release with 50% injected errors was aborted automatically in 245–328 s while stable pods kept serving.",
@@ -100,30 +102,40 @@ export const PROJECTS: Project[] = [
         title: "Infrastructure",
         items: [
           "5 Terraform modules written from scratch (VPC, EKS, IAM, ECR, workload identity), 39 AWS resource blocks.",
-          "4 environments: dev, staging, prod and shared.",
+          "dev and shared have been deployed, with dev created on demand and destroyed after each session. staging and prod are planned only.",
         ],
       },
       {
         title: "Supply chain",
         items: [
-          "AWS access from CI through OIDC, with no long-lived keys.",
+          "AWS access from CI through OIDC, with no long-lived AWS keys.",
           "The app pipeline lints, tests, builds 3 images, scans them with Trivy, writes a CycloneDX SBOM and signs with Cosign (keyless).",
-          "3 more workflows run TFLint, Checkov, plans and terraform test.",
+          "3 more workflows run TFLint, Checkov, plans and terraform test, and every Kubernetes manifest is validated before merging.",
         ],
       },
       {
         title: "Delivery",
         items: [
-          "11 Argo CD Applications reconcile the cluster from Git.",
+          "13 Argo CD Application definitions across the local and EKS setups reconcile the cluster from Git.",
           "The API ships as an Argo Rollouts canary (20%, 60%, 100%) gated by a Prometheus error-rate analysis.",
         ],
       },
       {
         title: "Operations",
         items: [
-          "5 Prometheus alert rules, 2 of them SLO burn-rate alerts.",
-          "3 Kyverno admission policies and 6 NetworkPolicies.",
-          "3 runbooks and 4 architecture decision records.",
+          "6 Prometheus alert rules, 2 of them SLO burn-rate alerts.",
+          "3 Kyverno admission policies, tested on a local cluster: 2 enforced, with the image signature check in Audit mode. 8 NetworkPolicies.",
+          "Velero restores the app and its database from S3 in about 3 minutes on EKS, with one DNS issue after restores still open.",
+          "3 runbooks and 6 architecture decision records.",
+        ],
+      },
+      {
+        title: "Incident agent",
+        items: [
+          "A Python agent turns alerts into evidence-based reports on Discord. Rules decide the cause, and its cluster access is read-only.",
+          "Tested against real faults on a local cluster: 9 of 9 on-demand scenarios and 5 of 5 alert-triggered faults, one run each. I wrote both the rules and the faults.",
+          "After an aborted release it opens a revert pull request that a person must approve. Run end to end twice, locally so far.",
+          "A local LLM didn't improve on the rules, so it stays optional and off by default.",
         ],
       },
     ],
@@ -132,7 +144,7 @@ export const PROJECTS: Project[] = [
       video: {
         src: "/demos/gitops-eks-platform/demo.mp4",
         poster: "/demos/gitops-eks-platform/poster.webp",
-        duration: "1:38",
+        duration: "2:07",
         lang: "en",
       },
     },

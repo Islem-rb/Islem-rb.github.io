@@ -9,14 +9,14 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   "gitops-eks-platform": {
     kind: "Plateforme cloud",
     headline:
-      "Une plateforme du commit à la production sur AWS, où une mauvaise release se retire toute seule.",
+      "Une plateforme du commit à la production sur AWS, où une mauvaise release s’arrête d’elle-même avant de toucher tout le monde.",
     summary:
-      "EKS provisionné avec Terraform, une chaîne d’approvisionnement signée et scannée dans GitHub Actions, et Argo CD qui livre des canaries validés par Prometheus.",
+      "EKS provisionné avec Terraform, une chaîne d’approvisionnement signée et scannée dans GitHub Actions, Argo CD qui livre des canaries validés par Prometheus, et un agent d’incident qui propose le correctif à faire approuver par une personne.",
     meta: "Projet personnel, 2026",
     highlights: [
-      "5 modules Terraform · 39 ressources AWS",
-      "11 applications Argo CD",
+      "5 modules Terraform · 39 blocs de ressources",
       "Canary 20% → 60% → 100%",
+      "Agent d’incident qui propose des reverts",
     ],
     result:
       "Une release avec 50 % d’erreurs injectées a été annulée automatiquement en 245 à 328 s, pendant que les pods stables continuaient de servir.",
@@ -25,30 +25,40 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
         title: "Infrastructure",
         items: [
           "5 modules Terraform écrits de zéro (VPC, EKS, IAM, ECR, workload identity), 39 blocs de ressources AWS.",
-          "4 environnements : dev, staging, prod et shared.",
+          "dev et shared ont été déployés, dev étant créé à la demande et détruit après chaque session. staging et prod sont seulement planifiés.",
         ],
       },
       {
         title: "Chaîne d’approvisionnement",
         items: [
-          "Accès AWS depuis la CI via OIDC, sans clés longue durée.",
+          "Accès AWS depuis la CI via OIDC, sans clés AWS longue durée.",
           "Le pipeline applicatif lint, teste, construit 3 images, les scanne avec Trivy, génère un SBOM CycloneDX et signe avec Cosign (keyless).",
-          "3 autres workflows exécutent TFLint, Checkov, les plans et terraform test.",
+          "3 autres workflows exécutent TFLint, Checkov, les plans et terraform test, et chaque manifeste Kubernetes est validé avant la fusion.",
         ],
       },
       {
         title: "Livraison",
         items: [
-          "11 Applications Argo CD réconcilient le cluster depuis Git.",
+          "13 définitions d’Applications Argo CD, entre les environnements local et EKS, réconcilient le cluster depuis Git.",
           "L’API est livrée en canary Argo Rollouts (20 %, 60 %, 100 %), validé par une analyse du taux d’erreur Prometheus.",
         ],
       },
       {
         title: "Exploitation",
         items: [
-          "5 règles d’alerte Prometheus, dont 2 sur le burn rate des SLO.",
-          "3 politiques d’admission Kyverno et 6 NetworkPolicies.",
-          "3 runbooks et 4 architecture decision records.",
+          "6 règles d’alerte Prometheus, dont 2 sur le burn rate des SLO.",
+          "3 politiques d’admission Kyverno, testées sur un cluster local : 2 appliquées, la vérification de signature restant en mode Audit. 8 NetworkPolicies.",
+          "Velero restaure l’application et sa base de données depuis S3 en environ 3 minutes sur EKS, avec un problème DNS après restauration encore ouvert.",
+          "3 runbooks et 6 architecture decision records.",
+        ],
+      },
+      {
+        title: "Agent d’incident",
+        items: [
+          "Un agent Python transforme les alertes en rapports fondés sur des preuves, envoyés sur Discord. Des règles déterminent la cause, et son accès au cluster est en lecture seule.",
+          "Testé sur de vraies pannes sur un cluster local : 9 scénarios sur 9 à la demande et 5 pannes sur 5 déclenchées par alerte, une exécution chacune. J’ai écrit à la fois les règles et les pannes.",
+          "Après une release annulée, il ouvre une pull request de revert qu’une personne doit approuver. Exécuté de bout en bout deux fois, en local pour l’instant.",
+          "Un LLM local ne faisait pas mieux que les règles : il reste donc optionnel et désactivé par défaut.",
         ],
       },
     ],
