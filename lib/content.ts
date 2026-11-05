@@ -19,7 +19,7 @@ export const profile = {
   role: "Cloud & DevOps Engineering Student",
   school: "ESPRIT",
   location: "Ariana, Tunisia",
-  email: "islem.rebhi@esprit.tn",
+  email: "rebhiislem800@gmail.com",
   github: "https://github.com/Islem-rb",
   linkedin: "https://www.linkedin.com/in/rebhi-islem/",
   cv: { en: "/cv-en.pdf", fr: "/cv-fr.pdf" },
