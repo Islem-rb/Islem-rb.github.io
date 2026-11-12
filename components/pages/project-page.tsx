@@ -53,7 +53,7 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
         <FadeIn className="flex min-w-0 flex-col gap-6">
           <Link
             href={localePath(lang, "/projects")}
-            className="focus-ring group inline-flex w-fit items-center gap-1.5 rounded-sm text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="focus-ring group inline-flex w-fit items-center gap-1.5 rounded-sm text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground print:hidden"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
             {t.back}
@@ -123,7 +123,7 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
       {project.demo ? (
         <section
           aria-labelledby="demo-heading"
-          className="mx-auto w-full max-w-310 px-5 pt-14 sm:px-8 sm:pt-20"
+          className="mx-auto w-full max-w-310 px-5 pt-14 sm:px-8 sm:pt-20 print:hidden"
         >
           <FadeIn delay={0.1} className="flex flex-col gap-5">
             <h2
@@ -259,7 +259,7 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
         </section>
       ) : null}
 
-      <section className="mx-auto w-full max-w-310 px-5 pt-6 sm:px-8">
+      <section className="mx-auto w-full max-w-310 px-5 pt-6 sm:px-8 print:hidden">
         <Link
           href={localePath(lang, `/projects/${next.slug}`)}
           className="focus-ring group flex items-center justify-between gap-6 border-y border-foreground py-6 transition-colors hover:bg-surface sm:px-2"
