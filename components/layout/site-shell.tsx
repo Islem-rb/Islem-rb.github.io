@@ -1,38 +1,29 @@
 import { Analytics } from "@/components/layout/analytics";
 import { Nav } from "@/components/layout/nav";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { Providers } from "@/components/layout/providers";
 import { SkipToContent } from "@/components/layout/skip-to-content";
 import type { Lang } from "@/lib/i18n";
 import type { Viewport } from "next";
-import { Bricolage_Grotesque, Geist_Mono, Inter } from "next/font/google";
+import { Archivo } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/app/globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// One variable family: normal width for text, expanded for headings.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
+  axes: ["wdth"],
   display: "swap",
 });
 
 /** Font CSS variables, shared with app/global-not-found.tsx. */
-export const fontVariables = `${inter.variable} ${geistMono.variable} ${bricolage.variable}`;
+export const fontVariables = archivo.variable;
 
 export const siteViewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f6f3" },
-    { media: "(prefers-color-scheme: dark)", color: "#0d0f12" },
+    { media: "(prefers-color-scheme: light)", color: "#eceee7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1420" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -56,6 +47,7 @@ export function SiteShell({
           <SkipToContent lang={lang} />
           <Nav />
           {children}
+          <SiteFooter lang={lang} />
         </Providers>
         <Analytics />
       </body>

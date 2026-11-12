@@ -50,7 +50,7 @@ const MAX_QUESTION = 200;
 /** Older answers drop off so the page never grows without bound. */
 const MAX_ENTRIES = 4;
 const CHIP =
-  "focus-ring inline-flex min-h-9 cursor-pointer items-center rounded-full border border-foreground/10 bg-surface px-3.5 text-[13.5px] text-foreground/65 transition-colors hover:border-foreground/25 hover:text-foreground";
+  "focus-ring inline-flex min-h-9 cursor-pointer items-center rounded-md border border-border bg-surface px-3.5 text-[13.5px] text-foreground/65 transition-colors hover:border-foreground/25 hover:text-foreground";
 
 export function Ask({
   ref,
@@ -199,7 +199,7 @@ export function Ask({
           id="ask"
           onSubmit={handleSubmit}
           role="search"
-          className="flex scroll-mt-32 items-center gap-2 rounded-2xl border border-foreground/20 bg-surface py-1.5 pr-1.5 pl-5 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-18px_rgb(0_0_0/0.25)] transition-colors focus-within:border-foreground"
+          className="flex scroll-mt-32 items-center gap-2 rounded-lg border border-foreground/35 bg-surface py-1.5 pr-1.5 pl-5 shadow-[0_14px_30px_-22px_rgb(0_0_0/0.35)] transition-colors focus-within:border-foreground"
         >
           <input
             ref={inputRef}
@@ -236,7 +236,7 @@ export function Ask({
             type="submit"
             disabled={!value.trim()}
             aria-label={t.ask.submit}
-            className="focus-ring inline-flex h-11.5 w-11.5 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-foreground text-background transition-opacity disabled:cursor-default disabled:opacity-30"
+            className="focus-ring inline-flex h-11.5 w-11.5 shrink-0 cursor-pointer items-center justify-center rounded-md bg-accent text-white transition-colors dark:text-background disabled:cursor-default disabled:bg-foreground/10 disabled:text-foreground/40"
           >
             <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
           </button>
@@ -288,7 +288,7 @@ export function Ask({
                 animate={{ opacity: index === 0 ? 1 : 0.55, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.45, ease: EASE }}
-                className="rounded-[20px] border border-foreground/10 bg-surface px-5 py-5 transition-opacity hover:!opacity-100 focus-within:!opacity-100 sm:px-6"
+                className="sheet px-5 py-5 transition-opacity hover:!opacity-100 focus-within:!opacity-100 sm:px-6"
               >
                 <EntryView
                   entry={entry}

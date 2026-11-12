@@ -30,6 +30,7 @@ const en = {
     toggleTheme: "Toggle theme",
     switchLang: "Version française",
     switchLangShort: "FR",
+    role: "Cloud & DevOps",
   },
   hero: {
     greeting: "Hey, I’m",
@@ -92,7 +93,11 @@ const en = {
     seeProjects: "See projects",
     subject: "Hello Islem, about an opportunity",
     email: "Email",
-    credit: "Built with Next.js · Template by React Bits Pro",
+    eyebrow: "Contact",
+    available: "Open to PFE internships · 2026",
+    cv: "Résumé",
+    top: "Back to top",
+    rights: "Designed and built from scratch.",
   },
   about: {
     snapshotsLabel:
@@ -249,6 +254,7 @@ const fr: Dictionary = {
     toggleTheme: "Changer de thème",
     switchLang: "English version",
     switchLangShort: "EN",
+    role: "Cloud & DevOps",
   },
   hero: {
     greeting: "Salut, moi c’est",
@@ -311,7 +317,11 @@ const fr: Dictionary = {
     seeProjects: "Voir les projets",
     subject: "Bonjour Islem, à propos d’une opportunité",
     email: "E-mail",
-    credit: "Réalisé avec Next.js · Modèle React Bits Pro",
+    eyebrow: "Contact",
+    available: "Disponible pour un stage PFE · 2026",
+    cv: "CV",
+    top: "Haut de page",
+    rights: "Conçu et développé de A à Z.",
   },
   about: {
     snapshotsLabel:

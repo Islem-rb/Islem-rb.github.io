@@ -110,11 +110,11 @@ export function MapHero({
       </noscript>
       <div className="rollout-bar" aria-hidden="true" />
 
-      <div className="mx-auto grid w-full max-w-310 grid-cols-1 items-start gap-x-12 gap-y-6 px-5 pt-28 sm:px-8 sm:pt-32 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div className="mx-auto grid w-full max-w-310 grid-cols-1 items-start gap-x-12 gap-y-6 px-5 pt-26 sm:px-8 sm:pt-30 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div ref={leftRef} data-at="1" className="scroll-mt-24">
           {/* Kept mounted while a case study is open, so the thread is still there on return. */}
           <div hidden={Boolean(open)}>
-            <p className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-surface py-1 pr-3 pl-2.5 text-[13px] text-foreground/65">
+            <p className="inline-flex items-center gap-2 rounded-md border border-border bg-surface py-1 pr-3 pl-2.5 text-[13px] text-muted-foreground">
               <span
                 aria-hidden="true"
                 className={`h-1.5 w-1.5 rounded-full transition-colors ${
@@ -131,11 +131,11 @@ export function MapHero({
               </button>
             </p>
 
-            <h1 className="mt-5 font-serif text-[2.5rem] font-semibold leading-[1.02] tracking-[-0.035em] text-balance text-foreground sm:text-[3.1rem] xl:text-[3.9rem]">
+            <h1 className="mt-6 font-serif text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-balance text-foreground sm:text-[2.8rem] xl:text-[3.35rem]">
               {t.hero.line1} {t.hero.line2}{" "}
-              <span className="text-cloud">{t.hero.emphasis}</span>
+              <span className="text-accent">{t.hero.emphasis}</span>
             </h1>
-            <p className="mt-4 max-w-[44ch] text-[17.5px] text-pretty text-foreground/65">
+            <p className="mt-5 max-w-[44ch] text-[17.5px] leading-relaxed text-pretty text-muted-foreground">
               {t.map.intro}
             </p>
 

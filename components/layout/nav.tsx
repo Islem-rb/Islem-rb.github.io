@@ -1,18 +1,10 @@
 "use client";
 
 import { Moon, Search, Sun } from "lucide-react";
-import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type ReactNode,
-} from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 
 import { localePath, stripLocale, type Dictionary } from "@/lib/i18n";
 import { useLang } from "@/lib/use-lang";
@@ -92,7 +84,7 @@ function NavThemeToggle({ t }: { t: Dictionary["nav"] }): ReactNode {
           : t.toggleTheme
       }
       aria-pressed={mounted ? isDark : undefined}
-      className="focus-ring relative inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-background ring-1 ring-foreground/8 transition-colors"
+      className="focus-ring relative inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-foreground/70 transition-colors hover:text-foreground"
     >
       <span aria-hidden="true" className="relative h-4 w-4">
         <Sun
@@ -115,18 +107,21 @@ function NavThemeToggle({ t }: { t: Dictionary["nav"] }): ReactNode {
 }
 
 const ASK_BUTTON =
-  "focus-ring inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-foreground/60 transition-colors hover:text-foreground";
+  "focus-ring inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-foreground/70 transition-colors hover:text-foreground";
+
+/** A small survey marker: the brand mark, also the map's centre point. */
+function Marker(): ReactNode {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="3" fill="var(--accent)" />
+      <path d="M12 0v6M12 18v6M0 12h6M18 12h6" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
 
 export function Nav(): ReactNode {
   const pathname = usePathname();
-  const listRef = useRef<HTMLUListElement>(null);
-  const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
-  const [pillRect, setPillRect] = useState<{
-    x: number;
-    width: number;
-  } | null>(null);
-  const [hasMeasured, setHasMeasured] = useState(false);
-
   const { lang, t: dict } = useLang();
   const t = dict.nav;
   const basePath = stripLocale(pathname);
@@ -138,86 +133,52 @@ export function Nav(): ReactNode {
       : basePath === item.href || basePath.startsWith(`${item.href}/`)
   );
 
-  // Measure the active item from a ResizeObserver callback: it fires once on
-  // observe and again whenever fonts or the viewport change the item widths.
-  useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const measure = (): void => {
-      const activeEl =
-        activeIndex >= 0 ? itemRefs.current[activeIndex] : null;
-      if (!activeEl) {
-        setPillRect(null);
-        return;
-      }
-      const listRect = list.getBoundingClientRect();
-      const itemRect = activeEl.getBoundingClientRect();
-      setPillRect({
-        x: itemRect.left - listRect.left,
-        width: itemRect.width,
-      });
-    };
-    const ro = new ResizeObserver(measure);
-    ro.observe(list);
-    return () => ro.disconnect();
-  }, [activeIndex, lang]);
-
-  useEffect(() => {
-    if (!pillRect) return;
-    const id = requestAnimationFrame(() => setHasMeasured(true));
-    return () => cancelAnimationFrame(id);
-  }, [pillRect]);
-
   return (
-    <nav
-      aria-label={t.label}
-      className="fixed left-1/2 top-6 z-50 -translate-x-1/2"
-    >
-      <div className="flex items-center gap-1 rounded-full bg-background p-1.5 shadow-sm border border-foreground/8">
-        <ul ref={listRef} className="relative flex items-center gap-1">
-          {pillRect && (
-            <motion.span
-              aria-hidden="true"
-              initial={false}
-              animate={{ x: pillRect.x, width: pillRect.width }}
-              transition={
-                hasMeasured
-                  ? { type: "spring", stiffness: 380, damping: 32 }
-                  : { duration: 0 }
-              }
-              style={{ left: 0, top: 0, bottom: 0 }}
-              className="absolute rounded-full bg-foreground/5 ring-1 ring-foreground/8"
-            />
-          )}
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
+      <nav
+        aria-label={t.label}
+        className="mx-auto flex h-16 w-full max-w-310 items-center gap-2 px-5 sm:px-8"
+      >
+        <Link
+          href={localePath(lang, "/")}
+          className="focus-ring mr-auto inline-flex items-center gap-2.5 rounded-md text-foreground"
+        >
+          <Marker />
+          <span className="hidden font-serif text-[15px] font-semibold tracking-[-0.01em] sm:inline">
+            Islem Rebhi
+          </span>
+          <span className="hidden text-[13px] text-muted-foreground md:inline">
+            / {t.role}
+          </span>
+        </Link>
+
+        <ul className="flex h-full items-stretch">
           {NAV_ITEMS.map((item, index) => {
             const isActive = index === activeIndex;
             return (
-              <li
-                key={item.href}
-                ref={(el) => {
-                  itemRefs.current[index] = el;
-                }}
-                className="relative"
-              >
+              <li key={item.href} className="relative flex">
                 <Link
                   href={localePath(lang, item.href)}
                   aria-current={isActive ? "page" : undefined}
-                  className="focus-ring relative inline-flex cursor-pointer items-center justify-center rounded-full px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors duration-300 sm:px-4"
+                  className={`focus-ring relative inline-flex items-center px-2.5 text-[14px] font-medium whitespace-nowrap transition-colors sm:px-3.5 ${
+                    isActive ? "text-foreground" : "text-foreground/60 hover:text-foreground"
+                  }`}
                 >
+                  {t[item.key]}
                   <span
-                    className={
-                      isActive
-                        ? "relative z-10 text-foreground"
-                        : "relative z-10 text-foreground/60 hover:text-foreground"
-                    }
-                  >
-                    {t[item.key]}
-                  </span>
+                    aria-hidden="true"
+                    className={`absolute inset-x-2.5 -bottom-px h-0.5 bg-accent transition-transform duration-300 sm:inset-x-3.5 ${
+                      isActive ? "scale-x-100" : "scale-x-0"
+                    }`}
+                  />
                 </Link>
               </li>
             );
           })}
         </ul>
+
+        <span aria-hidden="true" className="mx-1 h-5 w-px bg-border sm:mx-2" />
+
         {basePath === "/" ? (
           <button
             type="button"
@@ -226,7 +187,7 @@ export function Nav(): ReactNode {
             title={dict.ask.navLabel}
             className={ASK_BUTTON}
           >
-            <Search className="h-3.5 w-3.5" aria-hidden="true" />
+            <Search className="h-4 w-4" aria-hidden="true" />
           </button>
         ) : (
           <Link
@@ -235,7 +196,7 @@ export function Nav(): ReactNode {
             title={dict.ask.navLabel}
             className={ASK_BUTTON}
           >
-            <Search className="h-3.5 w-3.5" aria-hidden="true" />
+            <Search className="h-4 w-4" aria-hidden="true" />
           </Link>
         )}
         <a
@@ -244,12 +205,12 @@ export function Nav(): ReactNode {
           lang={otherLang}
           aria-label={t.switchLang}
           title={t.switchLang}
-          className="focus-ring inline-flex h-8 min-w-8 cursor-pointer items-center justify-center rounded-full px-1.5 font-mono text-[11px] font-medium text-foreground/60 transition-colors hover:text-foreground"
+          className="focus-ring inline-flex h-8 min-w-8 cursor-pointer items-center justify-center rounded-md px-1.5 text-[12px] font-semibold tracking-[0.08em] text-foreground/70 transition-colors hover:text-foreground"
         >
           {t.switchLangShort}
         </a>
         <NavThemeToggle t={t} />
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }

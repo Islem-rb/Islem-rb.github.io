@@ -28,7 +28,7 @@ export function DemoMedia({
     <div className="flex flex-col gap-5">
       {video ? (
         <figure className="flex flex-col gap-2.5">
-          <div className="border-foreground/8 bg-foreground/4 overflow-hidden rounded-3xl border shadow-sm">
+          <div className="sheet overflow-hidden p-1.5">
             <video
               controls
               playsInline
@@ -40,7 +40,7 @@ export function DemoMedia({
               <source src={video.src} type="video/mp4" />
             </video>
           </div>
-          <figcaption className="text-foreground/50 flex items-center gap-2 px-1 font-mono text-[11px] tracking-tight">
+          <figcaption className="flex items-center gap-2 px-1 text-[13px] text-muted-foreground">
             <Play className="h-3 w-3" aria-hidden="true" />
             {video.duration}
             {video.lang !== lang ? (
@@ -53,7 +53,7 @@ export function DemoMedia({
       {shots?.length ? (
         <ul
           aria-label={t.screenshots}
-          className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pb-2 sm:-mx-10 sm:scroll-px-10 sm:px-10"
+          className="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:scroll-px-8 sm:px-8"
         >
           {shots.map((shot) => (
             <li key={shot.src} className="shrink-0 snap-start">
@@ -62,7 +62,7 @@ export function DemoMedia({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={t.openImage(shot.alt[lang])}
-                className="focus-ring border-foreground/8 bg-foreground/4 block overflow-hidden rounded-2xl border transition-opacity hover:opacity-90"
+                className="focus-ring block overflow-hidden rounded-md border border-border bg-surface transition-opacity hover:opacity-90"
               >
                 {/* Explicit size so nothing shifts while it loads. */}
                 <img

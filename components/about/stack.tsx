@@ -36,8 +36,8 @@ const CHIPS: Chip[] = [
   { label: "Spring Boot", slug: "springboot", bg: "#4E9A2A", fg: "#ffffff" },
 ];
 
-const CHIP_RADIUS = 14;
-const ICON_RADIUS = 10;
+const CHIP_RADIUS = 6;
+const ICON_RADIUS = 4;
 const WALL_PAD = 16;
 
 type ChipState = {
@@ -220,20 +220,18 @@ export function Stack(): ReactNode {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
-        <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
-          {t.about.stack}
-        </h2>
-        <span className="text-foreground/45 font-mono text-[11px] tracking-tight">
+        <h2 className="eyebrow">{t.about.stack}</h2>
+        <span className="text-muted-foreground text-[12.5px]">
           {t.about.dragHint}
         </span>
       </div>
 
-      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative h-72 overflow-hidden rounded-4xl border sm:h-72">
+      <div className="sheet relative h-72 overflow-hidden">
         <button
           type="button"
           onClick={() => setResetKey((k) => k + 1)}
           aria-label={t.about.resetStack}
-          className="focus-ring border-foreground/8 bg-background text-foreground/70 hover:text-foreground absolute top-3 right-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-colors"
+          className="focus-ring border-border bg-background text-foreground/70 hover:text-foreground absolute top-3 right-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors"
         >
           <RotateCcw
             className="h-4 w-4"

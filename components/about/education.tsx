@@ -17,23 +17,21 @@ export function Education({ lang }: { lang: Lang }): ReactNode {
   const entries: Entry[] = getEducation(lang);
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
-        {getDictionary(lang).about.education}
-      </h2>
-      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 relative rounded-4xl border p-2 sm:p-4">
-        <ul className="flex flex-col gap-2">
+      <h2 className="eyebrow">{getDictionary(lang).about.education}</h2>
+      <div className="sheet">
+        <ul className="flex flex-col divide-y divide-border">
           {entries.map((entry) => (
             <li
               key={`${entry.school}-${entry.period}`}
-              className="bg-background border-foreground/5 flex items-center gap-4 rounded-3xl border p-2"
+              className="flex items-center gap-4 p-4"
               style={{ minHeight: ROW_HEIGHT }}
             >
               <SchoolLogo entry={entry} />
               <div className="flex min-w-0 flex-col">
-                <span className="text-foreground text-[17px] font-semibold tracking-tight sm:text-[18px]">
+                <span className="text-foreground font-serif text-[17px] font-semibold tracking-[-0.025em]">
                   {entry.school}
                 </span>
-                <span className="text-foreground/65 mt-0.5 text-[14px] tracking-tight sm:text-[15px]">
+                <span className="text-muted-foreground mt-0.5 text-[14px] sm:text-[15px]">
                   {entry.degree}
                   <span className="text-foreground/30 mx-2">•</span>
                   <span className="text-foreground/55 whitespace-nowrap">{entry.period}</span>
@@ -51,9 +49,9 @@ function SchoolLogo({ entry }: { entry: Entry }): ReactNode {
   const initials = entry.school.charAt(0);
   return (
     <span
-      className="border-foreground/15 inline-flex h-12 w-12 shrink-0 items-center justify-center border"
+      className="border-border bg-background inline-flex h-12 w-12 shrink-0 items-center justify-center border"
       aria-hidden="true"
-      style={{ borderRadius: 14 }}
+      style={{ borderRadius: 6 }}
     >
       {entry.slug ? (
         <img

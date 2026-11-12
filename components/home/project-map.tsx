@@ -126,7 +126,7 @@ function activate(run: () => void) {
 }
 
 const PILL =
-  "focus-ring inline-flex min-h-9 cursor-pointer items-center gap-2 rounded-full border border-foreground/10 bg-surface px-3.5 text-[13.5px] text-foreground/65 transition-colors hover:text-foreground";
+  "focus-ring inline-flex min-h-9 cursor-pointer items-center gap-2 rounded-md border border-border bg-surface px-3.5 text-[13.5px] text-muted-foreground transition-colors hover:text-foreground";
 
 export function ProjectMap({
   lang,
@@ -161,7 +161,7 @@ export function ProjectMap({
         <div
           role="group"
           aria-label={t.layout}
-          className="inline-flex gap-0.5 rounded-full border border-foreground/10 bg-surface p-[3px]"
+          className="inline-flex gap-0.5 rounded-md border border-border bg-surface p-[3px]"
         >
           {(["map", "time"] as const).map((value) => (
             <button
@@ -169,7 +169,7 @@ export function ProjectMap({
               type="button"
               aria-pressed={mode === value}
               onClick={() => onMode(value)}
-              className={`focus-ring cursor-pointer rounded-full px-3.5 py-1.5 text-[13.5px] transition-colors ${
+              className={`focus-ring cursor-pointer rounded-[4px] px-3.5 py-1.5 text-[13.5px] transition-colors ${
                 mode === value
                   ? "bg-foreground text-background"
                   : "text-foreground/65 hover:text-foreground"

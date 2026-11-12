@@ -47,7 +47,7 @@ export function CaseStudy({
         <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--c)]" />
         {project.kind} · {project.year}
       </p>
-      <h2 className="mt-2 font-serif text-[2.1rem] font-semibold leading-[1.04] tracking-[-0.035em] text-foreground sm:text-[2.75rem]">
+      <h2 className="mt-2 font-serif text-[1.95rem] font-semibold leading-[1.04] tracking-[-0.04em] text-foreground sm:text-[2.4rem]">
         {project.name}
       </h2>
       <p className="mt-3.5 text-[19px] leading-[1.4] text-pretty text-foreground">
@@ -66,7 +66,7 @@ export function CaseStudy({
       <p className="mt-5 text-pretty text-foreground/65">{project.summary}</p>
 
       {project.result ? (
-        <p className="mt-5 rounded-r-xl border-l-[3px] border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_9%,var(--surface))] px-4.5 py-4">
+        <p className="mt-5 rounded-r-md border-l-[3px] border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_9%,var(--surface))] px-4.5 py-4">
           <span className="mb-1 block text-[12px] font-semibold tracking-[0.04em] text-[var(--c)] uppercase">
             {t.projects.result}
           </span>
@@ -91,7 +91,7 @@ export function CaseStudy({
         {project.stack.map((tool) => (
           <li
             key={tool}
-            className="rounded-full border border-foreground/10 bg-surface px-2.5 py-1 text-[13px] text-foreground/65"
+            className="rounded-md border border-border bg-surface px-2.5 py-1 text-[13px] text-muted-foreground"
           >
             {tool}
           </li>

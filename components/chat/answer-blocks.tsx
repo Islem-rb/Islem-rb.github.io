@@ -18,8 +18,8 @@ import {
 import { localePath, type Dictionary, type Lang } from "@/lib/i18n";
 import { StaggerContainer, StaggerItem } from "@/lib/motion";
 
-const PANEL = "rounded-2xl border border-foreground/10 bg-background/60 p-4 sm:p-5";
-const LABEL = "text-[12.5px] text-foreground/50";
+const PANEL = "rounded-lg border border-border bg-background/60 p-4 sm:p-5";
+const LABEL = "text-[12.5px] text-muted-foreground";
 const GHOST_LINK =
   "focus-ring group inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border border-foreground/20 px-4 text-sm font-medium text-foreground transition-colors hover:border-foreground";
 
@@ -172,7 +172,7 @@ function BlockView({
           {getLanguages(lang).map((language) => (
             <span
               key={language.name}
-              className="inline-flex items-center gap-2 rounded-full border border-foreground/10 px-3.5 py-2 text-sm text-foreground"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3.5 py-2 text-sm text-foreground"
             >
               <span className="font-medium">{language.name}</span>
               <span className={LABEL}>{language.level}</span>

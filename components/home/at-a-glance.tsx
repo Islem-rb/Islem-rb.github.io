@@ -6,7 +6,7 @@ import { cvFor, getExperience, getProjects, profile } from "@/lib/content";
 import { getDictionary, localePath, type Lang } from "@/lib/i18n";
 
 const ROW =
-  "focus-ring group grid grid-cols-[1fr_auto] items-baseline gap-x-5 gap-y-1 border-b border-foreground/10 px-1 py-5 transition-[padding,background-color] duration-300 hover:bg-foreground/4 hover:pl-3.5 md:grid-cols-[220px_1fr_auto]";
+  "focus-ring group grid grid-cols-[1fr_auto] items-baseline gap-x-5 gap-y-1 border-b border-foreground/10 px-1 py-5 transition-[padding,background-color] duration-300 hover:bg-surface hover:pl-3.5 md:grid-cols-[220px_1fr_auto]";
 
 /** The whole site in five rows, for visitors who would rather scan than ask. */
 export function AtAGlance({ lang }: { lang: Lang }): ReactNode {
@@ -31,7 +31,7 @@ export function AtAGlance({ lang }: { lang: Lang }): ReactNode {
     >
       <h2
         id="glance-heading"
-        className="font-serif text-[1.9rem] font-semibold tracking-[-0.025em] text-foreground"
+        className="font-serif text-[1.7rem] font-semibold tracking-[-0.035em] text-foreground"
       >
         {g.title}
       </h2>
@@ -39,7 +39,7 @@ export function AtAGlance({ lang }: { lang: Lang }): ReactNode {
         {rows.map((row) => {
           const content = (
             <>
-              <span className="font-serif text-[23px] font-semibold tracking-[-0.02em] text-foreground">
+              <span className="font-serif text-[20px] font-semibold tracking-[-0.03em] text-foreground">
                 {row.name}
                 {"count" in row ? (
                   <sup className="ml-1.5 font-sans text-[12px] font-medium text-foreground/45">
@@ -47,7 +47,7 @@ export function AtAGlance({ lang }: { lang: Lang }): ReactNode {
                   </sup>
                 ) : null}
               </span>
-              <span className="col-span-full row-start-2 text-foreground/65 md:col-span-1 md:row-start-auto">
+              <span className="col-span-full row-start-2 text-muted-foreground md:col-span-1 md:row-start-auto">
                 {row.what}
               </span>
               <span className="col-start-2 row-start-1 inline-flex items-center gap-1.5 text-[14.5px] font-medium text-foreground md:col-start-auto md:row-start-auto">

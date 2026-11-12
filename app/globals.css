@@ -2,41 +2,45 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Survey: a working map sheet. Chart paper, navy ink, one marker colour. */
 :root {
-  --background: #f6f6f3;
-  --foreground: #14161b;
-  --surface: #ffffff;
-  --muted: #ecece8;
-  --muted-foreground: #5c626e;
-  --border: #e2e2dd;
-  --ring: #2458e6;
-  --frame: #f6f6f3;
-  --signal: #18874a;
+  --background: #eceee7;
+  --foreground: #0f1a26;
+  --surface: #f6f7f2;
+  --muted: #e2e5dc;
+  --muted-foreground: #4f5b67;
+  --border: #cfd4ca;
+  --accent: #d9431f;
+  --ring: #d9431f;
+  --grid: rgb(15 26 38 / 0.055);
+  --signal: #187a45;
   /* Project types, used as data colours on the map. */
-  --cloud: #2458e6;
-  --product: #7a3fe0;
-  --ai: #d97a06;
+  --cloud: #1d5bc0;
+  --product: #7637d0;
+  --ai: #b86e00;
 }
 
 .dark {
-  --background: #0d0f12;
-  --foreground: #f1f2f4;
-  --surface: #15181d;
-  --muted: #1a1d22;
-  --muted-foreground: #a0a6b1;
-  --border: #262a31;
-  --ring: #6c9cff;
-  --frame: #0d0f12;
-  --signal: #56cf8c;
-  --cloud: #6c9cff;
-  --product: #ad8eff;
-  --ai: #f4ad3d;
+  --background: #0a1420;
+  --foreground: #e7ebe3;
+  --surface: #0f1c2b;
+  --muted: #142334;
+  --muted-foreground: #95a2ae;
+  --border: #22344a;
+  --accent: #ff7349;
+  --ring: #ff7349;
+  --grid: rgb(231 235 227 / 0.05);
+  --signal: #5bd08f;
+  --cloud: #72a6ff;
+  --product: #b597ff;
+  --ai: #f2b04a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
+  --color-accent: var(--accent);
   --color-cloud: var(--cloud);
   --color-product: var(--product);
   --color-ai: var(--ai);
@@ -47,6 +51,17 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
+}
+
+/* Square-cut corners everywhere: a technical sheet, not a bubbly app. */
+@theme {
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+  --radius-3xl: 10px;
+  --radius-4xl: 12px;
 }
 
 html {
@@ -67,17 +82,80 @@ html.dark {
   }
 }
 
-/* Declared on body: next/font puts the --font-geist-* variables on <body>, so they are undefined at :root. */
+/* Archivo's ampersand reads like an 8 at small sizes: borrow a plain one. */
+@font-face {
+  font-family: "Plain Amp";
+  src: local("Liberation Sans"), local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("DejaVu Sans");
+  unicode-range: U+0026;
+}
+
+/* Declared on body: next/font puts its variables on <body>, so they are undefined at :root. */
 body {
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  /* Display face for headings. The token keeps its old name so every heading picks it up. */
-  --font-serif: var(--font-bricolage), var(--font-inter), system-ui, sans-serif;
+  --font-sans: "Plain Amp", var(--font-archivo), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  /* Display face for headings: the same family, set wide. The token keeps its old name. */
+  --font-serif: "Plain Amp", var(--font-archivo), system-ui, sans-serif;
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* The sheet's coordinate grid, fading out down the page. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center -1px;
+  -webkit-mask-image: radial-gradient(ellipse 120% 90% at 50% 0%, #000 35%, transparent 85%);
+  mask-image: radial-gradient(ellipse 120% 90% at 50% 0%, #000 35%, transparent 85%);
+}
+
+.font-serif {
+  font-stretch: 125%;
+}
+
+/* Small uppercase labels, like the legend of a map. */
+.eyebrow {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* A framed panel with surveyor's corner marks. */
+.sheet {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.sheet::before,
+.sheet::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+  border-color: var(--foreground);
+  border-style: solid;
+}
+.sheet::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1.5px 0 0 1.5px;
+}
+.sheet::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 1.5px 1.5px 0;
 }
 
 .skip-to-content {
@@ -135,165 +213,8 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   }
 }
 
-.site-frame {
-  display: block;
-  position: absolute;
-  z-index: 9999;
-  pointer-events: none;
-  background-color: var(--frame);
-}
-
-.site-frame--top {
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 10px;
-}
-
-.site-frame--left {
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 10px;
-}
-
-.site-frame--right {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 10px;
-}
-
-.site-corner {
-  display: block;
-  position: absolute;
-  z-index: 9998;
-  pointer-events: none;
-  color: var(--frame);
-}
-
-.site-corner--top-left {
-  transform: rotate(90deg);
-  top: 10px;
-  left: 10px;
-}
-
-.site-corner--top-right {
-  top: 10px;
-  right: 10px;
-  transform: rotate(180deg);
-}
-
-@media (max-width: 850px) {
-  .site-frame,
-  .site-corner {
-    display: none;
-  }
-}
-
-.project-card {
-  transform: translateY(0);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
-  transition:
-    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-
-.project-card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--foreground) 14%, transparent);
-  box-shadow:
-    0 10px 20px -8px rgb(0 0 0 / 0.12),
-    0 4px 8px -4px rgb(0 0 0 / 0.08);
-}
-
-.dark .project-card {
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
-}
-
-.dark .project-card:hover {
-  box-shadow:
-    0 10px 24px -8px rgb(0 0 0 / 0.6),
-    0 4px 8px -4px rgb(0 0 0 / 0.4);
-}
-
-.project-card__image {
-  overflow: hidden;
-}
-
-.project-card__image-inner {
-  position: absolute;
-  inset: 0;
-  transform: scale(1);
-  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-
-.project-card:hover .project-card__image-inner {
-  transform: scale(1.06);
-}
-
 ::selection {
-  background: color-mix(in srgb, var(--foreground) 14%, transparent);
-}
-
-/* Flow panel: the project's delivery path completes stage by stage on hover. */
-.flow-step:not(:last-child) .flow-dot::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: 1px;
-  height: 15px;
-  transform: translateX(-50%);
-  background: color-mix(in srgb, var(--foreground) 14%, transparent);
-}
-
-.flow-dot,
-.flow-check,
-.flow-rule {
-  transition:
-    background-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 260ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: calc(var(--i, 0) * 90ms);
-}
-
-.project-card:hover .flow-dot {
-  background-color: var(--foreground);
-  border-color: var(--foreground);
-}
-
-.project-card:hover .flow-rule {
-  background-color: color-mix(in srgb, var(--foreground) 18%, transparent);
-}
-
-.project-card:hover .flow-check {
-  color: var(--signal);
-}
-
-.flow-status::before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 6px;
-  border-radius: 9999px;
-  vertical-align: 1px;
-  background: color-mix(in srgb, var(--foreground) 25%, transparent);
-  transition: background-color 260ms ease;
-  transition-delay: 0ms;
-}
-
-.project-card:hover .flow-status::before {
-  background: var(--signal);
-  transition-delay: 600ms;
-}
-
-.project-card:focus-within {
-  border-color: color-mix(in srgb, var(--foreground) 14%, transparent);
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
 /* ---- Home: the page arrives in three slices, like a careful release ---- */
@@ -318,7 +239,7 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   z-index: 60;
   height: 2px;
   width: 0;
-  background: var(--foreground);
+  background: var(--accent);
   transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s 0.5s;
 }
 .rollout[data-stage="1"] .rollout-bar { width: 10%; }
@@ -361,7 +282,8 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 .pmap-node text {
   fill: var(--foreground);
   font-family: var(--font-serif);
-  font-size: 15.5px;
+  font-stretch: 112%;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.01em;
   paint-order: stroke;
@@ -381,13 +303,14 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   letter-spacing: 0;
 }
 .pmap-core { transition: opacity 0.5s; }
-.pmap-core circle { fill: none; stroke: var(--foreground); stroke-width: 1.5; }
+.pmap-core circle { fill: none; stroke: var(--accent); stroke-width: 1.5; }
 .pmap-axis { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .pmap-axis line { stroke: var(--hair-2); stroke-dasharray: 2 5; }
 .pmap-axis text {
   fill: var(--faint);
   font-family: var(--font-serif);
-  font-size: 30px;
+  font-stretch: 125%;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.03em;
   text-anchor: middle;
