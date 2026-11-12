@@ -40,7 +40,17 @@ export type Answer = {
   mode?: "map" | "time";
   /** Replay the page's staged arrival. */
   replay?: boolean;
+  /**
+   * What the question was matched to, such as "intent:skills", "project:carnova",
+   * "tech:Docker", "year:2025" or "fallback". Used by the tests and for follow-ups.
+   */
+  matched?: string;
+  /** What a follow-up question ("is it live?") refers to. */
+  context?: ChatContext;
 };
+
+/** The conversation so far, as far as follow-up questions need it. */
+export type ChatContext = { project?: string };
 
 /** A live suggestion shown under the input while typing. */
 export type Suggestion = {

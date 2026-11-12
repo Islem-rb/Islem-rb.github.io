@@ -8,7 +8,7 @@ import {
   INTENTS,
   PROJECT_ALIASES,
 } from "./intents";
-import type { Answer, Suggestion } from "./types";
+import type { Answer, ChatContext, Suggestion } from "./types";
 
 const STOPWORDS = new Set([
   "the", "and", "you", "your", "with", "for", "are", "what", "how", "use",
@@ -137,7 +137,7 @@ function findTech(
 }
 
 /** Turn a free-form question into an answer built from the site's own content. */
-export function answer(query: string, lang: Lang): Answer {
+export function answer(query: string, lang: Lang, _context?: ChatContext): Answer {
   const t = getDictionary(lang).ask.answers;
   const norm = normalize(query);
   const projects = getProjects(lang);
@@ -151,6 +151,8 @@ export function answer(query: string, lang: Lang): Answer {
       focus: { slugs: [project.slug] },
       open: project.slug,
       mode: "map",
+      matched: `project:${project.slug}`,
+      context: { project: project.slug },
     };
   }
 
@@ -166,6 +168,7 @@ export function answer(query: string, lang: Lang): Answer {
       followUps: ["timeline", "experience", "projects"],
       focus: { slugs: summary.slugs, year: Number(year) },
       mode: "time",
+      matched: `year:${year}`,
     };
   }
 
@@ -180,11 +183,13 @@ export function answer(query: string, lang: Lang): Answer {
           followUps: ["skills", "projects", "experience"],
           focus: { slugs: tech.slugs, tool: tech.label },
           mode: "map",
+          matched: `tech:${tech.label}`,
         }
       : {
           text: t.techSkill(tech.label),
           blocks: [{ type: "skills" }],
           followUps: ["projects", "experience", "cv"],
+          matched: `tech:${tech.label}`,
         };
   }
 
@@ -208,6 +213,7 @@ export function answer(query: string, lang: Lang): Answer {
     text: t.fallback,
     blocks: [{ type: "ask", question: query.trim() }],
     followUps: DEFAULT_SUGGESTIONS,
+    matched: "fallback",
   };
 }
 

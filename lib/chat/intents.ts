@@ -193,6 +193,7 @@ export function answerForIntent(id: IntentId, lang: Lang): Answer {
     text,
     blocks: intent.blocks(lang),
     followUps: intent.followUps,
+    matched: `intent:${id}`,
   };
   // What the map should do while this answer is on screen.
   if (id === "projects") {
