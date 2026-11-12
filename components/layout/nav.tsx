@@ -109,14 +109,20 @@ function NavThemeToggle({ t }: { t: Dictionary["nav"] }): ReactNode {
 const ASK_BUTTON =
   "focus-ring inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-foreground/70 transition-colors hover:text-foreground";
 
-/** A small survey marker: the brand mark, also the map's centre point. */
-function Marker(): ReactNode {
+/** My LEGO minifigure's head: the brand mark next to my name. */
+function Avatar(): ReactNode {
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="12" cy="12" r="3" fill="var(--accent)" />
-      <path d="M12 0v6M12 18v6M0 12h6M18 12h6" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
+    // Plain <img>: the site is a static export, and this file is already sized for 4x screens.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/islem-lego-head.webp"
+      alt=""
+      width={36}
+      height={36}
+      decoding="async"
+      fetchPriority="high"
+      className="h-9 w-9 shrink-0 object-contain"
+    />
   );
 }
 
@@ -143,7 +149,7 @@ export function Nav(): ReactNode {
           href={localePath(lang, "/")}
           className="focus-ring mr-auto inline-flex items-center gap-2.5 rounded-md text-foreground"
         >
-          <Marker />
+          <Avatar />
           <span className="hidden font-serif text-[15px] font-semibold tracking-[-0.01em] sm:inline">
             Islem Rebhi
           </span>

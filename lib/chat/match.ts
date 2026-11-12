@@ -236,3 +236,17 @@ export function suggest(query: string, lang: Lang): Suggestion[] {
     })
     .slice(0, MAX_SUGGESTIONS);
 }
+
+/** The "/" menu: every question the chat knows, then every project, filtered by what follows the slash. */
+export function allSuggestions(filter: string, lang: Lang): Suggestion[] {
+  const norm = normalize(filter);
+  const chips = getDictionary(lang).ask.chips;
+  const keep = (label: string): boolean => !norm || normalize(label).includes(norm);
+  const questions: Suggestion[] = INTENTS.filter((i) => i.id !== "greeting")
+    .map((i) => ({ label: chips[i.id], kind: "question" as const, intent: i.id }))
+    .filter((s) => keep(s.label));
+  const projects: Suggestion[] = getProjects(lang)
+    .map((p) => ({ label: p.name, kind: "project" as const }))
+    .filter((s) => keep(s.label));
+  return [...questions, ...projects];
+}

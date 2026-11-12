@@ -151,7 +151,7 @@ export function ProjectMap({
   onProject: (slug: string) => void;
   onTool: (tool: string) => void;
   onCategory: (category: Category) => void;
-  /** A project whose case study is open: the map leans in toward it. */
+  /** A project whose case study is open: its point is marked on the map. */
   zoomTo?: string | null | undefined;
 }): ReactNode {
   const t = getDictionary(lang).map;
@@ -191,19 +191,6 @@ export function ProjectMap({
   const { placed, tools, years } = useMemo(() => layout(getProjects(lang)), [lang]);
 
   const viewBox = narrow && !isFull ? "-45 5 690 590" : "-110 -10 820 620";
-  const viewMin = viewBox.split(" ").map(Number) as [number, number];
-  // Scale around the point halfway between the project and the centre, so both stay in view.
-  const target = mode === "map" && !isFull ? placed.find((p) => p.project.slug === zoomTo) : undefined;
-  const zoomStyle: CSSProperties | undefined = target
-    ? {
-        // SVG transform origins are measured from the viewBox corner, not from 0,0.
-        transformOrigin: `${(target.ring[0] + CENTER) / 2 - viewMin[0]}px ${
-          (target.ring[1] + CENTER) / 2 - viewMin[1]
-        }px`,
-        transform: "scale(1.16)",
-      }
-    : undefined;
-
   const litProjects = new Set(focus?.slugs);
   const litTools = new Set(focus?.tools);
   const focused = litProjects.size > 0 || litTools.size > 0;
@@ -212,7 +199,7 @@ export function ProjectMap({
     <figure
       className={`pmap ${mode === "time" ? "time" : ""} ${focused ? "focus" : ""} ${
         isFull ? "pmap-full fixed inset-0 z-[70] flex flex-col bg-background" : ""
-      } ${target ? "zoomed" : ""}`}
+      }`}
       role={isFull ? "dialog" : undefined}
       aria-modal={isFull ? true : undefined}
       aria-label={isFull ? t.label : undefined}
@@ -285,7 +272,6 @@ export function ProjectMap({
           ))}
         </g>
 
-        <g className="pmap-zoom" style={zoomStyle}>
         {[R_TOOL, R_PROJECT, 60].map((r) => (
           <circle key={r} className="pmap-ring" cx={CENTER} cy={CENTER} r={r} />
         ))}
@@ -350,11 +336,14 @@ export function ProjectMap({
               role="button"
               tabIndex={0}
               aria-label={`${project.name}, ${project.kind}, ${project.year}`}
-              className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""}`}
+              className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""} ${
+                zoomTo === project.slug ? "target" : ""
+              }`}
               style={style}
               onClick={() => goProject(project.slug)}
               onKeyDown={activate(() => goProject(project.slug))}
             >
+              <circle className="halo" r={12} aria-hidden="true" />
               <circle className="dot" r={12} />
               <text className="lm" {...labelAt(deg, 22)}>{mapLabel(project)}</text>
               <text className="lt" {...labelAt(0, 22)}>{mapLabel(project)}</text>
@@ -377,7 +366,6 @@ export function ProjectMap({
             />
           ))}
           <circle cx={CENTER} cy={CENTER} r={R_FACE} />
-        </g>
         </g>
       </svg>
       </div>

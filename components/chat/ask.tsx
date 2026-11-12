@@ -16,7 +16,7 @@ import {
 } from "react";
 
 import { answerForIntent, DEFAULT_SUGGESTIONS } from "@/lib/chat/intents";
-import { answer, suggest } from "@/lib/chat/match";
+import { allSuggestions, answer, suggest } from "@/lib/chat/match";
 import type { Answer, IntentId, Suggestion } from "@/lib/chat/types";
 import type { Dictionary, Lang } from "@/lib/i18n";
 import { useReducedMotion } from "@/lib/motion";
@@ -47,8 +47,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const PLACEHOLDER_MS = 3200;
 const WELCOME_MS = 600;
 const MAX_QUESTION = 200;
-/** Older answers drop off so the page never grows without bound. */
-const MAX_ENTRIES = 4;
+/** Only the latest answer is shown; earlier questions stay one click away. */
+const MAX_ENTRIES = 6;
 const CHIP =
   "focus-ring inline-flex min-h-9 cursor-pointer items-center rounded-md border border-border bg-surface px-3.5 text-[13.5px] text-foreground/65 transition-colors hover:border-foreground/25 hover:text-foreground";
 
@@ -73,10 +73,19 @@ export function Ask({
   const inputRef = useRef<HTMLInputElement>(null);
   const listId = useId();
 
+  // Typing "/" opens the menu of every question and project.
+  const slash = value.startsWith("/");
   const suggestions = useMemo(
-    () => (open ? suggest(value, lang) : []),
-    [open, value, lang],
+    () => (open ? (slash ? allSuggestions(value.slice(1), lang) : suggest(value, lang)) : []),
+    [open, slash, value, lang],
   );
+
+  const openMenu = (): void => {
+    setValue("/");
+    setOpen(true);
+    setActive(-1);
+    inputRef.current?.focus();
+  };
 
   const welcome = (settled: boolean): Entry => {
     nextId.current += 1;
@@ -107,6 +116,15 @@ export function Ask({
     setOpen(false);
     setActive(-1);
     push(question, intent ? answerForIntent(intent, lang) : answer(question, lang));
+  };
+
+  /** Bring an earlier answer back, without typing it again. */
+  const restore = (entry: Entry): void => {
+    setEntries((prev) => [{ ...entry, settled: true }, ...prev.filter((e) => e.id !== entry.id)]);
+    onAnswer(entry.answer);
+    if (entry.question) {
+      window.history.replaceState(null, "", `?q=${encodeURIComponent(entry.question)}`);
+    }
   };
 
   const reset = (): void => {
@@ -143,7 +161,7 @@ export function Ask({
     return () => window.clearInterval(id);
   }, [reduced, t.ask.placeholders.length]);
 
-  // "/" from anywhere on the page, or the nav's ask button, jumps to the input.
+  // "/" from anywhere on the page opens the menu; the nav's ask button jumps to the input.
   useEffect(() => {
     const focus = (): void => inputRef.current?.focus();
     const onKey = (event: globalThis.KeyboardEvent): void => {
@@ -151,7 +169,7 @@ export function Ask({
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
       event.preventDefault();
-      focus();
+      openMenu();
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener(ASK_FOCUS_EVENT, focus);
@@ -166,9 +184,9 @@ export function Ask({
 
   const handleSubmit = (event: FormEvent): void => {
     event.preventDefault();
-    const picked = suggestions[active];
+    const picked = suggestions[active] ?? (slash ? suggestions[0] : undefined);
     if (picked) pickSuggestion(picked);
-    else ask(value);
+    else if (!slash) ask(value);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -190,6 +208,7 @@ export function Ask({
 
   const latest = entries[0];
   const asked = entries.some((entry) => entry.question);
+  const earlier = entries.slice(1).filter((entry) => entry.question);
   const expanded = suggestions.length > 0;
 
   return (
@@ -219,6 +238,9 @@ export function Ask({
             }}
             onKeyDown={handleKeyDown}
             onBlur={() => setOpen(false)}
+            onFocus={() => {
+              if (slash) setOpen(true);
+            }}
             placeholder={t.ask.placeholders[placeholder]}
             aria-label={t.ask.label}
             autoComplete="off"
@@ -226,12 +248,17 @@ export function Ask({
             maxLength={MAX_QUESTION}
             className="h-12 min-w-0 flex-1 bg-transparent text-[17px] text-foreground outline-none placeholder:text-muted-foreground"
           />
-          <kbd
-            aria-hidden="true"
-            className="hidden h-6 min-w-6 items-center justify-center rounded-md border border-foreground/10 px-1.5 text-[12px] text-muted-foreground sm:inline-flex"
+          <button
+            type="button"
+            // Keep focus in the input so the menu opens under it.
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={openMenu}
+            aria-label={t.ask.showAll}
+            title={t.ask.slashHint}
+            className="focus-ring inline-flex h-7 min-w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border px-1.5 text-[13px] font-semibold text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground"
           >
             /
-          </kbd>
+          </button>
           <button
             type="submit"
             disabled={!value.trim()}
@@ -242,12 +269,18 @@ export function Ask({
           </button>
         </form>
 
+        <div
+          hidden={!expanded}
+          data-lenis-prevent=""
+          className="absolute top-full right-0 left-0 mt-2 max-h-[min(60vh,26rem)] overflow-y-auto overscroll-contain rounded-lg border border-border bg-surface p-1.5 text-left shadow-xl"
+        >
+          {slash ? (
+            <p className="eyebrow px-4 pt-2.5 pb-1.5">{t.ask.slashTitle}</p>
+          ) : null}
         <ul
           id={listId}
           role="listbox"
-          aria-label={t.ask.suggestions}
-          hidden={!expanded}
-          className="absolute top-full right-0 left-0 mt-2 overflow-hidden rounded-2xl border border-foreground/10 bg-surface p-1.5 text-left shadow-xl"
+          aria-label={slash ? t.ask.slashTitle : t.ask.suggestions}
         >
           {suggestions.map((suggestion, index) => (
             <li
@@ -259,7 +292,7 @@ export function Ask({
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => pickSuggestion(suggestion)}
               onMouseEnter={() => setActive(index)}
-              className={`flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-xl px-4 text-[15px] text-foreground transition-colors ${
+              className={`flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-md px-4 text-[15px] text-foreground transition-colors ${
                 index === active ? "bg-foreground/6" : ""
               }`}
             >
@@ -270,6 +303,7 @@ export function Ask({
             </li>
           ))}
         </ul>
+        </div>
       </div>
 
       {/* One persistent live region: screen readers hear each new answer once. */}
@@ -279,28 +313,42 @@ export function Ask({
 
       {latest ? (
         <div className="flex flex-col gap-3 text-left">
-          <AnimatePresence initial={false} mode="popLayout">
-            {entries.map((entry, index) => (
-              <motion.article
-                key={entry.id}
-                layout={reduced ? false : "position"}
-                initial={{ opacity: 0, y: reduced ? 0 : 14 }}
-                animate={{ opacity: index === 0 ? 1 : 0.55, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.45, ease: EASE }}
-                className="sheet px-5 py-5 transition-opacity hover:!opacity-100 focus-within:!opacity-100 sm:px-6"
-              >
-                <EntryView
-                  entry={entry}
-                  instant={reduced || index > 0 || Boolean(entry.settled)}
-                  lang={lang}
-                  t={t}
-                  onPick={(id) => ask(t.ask.chips[id], id)}
-                  onOpenProject={onOpenProject}
-                />
-              </motion.article>
-            ))}
+          {/* One answer at a time: a new question replaces the card instead of stacking. */}
+          <AnimatePresence initial={false} mode="wait">
+            <motion.article
+              key={latest.id}
+              initial={{ opacity: 0, y: reduced ? 0 : 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reduced ? 0 : -6 }}
+              transition={{ duration: 0.3, ease: EASE }}
+              className="sheet px-5 py-5 sm:px-6"
+            >
+              <EntryView
+                entry={latest}
+                instant={reduced || Boolean(latest.settled)}
+                lang={lang}
+                t={t}
+                onPick={(id) => ask(t.ask.chips[id], id)}
+                onOpenProject={onOpenProject}
+              />
+            </motion.article>
           </AnimatePresence>
+
+          {earlier.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 px-1">
+              <span className="text-[12.5px] text-muted-foreground">{t.ask.earlier}</span>
+              {earlier.map((entry) => (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() => restore(entry)}
+                  className="focus-ring max-w-[16rem] cursor-pointer truncate rounded-sm text-[13px] text-foreground underline decoration-foreground/25 underline-offset-4 transition-colors hover:decoration-accent"
+                >
+                  {entry.question}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
           {asked ? (
             <div className="flex items-center justify-between gap-4 px-1">
@@ -308,7 +356,7 @@ export function Ask({
               <button
                 type="button"
                 onClick={reset}
-                className="focus-ring inline-flex min-h-8 shrink-0 cursor-pointer items-center rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                className="focus-ring inline-flex min-h-8 shrink-0 cursor-pointer items-center rounded-md px-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t.ask.clear}
               </button>
