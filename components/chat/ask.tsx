@@ -17,7 +17,7 @@ import {
 
 import { answerForIntent, DEFAULT_SUGGESTIONS } from "@/lib/chat/intents";
 import { allSuggestions, answer, suggest } from "@/lib/chat/match";
-import type { Answer, IntentId, Suggestion } from "@/lib/chat/types";
+import type { Answer, ChatContext, IntentId, Suggestion } from "@/lib/chat/types";
 import type { Dictionary, Lang } from "@/lib/i18n";
 import { useReducedMotion } from "@/lib/motion";
 import { useLang } from "@/lib/use-lang";
@@ -38,6 +38,8 @@ type Entry = {
 export type AskHandle = {
   ask: (question: string) => void;
   push: (question: string, result: Answer) => void;
+  /** A project opened from the map becomes what "is it live?" refers to. */
+  setContext: (context: ChatContext | undefined) => void;
 };
 
 /** Fired by the nav's ask button when it is clicked on the home page. */
@@ -70,6 +72,8 @@ export function Ask({
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const nextId = useRef(0);
+  // What follow-up questions refer to: the project the conversation is on.
+  const context = useRef<ChatContext | undefined>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
   const listId = useId();
 
@@ -104,6 +108,7 @@ export function Ask({
     nextId.current += 1;
     const entry: Entry = { id: nextId.current, question, answer: result };
     setEntries((prev) => [entry, ...prev].slice(0, MAX_ENTRIES));
+    context.current = result.context;
     onAnswer(result);
     // Keep the address shareable: opening it replays this question.
     window.history.replaceState(null, "", `?q=${encodeURIComponent(question)}`);
@@ -115,12 +120,16 @@ export function Ask({
     setValue("");
     setOpen(false);
     setActive(-1);
-    push(question, intent ? answerForIntent(intent, lang) : answer(question, lang));
+    push(
+      question,
+      intent ? answerForIntent(intent, lang) : answer(question, lang, context.current),
+    );
   };
 
   /** Bring an earlier answer back, without typing it again. */
   const restore = (entry: Entry): void => {
     setEntries((prev) => [{ ...entry, settled: true }, ...prev.filter((e) => e.id !== entry.id)]);
+    context.current = entry.answer.context;
     onAnswer(entry.answer);
     if (entry.question) {
       window.history.replaceState(null, "", `?q=${encodeURIComponent(entry.question)}`);
@@ -128,13 +137,20 @@ export function Ask({
   };
 
   const reset = (): void => {
+    context.current = undefined;
     setEntries([welcome(true)]);
     onAnswer(null);
     window.history.replaceState(null, "", window.location.pathname);
     inputRef.current?.focus();
   };
 
-  useImperativeHandle(ref, () => ({ ask: (question) => ask(question), push }));
+  useImperativeHandle(ref, () => ({
+    ask: (question) => ask(question),
+    push,
+    setContext: (next) => {
+      context.current = next;
+    },
+  }));
 
   // First paint: replay a shared `?q=` link, or let the page introduce itself.
   useEffect(() => {

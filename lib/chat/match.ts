@@ -2,6 +2,8 @@ import { getProjects, getSkillGroups, type Project } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { yearSummary } from "@/lib/timeline";
 
+import { detailAnswer, detailIn } from "./details";
+
 import {
   answerForIntent,
   DEFAULT_SUGGESTIONS,
@@ -137,23 +139,45 @@ function findTech(
 }
 
 /** Turn a free-form question into an answer built from the site's own content. */
-export function answer(query: string, lang: Lang, _context?: ChatContext): Answer {
+/** A project's introduction, with its case study opened beside the map. */
+function projectAnswer(project: Project): Answer {
+  return {
+    text: `${project.name} (${project.kind}, ${project.year}). ${project.summary}`,
+    blocks: [{ type: "projects", slugs: [project.slug] }],
+    followUps: ["projects", "skills", "contact"],
+    focus: { slugs: [project.slug] },
+    open: project.slug,
+    mode: "map",
+    matched: `project:${project.slug}`,
+    context: { project: project.slug },
+  };
+}
+
+/**
+ * Words that make a question about me, not about the project being discussed:
+ * "when can you start?" after Carnova is still about availability.
+ */
+const NOT_A_FOLLOW_UP = [
+  "start", "available", "availability", "hire", "internship", "your stack", "salary",
+  "contact", "resume", "cv", "commencer", "disponible", "stage", "ta stack", "salaire",
+];
+
+export function answer(query: string, lang: Lang, context?: ChatContext): Answer {
   const t = getDictionary(lang).ask.answers;
   const norm = normalize(query);
   const projects = getProjects(lang);
+  const detail = detailIn(norm);
 
   const project = findProject(norm, projects);
   if (project) {
-    return {
-      text: `${project.name} (${project.kind}, ${project.year}). ${project.summary}`,
-      blocks: [{ type: "projects", slugs: [project.slug] }],
-      followUps: ["projects", "skills", "contact"],
-      focus: { slugs: [project.slug] },
-      open: project.slug,
-      mode: "map",
-      matched: `project:${project.slug}`,
-      context: { project: project.slug },
-    };
+    return detail && detail !== "more" ? detailAnswer(project, detail, lang) : projectAnswer(project);
+  }
+
+  // A follow-up such as "is it live?" about the project the conversation is on.
+  const current = projects.find((p) => p.slug === context?.project);
+  const padded = ` ${norm} `;
+  if (current && detail && !NOT_A_FOLLOW_UP.some((w) => padded.includes(` ${w} `))) {
+    return detail === "more" ? projectAnswer(current) : detailAnswer(current, detail, lang);
   }
 
   // "What did you do in 2025?": the timeline, with that year lit.
@@ -193,7 +217,6 @@ export function answer(query: string, lang: Lang, _context?: ChatContext): Answe
         };
   }
 
-  const padded = ` ${norm} `;
   const tokens = norm.split(" ");
   let best: { id: (typeof INTENTS)[number]["id"]; score: number } | undefined;
   for (const intent of INTENTS) {

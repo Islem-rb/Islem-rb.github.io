@@ -46,6 +46,8 @@ export type Project = {
   repo?: string;
   live?: string;
   result?: string;
+  /** Who built it: alone, or a team (with my part when it is known). Unset when not stated. */
+  crew?: "solo" | { size: number; role?: string };
   /** The one number to show large on cards and case studies. */
   figure?: { value: string; label: string };
   demo?: Demo;
@@ -237,6 +239,7 @@ export const PROJECTS: Project[] = [
     kind: "End-to-end engineering",
     year: "2025–2026",
     figure: { value: "9", label: "Spring Boot modules on a private OpenStack cloud" },
+    crew: { size: 7, role: "the cloud, the DevOps and some of the backend" },
     headline:
       "A civic platform built from the bare-metal cloud up to the citizen's screen.",
     summary:
@@ -297,6 +300,7 @@ export const PROJECTS: Project[] = [
     kind: "AI SaaS · Internship",
     year: "2026",
     figure: { value: "96", label: "API endpoints across 18 routers" },
+    crew: "solo",
     headline:
       "A social media management platform where AI plans the strategy and Celery publishes on time.",
     summary:
@@ -405,6 +409,7 @@ export const PROJECTS: Project[] = [
     kind: "Full-stack · Internship",
     year: "2025",
     figure: { value: "233 → 100 s", label: "cold start on 0.1 CPU" },
+    crew: "solo",
     headline:
       "An automotive marketplace with dealer showrooms, a three.js 3D studio and secure accounts, live on free hosting.",
     summary:
@@ -611,6 +616,7 @@ export const PROJECTS: Project[] = [
     kind: "Web & desktop",
     year: "2025",
     figure: { value: "2", label: "apps: Symfony on the web, JavaFX offline on the desktop" },
+    crew: { size: 5 },
     headline:
       "Remote supervision for farms, on the web and offline on the desktop.",
     summary:

@@ -3,7 +3,11 @@ import type { Project } from "./content";
 type ProjectText = Pick<
   Project,
   "kind" | "headline" | "summary" | "meta" | "highlights" | "sections"
-> & { result?: string; figure?: NonNullable<Project["figure"]> };
+> & {
+  result?: string;
+  figure?: NonNullable<Project["figure"]>;
+  crew?: NonNullable<Project["crew"]>;
+};
 
 export const PROJECTS_FR: Record<string, ProjectText> = {
   "gitops-eks-platform": {
@@ -107,6 +111,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   cityvoice: {
     kind: "Ingénierie de bout en bout",
     figure: { value: "9", label: "modules Spring Boot sur un cloud OpenStack privé" },
+    crew: { size: 7, role: "le cloud, le DevOps et une partie du backend" },
     headline:
       "Une plateforme citoyenne construite du cloud privé jusqu’à l’écran du citoyen.",
     summary:

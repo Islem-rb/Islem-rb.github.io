@@ -69,6 +69,7 @@ export function MapHero({
     setOpenSlug(slug);
     setCategory(null);
     setFocus({ slugs: [slug], tools: toolsOf(project) });
+    askRef.current?.setContext({ project: slug });
     // On a phone the study replaces the chat above the map, so bring it into view.
     const top = leftRef.current?.getBoundingClientRect().top ?? 0;
     if (top < 0) leftRef.current?.scrollIntoView({ block: "start" });

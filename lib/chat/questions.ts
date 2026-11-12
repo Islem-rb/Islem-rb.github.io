@@ -105,6 +105,8 @@ export const CASES: Case[] = [
   { group: "follow-ups", lang: "fr", after: "parle-moi de Sabeel", q: "c'était en équipe ?", text: /\b5\b/ },
   { group: "follow-ups", after: "sabeel", q: "source code?", text: /github\.com\/Islem-rb\/sabeel/ },
   { group: "follow-ups", after: "kubernetes", q: "and terraform?", match: "tech:Terraform" },
+  { group: "follow-ups", after: "carnova", q: "what's your stack?", match: "intent:skills" },
+  { group: "follow-ups", after: "carnova", q: "how can I contact you?", match: "intent:contact" },
 
   // Questions recruiters ask that the chat does not cover yet.
   { group: "new questions", q: "what's the hardest problem you solved?", match: "intent:hardest" },
