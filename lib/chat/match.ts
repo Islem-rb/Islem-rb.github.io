@@ -7,7 +7,8 @@ import {
   INTENTS,
   PROJECT_ALIASES,
 } from "./intents";
-import type { Answer } from "./types";
+import { runCommand } from "./commands";
+import type { Answer, Suggestion } from "./types";
 
 const STOPWORDS = new Set([
   "the", "and", "you", "your", "with", "for", "are", "what", "how", "use",
@@ -137,6 +138,9 @@ function findTech(
 
 /** Turn a free-form question into an answer built from the site's own content. */
 export function answer(query: string, lang: Lang): Answer {
+  const command = runCommand(query, lang);
+  if (command) return command;
+
   const t = getDictionary(lang).ask.answers;
   const norm = normalize(query);
   const projects = getProjects(lang);
@@ -184,4 +188,46 @@ export function answer(query: string, lang: Lang): Answer {
   if (best) return answerForIntent(best.id, lang);
 
   return { text: t.fallback, blocks: [], followUps: DEFAULT_SUGGESTIONS };
+}
+
+const MAX_SUGGESTIONS = 5;
+
+/** Live suggestions for a partly typed question: projects, tools, then questions. */
+export function suggest(query: string, lang: Lang): Suggestion[] {
+  const norm = normalize(query);
+  if (norm.length < 2) return [];
+  const starts = (text: string): boolean =>
+    text.split(" ").some((word) => word.startsWith(norm)) || text.startsWith(norm);
+
+  const chips = getDictionary(lang).ask.chips;
+  const projects = getProjects(lang);
+  const found: Suggestion[] = [];
+
+  for (const p of projects) {
+    if (starts(normalize(p.name))) found.push({ label: p.name, kind: "project" });
+  }
+  for (const tech of techVocabulary(lang, projects)) {
+    if (tech.words.some((w) => w.length >= 3) && starts(tech.words.join(" "))) {
+      found.push({ label: tech.label, kind: "tool" });
+    }
+  }
+  for (const intent of INTENTS) {
+    const label = chips[intent.id];
+    if (
+      normalize(label).includes(norm) ||
+      intent.keywords.some((k) => k.length >= 3 && k.startsWith(norm))
+    ) {
+      found.push({ label, kind: "question", intent: intent.id });
+    }
+  }
+
+  const seen = new Set<string>();
+  return found
+    .filter((s) => {
+      const key = s.label.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, MAX_SUGGESTIONS);
 }

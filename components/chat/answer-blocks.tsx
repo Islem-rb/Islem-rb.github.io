@@ -1,10 +1,11 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Cloud, FileDown } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Cloud, FileDown, Play } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ContactButton } from "@/components/contact/contact-button";
+import { PipelineTrace } from "@/components/hero/pipeline-trace";
 import { PROJECT_ICONS } from "@/components/projects/projects";
 import type { Block } from "@/lib/chat/types";
 import {
@@ -160,6 +161,20 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
         </StaggerItem>
       );
     }
+    case "pipeline":
+      return (
+        <StaggerItem>
+          <PipelineTrace />
+        </StaggerItem>
+      );
+    case "terminal":
+      return (
+        <StaggerItem className="overflow-x-auto rounded-2xl border border-foreground/8 bg-foreground/4 px-4 py-3.5 dark:bg-foreground/6">
+          <pre className="font-mono text-[12px] leading-[1.7] tracking-tight text-foreground/80">
+            {block.lines.join("\n")}
+          </pre>
+        </StaggerItem>
+      );
     case "facts":
       return (
         <StaggerItem className={PANEL}>
@@ -194,6 +209,8 @@ function ProjectsBlock({
       <div className={`grid gap-3 ${items.length > 1 ? "sm:grid-cols-2" : ""}`}>
         {items.map((project) => {
           const Icon = PROJECT_ICONS[project.slug] ?? Cloud;
+          const thumbnail =
+            project.demo?.video?.poster ?? project.demo?.shots?.[0]?.src;
           return (
             <StaggerItem key={project.slug}>
               <article className="group/card relative flex h-full flex-col gap-3 rounded-3xl border border-foreground/8 bg-background p-4 transition-colors hover:border-foreground/20 sm:p-5">
@@ -204,8 +221,25 @@ function ProjectsBlock({
                   <span className="text-sm font-medium tracking-tight text-foreground">
                     {project.name}
                   </span>
+                  {project.demo ? (
+                    <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-foreground/10 px-1.5 py-0.5 font-mono text-[10px] tracking-tight text-foreground/70">
+                      {project.demo.video ? (
+                        <Play className="h-2.5 w-2.5" aria-hidden="true" />
+                      ) : null}
+                      {t.projects.demo}
+                    </span>
+                  ) : null}
                   <span className={`ml-auto shrink-0 ${LABEL}`}>{project.year}</span>
                 </header>
+                {thumbnail ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- static export, images are unoptimized
+                  <img
+                    src={thumbnail}
+                    alt=""
+                    loading="lazy"
+                    className="aspect-video w-full rounded-2xl border border-foreground/8 object-cover object-top"
+                  />
+                ) : null}
                 <h3 className="text-[17px] font-medium leading-[1.25] tracking-tight text-foreground">
                   <Link
                     href={localePath(lang, `/projects/${project.slug}`)}

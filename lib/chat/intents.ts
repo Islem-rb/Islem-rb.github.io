@@ -17,6 +17,19 @@ type Intent = {
 /** Order matters: on a tie, the earlier intent wins. */
 export const INTENTS: Intent[] = [
   {
+    id: "deploy",
+    keywords: [
+      "deploy", "deploys", "deployment", "deployments", "pipeline",
+      "pipelines", "cicd", "ci cd", "release", "releases", "delivery",
+      "rollout", "ship", "deployer", "deploies", "deploiement", "livraison",
+    ],
+    blocks: () => [
+      { type: "pipeline" },
+      { type: "projects", slugs: ["gitops-eks-platform"] },
+    ],
+    followUps: ["projects", "skills", "availability"],
+  },
+  {
     id: "projects",
     keywords: [
       "projects", "project", "work", "built", "build", "portfolio", "shipped",
@@ -131,10 +144,13 @@ export const INTENTS: Intent[] = [
 export const DEFAULT_SUGGESTIONS: IntentId[] = [
   "projects",
   "skills",
+  "deploy",
   "availability",
   "contact",
-  "about",
 ];
+
+/** The terminal command advertised next to the suggestions. */
+export const COMMAND_HINT = "kubectl get projects";
 
 /** Extra names people use for a project, beyond its full name. */
 export const PROJECT_ALIASES: Record<string, string[]> = {

@@ -9,7 +9,8 @@ export type IntentId =
   | "cv"
   | "availability"
   | "location"
-  | "languages";
+  | "languages"
+  | "deploy";
 
 /** A rich card rendered under the typed answer. Data is read by the renderer. */
 export type Block =
@@ -20,10 +21,20 @@ export type Block =
   | { type: "languages" }
   | { type: "contact" }
   | { type: "cv" }
-  | { type: "facts" };
+  | { type: "facts" }
+  | { type: "pipeline" }
+  | { type: "terminal"; lines: string[] };
 
 export type Answer = {
   text: string;
   blocks: Block[];
   followUps: IntentId[];
+};
+
+/** A live suggestion shown under the input while typing. */
+export type Suggestion = {
+  label: string;
+  kind: "question" | "project" | "tool";
+  /** Set for questions, so picking one never depends on re-matching its label. */
+  intent?: IntentId;
 };

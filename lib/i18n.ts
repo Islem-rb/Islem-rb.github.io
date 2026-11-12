@@ -142,6 +142,20 @@ const en = {
       availability: "Are you available?",
       location: "Where are you based?",
       languages: "Which languages do you speak?",
+      deploy: "How do you deploy?",
+    },
+    navLabel: "Ask a question",
+    kinds: { question: "Question", project: "Project", tool: "Tool" },
+    commands: {
+      help: "Here’s what this terminal understands.",
+      whoami: "That would be me.",
+      ls: "Everything in the workspace.",
+      projects: "All workloads healthy.",
+      skills: "The toolbox, grouped by layer.",
+      plan: "Clean plan. Ready to apply whenever you are.",
+      log: "My history, newest first.",
+      hire: "Excellent decision. Here’s how to make it official.",
+      unknown: "That one isn’t installed here. Type “help” to see what is.",
     },
     answers: {
       greeting:
@@ -170,6 +184,8 @@ const en = {
       location:
         "I’m based in Ariana, Tunisia, and open to internships in Tunisia or Europe.",
       languages: "I speak Arabic, French and English.",
+      deploy:
+        "Every change takes the same path: commit, build, scan, sign, sync, canary, observe. Git is the only way in, and nobody touches the cluster by hand.",
       fallback:
         "I don’t have an answer for that one. Try a project name, a tool like “kubernetes”, or one of these.",
     },
@@ -320,6 +336,21 @@ const fr: Dictionary = {
       availability: "Es-tu disponible ?",
       location: "Où es-tu basé ?",
       languages: "Quelles langues parles-tu ?",
+      deploy: "Comment déploies-tu ?",
+    },
+    navLabel: "Poser une question",
+    kinds: { question: "Question", project: "Projet", tool: "Outil" },
+    commands: {
+      help: "Voici ce que ce terminal comprend.",
+      whoami: "Ça, c’est moi.",
+      ls: "Tout ce qu’il y a dans l’espace de travail.",
+      projects: "Tous les workloads sont sains.",
+      skills: "La boîte à outils, couche par couche.",
+      plan: "Plan propre. Prêt à appliquer quand vous voulez.",
+      log: "Mon historique, du plus récent au plus ancien.",
+      hire: "Excellente décision. Voici comment l’officialiser.",
+      unknown:
+        "Celle-ci n’est pas installée ici. Tapez « help » pour voir ce qui l’est.",
     },
     answers: {
       greeting:
@@ -348,6 +379,8 @@ const fr: Dictionary = {
       location:
         "Je suis basé à Ariana, en Tunisie, et ouvert aux stages en Tunisie ou en Europe.",
       languages: "Je parle arabe, français et anglais.",
+      deploy:
+        "Chaque changement suit le même chemin : commit, build, scan, signature, sync, canary, observation. Git est la seule porte d’entrée, et personne ne touche au cluster à la main.",
       fallback:
         "Je n’ai pas de réponse à ça. Essayez un nom de projet, un outil comme « kubernetes », ou l’une de ces questions.",
     },

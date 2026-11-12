@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { Moon, Search, Sun } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -114,6 +114,9 @@ function NavThemeToggle({ t }: { t: Dictionary["nav"] }): ReactNode {
   );
 }
 
+const ASK_BUTTON =
+  "focus-ring inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-foreground/60 transition-colors hover:text-foreground";
+
 export function Nav(): ReactNode {
   const pathname = usePathname();
   const listRef = useRef<HTMLUListElement>(null);
@@ -215,6 +218,26 @@ export function Nav(): ReactNode {
             );
           })}
         </ul>
+        {basePath === "/" ? (
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("ask:focus"))}
+            aria-label={dict.ask.navLabel}
+            title={dict.ask.navLabel}
+            className={ASK_BUTTON}
+          >
+            <Search className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        ) : (
+          <Link
+            href={`${localePath(lang, "/")}#ask`}
+            aria-label={dict.ask.navLabel}
+            title={dict.ask.navLabel}
+            className={ASK_BUTTON}
+          >
+            <Search className="h-3.5 w-3.5" aria-hidden="true" />
+          </Link>
+        )}
         <a
           href={localePath(otherLang, basePath)}
           hrefLang={otherLang}
