@@ -22,6 +22,7 @@ import {
 } from "@/lib/chat/map";
 import { getProjects, profile, type Project } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
+import { useReducedMotion } from "@/lib/motion";
 
 export type MapMode = "map" | "time";
 /** What is lit: some projects, and the ring tools their lines should reach. */
@@ -120,33 +121,77 @@ function useNarrow(): boolean {
   );
 }
 
-/** Room kept around each framed point, for its label. */
-const ZOOM_PAD_X = 95;
-const ZOOM_PAD_Y = 40;
-const ZOOM_MAX = 1.4;
+/** The zoom when a case study opens: same scale, point and easing as the first version. */
+const ZOOM = 1.16;
+const ZOOM_MS = 900;
+
+/** cubic-bezier(0.22, 1, 0.36, 1), the site's easing, for animations driven from JS. */
+function easeOut(x: number): number {
+  const [x1, y1, x2, y2] = [0.22, 1, 0.36, 1];
+  const bez = (t: number, a: number, b: number): number =>
+    3 * (1 - t) * (1 - t) * t * a + 3 * (1 - t) * t * t * b + t * t * t;
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 30; i++) {
+    const mid = (lo + hi) / 2;
+    if (bez(mid, x1, x2) < x) lo = mid;
+    else hi = mid;
+  }
+  return bez((lo + hi) / 2, y1, y2);
+}
 
 /**
- * A transform that scales the map so the given points fill the view.
- * SVG transforms are measured from the viewBox corner, so the maths starts there.
+ * 0 → 1 while zooming in, back to 0 when zooming out. Driven from JS so the map,
+ * the tools that slide inward and their lines all move on the same frame.
  */
-function zoomToFit(viewBox: string, points: [number, number][]): CSSProperties | undefined {
+function useZoomProgress(active: boolean, reduced: boolean): number {
+  const [progress, setProgress] = useState(0);
+  const current = useRef(0);
+  useEffect(() => {
+    const goal = active ? 1 : 0;
+    const from = current.current;
+    if (from === goal) return;
+    // With reduced motion the first frame lands straight on the goal.
+    const duration = reduced ? 0 : ZOOM_MS;
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number): void => {
+      const k = duration === 0 ? 1 : Math.min(1, (now - start) / duration);
+      current.current = from + (goal - from) * easeOut(k);
+      setProgress(current.current);
+      if (k < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active, reduced]);
+  return progress;
+}
+
+/**
+ * Where a tool must sit (before the zoom) so that, once zoomed, its point and its
+ * label are still inside the frame. Tools already inside keep their place.
+ */
+function keepInFrame(
+  xy: [number, number],
+  deg: number,
+  name: string,
+  origin: [number, number],
+  viewBox: string,
+  fontSize: number,
+): [number, number] {
   const [vx = 0, vy = 0, vw = 1, vh = 1] = viewBox.split(" ").map(Number);
-  const xs = points.map((p) => p[0]);
-  const ys = points.map((p) => p[1]);
-  const minX = Math.min(...xs) - ZOOM_PAD_X;
-  const maxX = Math.max(...xs) + ZOOM_PAD_X;
-  const minY = Math.min(...ys) - ZOOM_PAD_Y;
-  const maxY = Math.max(...ys) + ZOOM_PAD_Y;
-  const s = Math.min(vw / (maxX - minX), vh / (maxY - minY), ZOOM_MAX);
-  if (s < 1.04) return undefined;
-  // Centre of the framed box goes to the centre of the view.
-  const bx = (minX + maxX) / 2;
-  const by = (minY + maxY) / 2;
-  const cx = vx + vw / 2;
-  const cy = vy + vh / 2;
-  const tx = cx - vx - s * (bx - vx);
-  const ty = cy - vy - s * (by - vy);
-  return { transform: `translate(${tx}px, ${ty}px) scale(${s})` };
+  const cos = Math.cos((deg * Math.PI) / 180);
+  const sin = Math.sin((deg * Math.PI) / 180);
+  const label = (name.length * fontSize * 0.66 + 18) * ZOOM;
+  const side = Math.abs(cos) < 0.3 ? "middle" : cos > 0 ? "start" : "end";
+  const left = side === "end" ? label : side === "middle" ? label / 2 : 10;
+  const right = side === "start" ? label : side === "middle" ? label / 2 : 10;
+  const top = (sin < -0.3 ? fontSize + 16 : 10) * ZOOM;
+  const bottom = (sin > 0.3 ? fontSize + 20 : 10) * ZOOM;
+  const zoomed = (i: 0 | 1): number => origin[i] + ZOOM * (xy[i] - origin[i]);
+  const zx = Math.min(Math.max(zoomed(0), vx + left), vx + vw - right);
+  const zy = Math.min(Math.max(zoomed(1), vy + top), vy + vh - bottom);
+  return [origin[0] + (zx - origin[0]) / ZOOM, origin[1] + (zy - origin[1]) / ZOOM];
 }
 
 function activate(run: () => void) {
@@ -180,11 +225,12 @@ export function ProjectMap({
   onProject: (slug: string) => void;
   onTool: (tool: string) => void;
   onCategory: (category: Category) => void;
-  /** A project whose case study is open: its point is marked on the map. */
+  /** A project whose case study is open: the map zooms toward it. */
   zoomTo?: string | null | undefined;
 }): ReactNode {
   const t = getDictionary(lang).map;
   const narrow = useNarrow();
+  const reduced = useReducedMotion();
   // On a phone the map can open full screen, wider than the screen, to pan around.
   const [full, setFull] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -223,21 +269,36 @@ export function ProjectMap({
   const litProjects = new Set(focus?.slugs);
   const litTools = new Set(focus?.tools);
 
-  // Zoom toward the open project, framed so that it, the centre and every tool it
-  // links to stay inside the map. Only unrelated points may leave the frame.
-  const target = mode === "map" ? placed.find((p) => p.project.slug === zoomTo) : undefined;
-  const zoomStyle = target ? zoomToFit(viewBox, [
-    target.ring,
-    [CENTER, CENTER],
-    ...tools.filter((tool) => litTools.has(tool.name)).map((tool) => tool.xy),
-  ]) : undefined;
+  // Zoom toward the open project, around the point halfway between it and the centre.
+  // Its tools that the zoom would push out of the frame slide inward instead.
+  const target = mode === "map" && !isFull ? placed.find((p) => p.project.slug === zoomTo) : undefined;
+  // Remember the last project so zooming back out starts from the same point.
+  const [lastZoom, setLastZoom] = useState(target?.project.slug);
+  if (target && target.project.slug !== lastZoom) setLastZoom(target.project.slug);
+  const zoomOn = target ?? placed.find((p) => p.project.slug === lastZoom);
+  const progress = useZoomProgress(Boolean(target), reduced);
+  const scale = 1 + (ZOOM - 1) * progress;
+  const origin: [number, number] = zoomOn
+    ? [(zoomOn.ring[0] + CENTER) / 2, (zoomOn.ring[1] + CENTER) / 2]
+    : [CENTER, CENTER];
+  const zoomTransform =
+    progress > 0
+      ? `translate(${origin[0]} ${origin[1]}) scale(${scale}) translate(${-origin[0]} ${-origin[1]})`
+      : undefined;
+  const toolXY = new Map<string, [number, number]>(
+    tools.map(({ name, deg, xy }): [string, [number, number]] => {
+      if (!zoomOn || progress === 0 || !zoomOn.tools.includes(name)) return [name, xy];
+      const safe = keepInFrame(xy, deg, name, origin, viewBox, narrow ? 17 : 12);
+      return [name, [xy[0] + (safe[0] - xy[0]) * progress, xy[1] + (safe[1] - xy[1]) * progress]];
+    }),
+  );
   const focused = litProjects.size > 0 || litTools.size > 0;
 
   return (
     <figure
       className={`pmap ${mode === "time" ? "time" : ""} ${focused ? "focus" : ""} ${
         isFull ? "pmap-full fixed inset-0 z-[70] flex flex-col bg-background" : ""
-      } ${zoomStyle ? "zoomed" : ""}`}
+      } ${progress > 0 ? "zoomed" : ""}`}
       role={isFull ? "dialog" : undefined}
       aria-modal={isFull ? true : undefined}
       aria-label={isFull ? t.label : undefined}
@@ -310,7 +371,7 @@ export function ProjectMap({
           ))}
         </g>
 
-        <g className="pmap-zoom" style={zoomStyle}>
+        <g className="pmap-zoom" transform={zoomTransform}>
         {[R_TOOL, R_PROJECT, 60].map((r) => (
           <circle key={r} className="pmap-ring" cx={CENTER} cy={CENTER} r={r} />
         ))}
@@ -337,8 +398,8 @@ export function ProjectMap({
                       className={`pmap-edge ${lit && litTools.has(name) ? "on" : ""}`}
                       x1={ring[0]}
                       y1={ring[1]}
-                      x2={tool.xy[0]}
-                      y2={tool.xy[1]}
+                      x2={(toolXY.get(name) ?? tool.xy)[0]}
+                      y2={(toolXY.get(name) ?? tool.xy)[1]}
                     />
                   );
                 })}
@@ -354,7 +415,9 @@ export function ProjectMap({
             tabIndex={mode === "time" ? -1 : 0}
             aria-label={t.tool(name)}
             className={`pmap-node tool ${litTools.has(name) ? "on" : ""}`}
-            style={{ transform: `translate(${xy[0]}px, ${xy[1]}px)` }}
+            style={{
+              transform: `translate(${(toolXY.get(name) ?? xy)[0]}px, ${(toolXY.get(name) ?? xy)[1]}px)`,
+            }}
             onClick={() => goTool(name)}
             onKeyDown={activate(() => goTool(name))}
           >
@@ -375,14 +438,11 @@ export function ProjectMap({
               role="button"
               tabIndex={0}
               aria-label={`${project.name}, ${project.kind}, ${project.year}`}
-              className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""} ${
-                zoomTo === project.slug ? "target" : ""
-              }`}
+              className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""}`}
               style={style}
               onClick={() => goProject(project.slug)}
               onKeyDown={activate(() => goProject(project.slug))}
             >
-              <circle className="halo" r={12} aria-hidden="true" />
               <circle className="dot" r={12} />
               <text className="lm" {...labelAt(deg, 22)}>{mapLabel(project)}</text>
               <text className="lt" {...labelAt(0, 22)}>{mapLabel(project)}</text>
