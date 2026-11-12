@@ -105,12 +105,26 @@ export function MapHero({
     );
   };
 
+  // A second click on the tool or category that is selected clears it, like projects.
+  const clearSelection = (): void => {
+    setCategory(null);
+    setFocus(null);
+  };
+
   const pickTool = (tool: string): void => {
+    if (!openSlug && focus?.tools.length === 1 && focus.tools[0] === tool) {
+      clearSelection();
+      return;
+    }
     setOpenSlug(null);
     askRef.current?.ask(tool);
   };
 
   const pickCategory = (cat: Category): void => {
+    if (category === cat) {
+      clearSelection();
+      return;
+    }
     const slugs = projects.filter((p) => categoryOf(p.slug) === cat).map((p) => p.slug);
     setOpenSlug(null);
     askRef.current?.push(t.map.cats[cat], {

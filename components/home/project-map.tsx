@@ -575,6 +575,7 @@ export function ProjectMap({
             role="button"
             tabIndex={timeline ? -1 : 0}
             aria-label={t.tool(name)}
+            aria-pressed={litTools.size === 1 && litTools.has(name)}
             className={`pmap-node tool ${litTools.has(name) ? "on" : ""}`}
             style={{
               transform: `translate(${(toolXY.get(name) ?? xy)[0]}px, ${(toolXY.get(name) ?? xy)[1]}px)`,
