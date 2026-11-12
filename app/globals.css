@@ -258,6 +258,21 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   --faint: color-mix(in srgb, var(--foreground) 42%, transparent);
 }
 .pmap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.pmap-zoom {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Zoomed in: points outside the frame fade out at the edges instead of spilling onto the page. */
+.pmap.zoomed svg {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent),
+    linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent),
+    linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
+}
 /* The project whose case study is open: a bigger point with a slow pulse around it. */
 .pmap-node .halo { fill: none; stroke: var(--c); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
 .pmap-node .dot { transition: fill 0.3s, r 0.4s cubic-bezier(0.22, 1, 0.36, 1); }

@@ -120,6 +120,35 @@ function useNarrow(): boolean {
   );
 }
 
+/** Room kept around each framed point, for its label. */
+const ZOOM_PAD_X = 95;
+const ZOOM_PAD_Y = 40;
+const ZOOM_MAX = 1.4;
+
+/**
+ * A transform that scales the map so the given points fill the view.
+ * SVG transforms are measured from the viewBox corner, so the maths starts there.
+ */
+function zoomToFit(viewBox: string, points: [number, number][]): CSSProperties | undefined {
+  const [vx = 0, vy = 0, vw = 1, vh = 1] = viewBox.split(" ").map(Number);
+  const xs = points.map((p) => p[0]);
+  const ys = points.map((p) => p[1]);
+  const minX = Math.min(...xs) - ZOOM_PAD_X;
+  const maxX = Math.max(...xs) + ZOOM_PAD_X;
+  const minY = Math.min(...ys) - ZOOM_PAD_Y;
+  const maxY = Math.max(...ys) + ZOOM_PAD_Y;
+  const s = Math.min(vw / (maxX - minX), vh / (maxY - minY), ZOOM_MAX);
+  if (s < 1.04) return undefined;
+  // Centre of the framed box goes to the centre of the view.
+  const bx = (minX + maxX) / 2;
+  const by = (minY + maxY) / 2;
+  const cx = vx + vw / 2;
+  const cy = vy + vh / 2;
+  const tx = cx - vx - s * (bx - vx);
+  const ty = cy - vy - s * (by - vy);
+  return { transform: `translate(${tx}px, ${ty}px) scale(${s})` };
+}
+
 function activate(run: () => void) {
   return (event: KeyboardEvent): void => {
     if (event.key === "Enter" || event.key === " ") {
@@ -193,13 +222,22 @@ export function ProjectMap({
   const viewBox = narrow && !isFull ? "-45 5 690 590" : "-110 -10 820 620";
   const litProjects = new Set(focus?.slugs);
   const litTools = new Set(focus?.tools);
+
+  // Zoom toward the open project, framed so that it, the centre and every tool it
+  // links to stay inside the map. Only unrelated points may leave the frame.
+  const target = mode === "map" ? placed.find((p) => p.project.slug === zoomTo) : undefined;
+  const zoomStyle = target ? zoomToFit(viewBox, [
+    target.ring,
+    [CENTER, CENTER],
+    ...tools.filter((tool) => litTools.has(tool.name)).map((tool) => tool.xy),
+  ]) : undefined;
   const focused = litProjects.size > 0 || litTools.size > 0;
 
   return (
     <figure
       className={`pmap ${mode === "time" ? "time" : ""} ${focused ? "focus" : ""} ${
         isFull ? "pmap-full fixed inset-0 z-[70] flex flex-col bg-background" : ""
-      }`}
+      } ${zoomStyle ? "zoomed" : ""}`}
       role={isFull ? "dialog" : undefined}
       aria-modal={isFull ? true : undefined}
       aria-label={isFull ? t.label : undefined}
@@ -272,6 +310,7 @@ export function ProjectMap({
           ))}
         </g>
 
+        <g className="pmap-zoom" style={zoomStyle}>
         {[R_TOOL, R_PROJECT, 60].map((r) => (
           <circle key={r} className="pmap-ring" cx={CENTER} cy={CENTER} r={r} />
         ))}
@@ -366,6 +405,7 @@ export function ProjectMap({
             />
           ))}
           <circle cx={CENTER} cy={CENTER} r={R_FACE} />
+        </g>
         </g>
       </svg>
       </div>
