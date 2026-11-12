@@ -438,6 +438,7 @@ export function ProjectMap({
               role="button"
               tabIndex={0}
               aria-label={`${project.name}, ${project.kind}, ${project.year}`}
+              aria-pressed={zoomTo === project.slug}
               className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""}`}
               style={style}
               onClick={() => goProject(project.slug)}

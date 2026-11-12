@@ -70,6 +70,12 @@ export function MapHero({
     setFocus(null);
   };
 
+  // On the map, clicking the open project again deselects it and zooms back out.
+  const toggleProject = (slug: string): void => {
+    if (slug === openSlug) closeProject();
+    else openProject(slug);
+  };
+
   const handleAnswer = (result: Answer | null): void => {
     setCategory(null);
     if (!result) {
@@ -170,7 +176,7 @@ export function MapHero({
             focus={focus}
             category={category}
             onMode={setMode}
-            onProject={openProject}
+            onProject={toggleProject}
             onTool={pickTool}
             onCategory={pickCategory}
             zoomTo={openSlug}
