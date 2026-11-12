@@ -9,7 +9,7 @@ import { getDictionary, localePath, type Dictionary, type Lang } from "@/lib/i18
 
 /** The project's picture, if it has one: the video poster or the first screenshot. */
 export function coverOf(project: Project): string | undefined {
-  return project.demo?.video?.poster ?? project.demo?.shots?.[0]?.src;
+  return project.demo?.cover ?? project.demo?.video?.poster ?? project.demo?.shots?.[0]?.src;
 }
 
 /** Every project as a numbered sheet, two to a row. */

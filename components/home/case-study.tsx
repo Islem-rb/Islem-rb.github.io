@@ -1,5 +1,6 @@
 "use client";
 
+import { coverOf } from "@/components/projects/projects";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
@@ -28,7 +29,7 @@ export function CaseStudy({
   onNext: () => void;
 }): ReactNode {
   const t = getDictionary(lang);
-  const thumbnail = project.demo?.video?.poster ?? project.demo?.shots?.[0]?.src;
+  const thumbnail = coverOf(project);
   const style = { "--c": `var(--${categoryOf(project.slug)})` } as CSSProperties;
 
   return (

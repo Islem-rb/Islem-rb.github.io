@@ -57,6 +57,8 @@ export type Project = {
 
 /** Self-hosted demo media under public/demos/<slug>/. */
 export type Demo = {
+  /** Picture for cards, when the video poster is not the best first look. */
+  cover?: string;
   video?: { src: string; poster: string; duration: string; lang: Lang };
   shots?: { src: string; width: number; height: number; alt: Record<Lang, string> }[];
 };
@@ -141,6 +143,7 @@ export const PROJECTS: Project[] = [
     ],
     repo: "https://github.com/Islem-rb/gitops-eks-platform",
     demo: {
+      cover: "/demos/gitops-eks-platform/cover.webp",
       video: {
         src: "/demos/gitops-eks-platform/demo.mp4",
         poster: "/demos/gitops-eks-platform/poster.webp",
