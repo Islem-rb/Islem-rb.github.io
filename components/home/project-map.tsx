@@ -65,7 +65,8 @@ function layout(projects: Project[]) {
     30 + years.indexOf(year) * (years.length > 1 ? 406 / (years.length - 1) : 0);
 
   // Timeline: one column per year, projects stacked inside it. A project that
-  // spans two years sits between the columns, one row down.
+  // spans two years sits between the columns, and between two rows of the
+  // later column so its label never runs into a point there.
   const groups = new Map<string, Project[]>();
   for (const p of projects) groups.set(p.year, [...(groups.get(p.year) ?? []), p]);
   const time = new Map<string, [number, number]>();
@@ -73,7 +74,8 @@ function layout(projects: Project[]) {
     const [from = "", to] = year.match(/\d{4}/g) ?? [];
     const x = to ? (yearX(from) + yearX(to)) / 2 - 2 : yearX(from);
     group.forEach((p, i) => {
-      const y = 330 + (i - (group.length - 1) / 2) * ROW + (to ? ROW : 0);
+      const beside = to ? (groups.get(to)?.length ?? 0) : 0;
+      const y = 330 + (i - (group.length - 1) / 2) * ROW + (beside % 2 === 1 ? ROW / 2 : 0);
       time.set(p.slug, [round(x), round(y)]);
     });
   }
