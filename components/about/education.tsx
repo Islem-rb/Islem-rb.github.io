@@ -7,7 +7,6 @@ type Entry = {
   school: string;
   degree: string;
   period: string;
-  slug?: string;
 };
 
 
@@ -26,7 +25,7 @@ export function Education({ lang }: { lang: Lang }): ReactNode {
               className="flex items-center gap-4 p-4"
               style={{ minHeight: ROW_HEIGHT }}
             >
-              <SchoolLogo entry={entry} />
+              <GraduationYear entry={entry} />
               <div className="flex min-w-0 flex-col">
                 <span className="text-foreground font-serif text-[17px] font-semibold tracking-[-0.025em]">
                   {entry.school}
@@ -45,28 +44,14 @@ export function Education({ lang }: { lang: Lang }): ReactNode {
   );
 }
 
-function SchoolLogo({ entry }: { entry: Entry }): ReactNode {
-  const initials = entry.school.charAt(0);
+/** The graduation year (or the expected one), where a logo would usually sit. */
+function GraduationYear({ entry }: { entry: Entry }): ReactNode {
   return (
     <span
-      className="border-border bg-background inline-flex h-12 w-12 shrink-0 items-center justify-center border"
       aria-hidden="true"
-      style={{ borderRadius: 6 }}
+      className="w-12 shrink-0 font-serif text-[17px] font-semibold tracking-[-0.02em] text-accent tabular-nums"
     >
-      {entry.slug ? (
-        <img
-          src={`https://cdn.simpleicons.org/${entry.slug}`}
-          alt=""
-          width={24}
-          height={24}
-          className="h-6 w-6"
-          draggable={false}
-        />
-      ) : (
-        <span className="text-foreground/60 text-[18px] font-semibold tracking-tight">
-          {initials}
-        </span>
-      )}
+      {entry.period.match(/\d{4}/g)?.at(-1)}
     </span>
   );
 }

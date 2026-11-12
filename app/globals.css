@@ -23,13 +23,13 @@
 .dark {
   --background: #0a1420;
   --foreground: #e7ebe3;
-  --surface: #0f1c2b;
-  --muted: #142334;
+  --surface: #112033;
+  --muted: #152639;
   --muted-foreground: #95a2ae;
-  --border: #22344a;
+  --border: #263b54;
   --accent: #ff7349;
   --ring: #ff7349;
-  --grid: rgb(231 235 227 / 0.05);
+  --grid: rgb(231 235 227 / 0.065);
   --signal: #5bd08f;
   --cloud: #82abe6;
   --product: #6cc0b5;

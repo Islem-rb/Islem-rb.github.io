@@ -36,27 +36,12 @@ export function Experience(): ReactNode {
                   aria-controls={panelId}
                   className="focus-ring flex w-full cursor-pointer items-center gap-4 p-4 text-left transition-colors hover:bg-background/60"
                 >
-                  {"logo" in entry ? (
-                    <img
-                      src={entry.logo}
-                      alt=""
-                      width={48}
-                      height={48}
-                      draggable={false}
-                      className="ring-foreground/8 h-12 w-12 shrink-0 ring-1 dark:ring-white/10"
-                      style={{ borderRadius: 6 }}
-                    />
-                  ) : (
-                    <span
-                      className="ring-foreground/8 inline-flex h-12 w-12 shrink-0 items-center justify-center bg-foreground ring-1 dark:ring-white/10"
-                      style={{ borderRadius: 6 }}
-                      aria-hidden="true"
-                    >
-                      <span className="text-background text-[18px] font-semibold tracking-tight">
-                        {entry.company.charAt(0)}
-                      </span>
-                    </span>
-                  )}
+                  <span
+                    aria-hidden="true"
+                    className="w-12 shrink-0 font-serif text-[17px] font-semibold tracking-[-0.02em] text-accent tabular-nums"
+                  >
+                    {entry.period.match(/\d{4}/g)?.at(-1)}
+                  </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="text-foreground font-serif text-[17px] font-semibold tracking-[-0.025em]">
                       {entry.company}
@@ -64,7 +49,7 @@ export function Experience(): ReactNode {
                     <span className="text-muted-foreground mt-0.5 text-[14px] sm:text-[15px]">
                       {entry.role}
                       <span className="text-foreground/30 mx-2">•</span>
-                      <span className="text-muted-foreground tabular-nums">{entry.period}</span>
+                      <span className="text-muted-foreground whitespace-nowrap tabular-nums">{entry.period}</span>
                     </span>
                   </span>
                   <motion.span

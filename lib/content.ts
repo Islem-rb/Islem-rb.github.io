@@ -702,7 +702,6 @@ export const EXPERIENCE = [
   },
   {
     company: "Abajim",
-    logo: "/logos/abajim.svg",
     role: "Mobile Developer Intern",
     period: "Feb 2024 – Jun 2024",
     location: "Sousse",
