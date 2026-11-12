@@ -453,12 +453,12 @@ export const PROJECTS: Project[] = [
     slug: "dawrek",
     name: "Dawrek",
     kind: "AI · Real-time SaaS",
-    year: "2026",
+    year: "2025",
     headline:
       "Clinic queues that patients follow from their phone, with an assistant that speaks Tunisian.",
     summary:
       "Patients take a ticket by QR code, follow their turn live and ask questions by text or voice in Darija, Arabic, French or English. Staff, waiting-room and manager views run on the same FastAPI backend.",
-    meta: "Personal project, 2026",
+    meta: "Personal project, 2025",
     featured: false,
     stack: [
       "Python",

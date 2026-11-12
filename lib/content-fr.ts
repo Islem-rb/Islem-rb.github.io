@@ -229,7 +229,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
       "Des files d’attente de cliniques suivies depuis le téléphone, avec un assistant qui parle tunisien.",
     summary:
       "Les patients prennent un ticket par QR code, suivent leur tour en direct et posent leurs questions à l’écrit ou à la voix en darija, arabe, français ou anglais. Les vues accueil, salle d’attente et direction tournent sur le même backend FastAPI.",
-    meta: "Projet personnel, 2026",
+    meta: "Projet personnel, 2025",
     highlights: [
       "5 langues, darija en écriture arabe et latine",
       "Questions vocales via Whisper",

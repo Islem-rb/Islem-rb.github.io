@@ -76,7 +76,7 @@ export const TIMELINE: TimelineEntry[] = [
   { id: "carnova", kind: "project", start: "2025-07", end: "2025-08", slug: "carnova", parent: "al-idhafa", label: { en: "Carnova", fr: "Carnova" } },
   { id: "automotive-ml", kind: "project", start: "2025-10", end: "2025-12", slug: "automotive-ml", label: { en: "Automotive ML", fr: "Automotive ML" } },
   { id: "cityvoice", kind: "project", start: "2025-10", end: "2026-04", slug: "cityvoice", label: { en: "CityVoice", fr: "CityVoice" } },
-  { id: "dawrek", kind: "project", start: "2026-01", end: "2026-12", approx: true, slug: "dawrek", label: { en: "Dawrek", fr: "Dawrek" } },
+  { id: "dawrek", kind: "project", start: "2025-05", end: "2025-09", slug: "dawrek", label: { en: "Dawrek", fr: "Dawrek" } },
   { id: "devops-observability-platform", kind: "project", start: "2026-06", end: "2026-08", slug: "devops-observability-platform", label: { en: "Observability", fr: "Observability" } },
   { id: "verdustry-social", kind: "project", start: "2026-07", end: "2026-08", slug: "verdustry-social", parent: "verdustry", label: { en: "Verdustry Social", fr: "Verdustry Social" } },
   { id: "gitops-eks-platform", kind: "project", start: "2026-09", end: "2026-10", slug: "gitops-eks-platform", label: { en: "GitOps EKS", fr: "GitOps EKS" } },
