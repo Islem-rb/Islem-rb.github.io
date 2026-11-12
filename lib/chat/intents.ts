@@ -21,6 +21,7 @@ export const INTENTS: Intent[] = [
     keywords: [
       "timeline", "years", "year", "history", "journey", "evolution",
       "chronology", "chronologie", "annees", "historique", "frise",
+      "dates", "months", "mois", "calendar", "calendrier",
     ],
     blocks: () => [],
     followUps: ["projects", "experience", "skills"],
@@ -181,6 +182,7 @@ export const PROJECT_ALIASES: Record<string, string[]> = {
   cityvoice: ["city voice"],
   "verdustry-social": ["verdustry"],
   "automotive-ml": ["automotive", "machine learning"],
+  readdly: ["abajim", "readly"],
 };
 
 export function answerForIntent(id: IntentId, lang: Lang): Answer {

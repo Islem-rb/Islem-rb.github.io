@@ -199,6 +199,7 @@ export const PROJECTS: Project[] = [
           "kube-prometheus-stack and Loki with Promtail installed through Helm.",
           "A Grafana dashboard kept as code: request rate, p95 latency, error rate, JVM heap, CPU and the Loki logs of all 3 services.",
           "Supporting AWS infrastructure provisioned with Terraform.",
+          "The groundwork for the GitOps EKS Platform, which took the same ideas to AWS right after.",
         ],
       },
     ],
@@ -230,12 +231,12 @@ export const PROJECTS: Project[] = [
     slug: "cityvoice",
     name: "CityVoice",
     kind: "End-to-end engineering",
-    year: "2026",
+    year: "2025–2026",
     headline:
       "A civic platform built from the bare-metal cloud up to the citizen's screen.",
     summary:
-      "A private OpenStack cloud, a Kubernetes cluster automated with Ansible, and nine Spring Boot modules behind a gateway, exposed through Cloudflare Tunnel.",
-    meta: "Academic team project, 2026",
+      "A private OpenStack cloud, a Kubernetes cluster automated with Ansible, and nine Spring Boot modules behind a gateway, exposed through Cloudflare Tunnel. An ESPRIT project in a team of 7: my part was the cloud, the DevOps and some of the backend.",
+    meta: "ESPRIT team project of 7, 2025–2026",
     featured: true,
     stack: [
       "OpenStack (Nova, Neutron, Heat, Octavia)",
@@ -260,9 +261,9 @@ export const PROJECTS: Project[] = [
       {
         title: "Infrastructure",
         items: [
-          "Full IaaS on OpenStack: Nova, Neutron, Heat, Octavia, monitored with Zabbix.",
+          "Full IaaS on OpenStack, running on nested VMs: Nova, Neutron, Heat, Octavia, monitored with Zabbix.",
           "Kubernetes cluster automated with Ansible in 7 roles.",
-          "Jenkins CI/CD triggered by GitHub webhooks, exposed publicly through Cloudflare Tunnel on a custom domain.",
+          "Jenkins CI/CD triggered by GitHub webhooks. The public demo ran through Cloudflare Tunnel on a custom domain.",
         ],
       },
       {
@@ -293,7 +294,7 @@ export const PROJECTS: Project[] = [
     headline:
       "A social media management platform where AI plans the strategy and Celery publishes on time.",
     summary:
-      "Built during my engineering internship at Verdustry: a FastAPI backend with Celery workers, a Next.js dashboard, AI content and strategy generation, and publishing to Facebook, Instagram and TikTok.",
+      "A working prototype built alone during my engineering internship at Verdustry: a FastAPI backend with Celery workers, a Next.js dashboard, AI content and strategy generation, and publishing to Facebook, Instagram and TikTok.",
     meta: "Engineering Intern at Verdustry, 2026",
     featured: true,
     stack: [
@@ -396,12 +397,12 @@ export const PROJECTS: Project[] = [
     slug: "carnova",
     name: "Carnova",
     kind: "Full-stack · Internship",
-    year: "2025–2026",
+    year: "2025",
     headline:
       "An automotive marketplace with dealer showrooms, a three.js 3D studio and secure accounts, live on free hosting.",
     summary:
-      "Started during my internship at Al Idhafa Group, then rebuilt in 2026 on Angular 22 and Spring Boot 3.5: listings, showrooms, a 3D studio with a driving sandbox, and accounts with email verification and password reset. Tested in CI on every push and deployed for free on Render and Neon.",
-    meta: "Full-Stack Intern at Al Idhafa Group, 2025 · rebuilt in 2026",
+      "Built alone in 2025 during my internship at Al Idhafa Group, for a client, on Angular and Spring Boot: listings, showrooms, a 3D studio with a driving sandbox, and accounts with email verification and password reset. Tested in CI on every push and deployed for free on Render and Neon.",
+    meta: "Full-Stack Intern at Al Idhafa Group, 2025",
     featured: true,
     stack: [
       "Spring Boot",
@@ -569,7 +570,7 @@ export const PROJECTS: Project[] = [
       "Price prediction and a budget-based car recommender, served as a web app.",
     summary:
       "A full scikit-learn pipeline, from cleaning and clustering to supervised models, deployed behind Flask with live predictions.",
-    meta: "Academic project",
+    meta: "ESPRIT course project, 2025",
     featured: false,
     stack: ["Python", "pandas", "NumPy", "scikit-learn", "Flask"],
     flow: ["pandas", "EDA", "Clustering", "Models", "Flask"],
@@ -599,12 +600,12 @@ export const PROJECTS: Project[] = [
     slug: "sabeel",
     name: "Sabeel",
     kind: "Web & desktop",
-    year: "2024",
+    year: "2025",
     headline:
       "Remote supervision for farms, on the web and offline on the desktop.",
     summary:
       "A Symfony platform to manage crops, equipment and resources, with a JavaFX desktop app built for low-connectivity sites.",
-    meta: "Academic team project",
+    meta: "ESPRIT team project of 5, 2025",
     featured: false,
     stack: ["Symfony", "Twig", "JavaFX", "MySQL", "Git"],
     flow: ["Symfony", "MySQL", "JavaFX"],
@@ -625,6 +626,39 @@ export const PROJECTS: Project[] = [
       },
     ],
     repo: "https://github.com/Islem-rb/sabeel",
+  },
+  {
+    slug: "readdly",
+    name: "Readdly",
+    kind: "Mobile · Internship",
+    year: "2024",
+    headline:
+      "A phone app that reads the world out loud for people with low vision.",
+    summary:
+      "Built during my internship at Abajim: a React Native app that recognises text and objects through the camera and reads them aloud, with a high-contrast, large-text interface. A working app, not released to the stores.",
+    meta: "Mobile Developer Intern at Abajim, 2024",
+    featured: false,
+    stack: ["React Native", "Node.js", "MongoDB", "OCR", "Text-to-speech"],
+    flow: ["Camera", "OCR", "Text-to-speech", "Node.js", "MongoDB"],
+    highlights: [
+      "Text and object recognition",
+      "Reads PDFs and images aloud",
+      "High contrast, large text",
+    ],
+    sections: [
+      {
+        title: "App",
+        items: [
+          "Text and object recognition from the camera, with OCR for PDFs and images.",
+          "Text-to-speech turns what was recognised into audio.",
+          "A low-vision interface: high contrast and large text throughout.",
+        ],
+      },
+      {
+        title: "Backend",
+        items: ["The Node.js and MongoDB backend behind it."],
+      },
+    ],
   },
 ];
 
@@ -662,10 +696,11 @@ export const EXPERIENCE = [
     period: "Feb 2024 – Jun 2024",
     location: "Sousse",
     points: [
-      "Built a React Native accessibility app for visually impaired users, with a low-vision interface.",
+      "Built Readdly, a React Native accessibility app for visually impaired users, with text and object recognition and a high-contrast, large-text interface.",
       "Integrated OCR to extract text from PDFs and images, and TTS to turn it into audio.",
       "Developed the Node.js and MongoDB backend.",
     ],
+    project: "readdly",
   },
 ] as const;
 
@@ -673,12 +708,12 @@ export const EDUCATION = [
   {
     school: "ESPRIT",
     degree: "Engineering degree, Cloud & DevOps",
-    period: "2023 – Present",
+    period: "2024 – 2027 (expected)",
   },
   {
     school: "ISITCOM",
     degree: "Bachelor in Computer Science",
-    period: "2021 – 2023",
+    period: "2021 – 2024",
   },
   {
     school: "Lycée El Manar",

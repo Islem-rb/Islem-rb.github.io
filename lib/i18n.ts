@@ -198,7 +198,7 @@ const en = {
       deploy:
         "The way this page just arrived: a small slice first, health checks, then everyone. My GitOps platform does that for every commit, and nobody touches the cluster by hand.",
       timeline:
-        "Here is the same map by year. I started with a web and desktop app in 2024, moved through machine learning and full-stack products, and by 2026 most of what I build is cloud platforms.",
+        "Here is everything by month: studies, internships and projects. I started with a mobile accessibility app during my 2024 internship, built web, machine learning and full-stack products in 2025, and in 2026 most of what I build is cloud platforms. Ask about a year, like “what did you do in 2025?”.",
       why:
         "Because I’ve already done the work an intern usually learns on the job: a GitOps platform on EKS where a bad release stops itself, Terraform instead of console clicks, signed images, and alerts that fire before users notice. And I write down what broke and why.",
       learning:
@@ -217,8 +217,15 @@ const en = {
     modes: { map: "Map", time: "Timeline" },
     captions: {
       map: "Each project is linked to the tools it is built with. Pick any point.",
-      time: "The same projects by year, from a web app in 2024 to cloud platforms in 2026.",
+      time: "Studies, internships and projects by month. Pick a bar to open it.",
     },
+    bands: { study: "Studies", work: "Internships", project: "Projects" },
+    today: "Today",
+    yearOnly: "months not given",
+    builtAt: (company: string, period: string, project: string) =>
+      `Internship at ${company}, ${period}. Opens ${project}`,
+    earlier: "Earlier",
+    later: "Later",
     cats: { cloud: "Cloud & platform", product: "Products", ai: "AI & data" },
     inCategory: (n: number, cat: string) =>
       `${n} projects in ${cat}. Pick one to read more.`,
@@ -445,7 +452,7 @@ const fr: Dictionary = {
       deploy:
         "Comme cette page vient d’arriver : une petite tranche d’abord, des contrôles de santé, puis tout le monde. Ma plateforme GitOps fait ça à chaque commit, et personne ne touche au cluster à la main.",
       timeline:
-        "Voici la même carte par année. J’ai commencé par une application web et desktop en 2024, puis du machine learning et des produits full-stack, et en 2026 je construis surtout des plateformes cloud.",
+        "Voici tout, mois par mois : études, stages et projets. J’ai commencé par une application mobile d’accessibilité pendant mon stage de 2024, puis des produits web, machine learning et full-stack en 2025, et en 2026 je construis surtout des plateformes cloud. Demandez une année, par exemple « qu’as-tu fait en 2025 ? ».",
       why:
         "Parce que j’ai déjà fait ce qu’un stagiaire apprend d’habitude sur le terrain : une plateforme GitOps sur EKS où une mauvaise version s’arrête toute seule, Terraform plutôt que des clics dans la console, des images signées, et des alertes qui sonnent avant les utilisateurs. Et je note ce qui a cassé, et pourquoi.",
       learning:
@@ -464,8 +471,15 @@ const fr: Dictionary = {
     modes: { map: "Carte", time: "Chronologie" },
     captions: {
       map: "Chaque projet est relié aux outils qui le composent. Choisissez un point.",
-      time: "Les mêmes projets par année, d’une application web en 2024 aux plateformes cloud en 2026.",
+      time: "Études, stages et projets, mois par mois. Choisissez une barre pour l’ouvrir.",
     },
+    bands: { study: "Études", work: "Stages", project: "Projets" },
+    today: "Aujourd’hui",
+    yearOnly: "mois non précisés",
+    builtAt: (company: string, period: string, project: string) =>
+      `Stage chez ${company}, ${period}. Ouvre ${project}`,
+    earlier: "Avant",
+    later: "Après",
     cats: { cloud: "Cloud & plateforme", product: "Produits", ai: "IA & données" },
     inCategory: (n: number, cat: string) =>
       `${n} projets en ${cat}. Choisissez-en un pour en savoir plus.`,

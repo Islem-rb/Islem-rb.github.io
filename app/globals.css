@@ -306,21 +306,73 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 }
 .pmap-core { transition: opacity 0.5s; }
 .pmap-core circle { fill: none; stroke: var(--accent); stroke-width: 1.5; }
-.pmap-axis { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
-.pmap-axis line { stroke: var(--hair-2); stroke-dasharray: 2 5; }
-.pmap-axis text {
+/* Timeline: month axis, bands for studies and internships, bars that grow from each point. */
+.pmap-tl { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+.pmap.time .pmap-tl { opacity: 1; pointer-events: auto; transition-delay: 0.25s; }
+.tl-tick { stroke: var(--hair-2); stroke-dasharray: 2 5; }
+.tl-yr {
   fill: var(--faint);
   font-family: var(--font-serif);
   font-stretch: 125%;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 600;
   letter-spacing: -0.03em;
-  text-anchor: middle;
 }
+.tl-band {
+  fill: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tl-year { fill: color-mix(in srgb, var(--accent) 8%, transparent); }
+.tl-today { stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.tl-today-label { fill: var(--accent); font-family: var(--font-sans); font-size: 13px; font-weight: 600; }
+.tl-item { transition: opacity 0.4s; outline: none; }
+.tl-item text {
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  paint-order: stroke;
+  stroke: var(--background);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.tl-label { fill: var(--foreground); font-weight: 500; }
+.tl-note { fill: var(--muted-foreground); }
+.tl-item.study rect { fill: color-mix(in srgb, var(--foreground) 22%, var(--surface)); }
+.tl-item.study rect.planned {
+  fill: none;
+  stroke: color-mix(in srgb, var(--foreground) 35%, transparent);
+  stroke-dasharray: 3 3;
+}
+.tl-flag { fill: var(--accent); }
+.tl-item.work { cursor: pointer; }
+.tl-item.work rect { fill: var(--foreground); transition: opacity 0.3s; }
+.tl-item.work:hover rect { opacity: 0.75; }
+.tl-item.work:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
+.tl-link { stroke: var(--c); stroke-width: 1.5; stroke-dasharray: 2 3; }
+.pmap-node .bar {
+  fill: color-mix(in srgb, var(--c) 30%, var(--surface));
+  stroke: var(--c);
+  stroke-width: 1.4;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s, fill 0.3s;
+}
+.pmap-node .bar.approx { fill: color-mix(in srgb, var(--c) 10%, var(--surface)); stroke-dasharray: 4 3; }
+.pmap-node .dot { transition: fill 0.3s, transform 0.5s; }
+.pmap.time .pmap-node .dot { transform: scale(0); }
+.pmap.time .pmap-node .bar { transform: none; opacity: 1; transition-delay: 0.45s, 0.45s, 0s; }
+.pmap.time .pmap-node:hover .bar { fill: color-mix(in srgb, var(--c) 55%, var(--surface)); }
+.pmap.time .pmap-node:focus-visible .bar { stroke-width: 3; }
 .pmap.focus .pmap-edge { opacity: 0.1; }
 .pmap.focus .pmap-node { opacity: 0.28; }
 .pmap.focus .pmap-node.on { opacity: 1; }
-.pmap.focus .pmap-node.on .dot { fill: var(--c); }
+.pmap.focus .pmap-node.on .dot,
+.pmap.focus .pmap-node.on .bar { fill: var(--c); }
+.pmap.focus .tl-item { opacity: 0.3; }
+.pmap.focus .tl-item.on { opacity: 1; }
 .pmap.focus .pmap-node.tool.on { --c: var(--foreground); }
 .pmap.focus .pmap-node.tool.on text { fill: var(--foreground); font-weight: 500; }
 .pmap.focus .pmap-edge.on { opacity: 1; stroke: var(--c); stroke-width: 1.7; }
@@ -329,16 +381,15 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 .pmap.time .pmap-ring,
 .pmap.time .pmap-core,
 .pmap.time .pmap-node.tool { opacity: 0 !important; pointer-events: none; }
-.pmap.time .pmap-axis { opacity: 1; }
 .pmap.time .pmap-node .lm { opacity: 0; }
 .pmap.time .pmap-node .lt { opacity: 1; }
 @media (max-width: 1023px) {
   .pmap-node text { font-size: 21px; }
   .pmap-node.tool text { display: none; }
   .pmap.focus .pmap-node.tool.on text { display: block; font-size: 17px; }
-  .pmap-axis text { font-size: 34px; }
   /* Full screen on a phone: the map is wider than the screen, so names fit again. */
   .pmap-full .pmap-node text { font-size: 15px; }
   .pmap-full .pmap-node.tool text { display: block; font-size: 12px; }
-  .pmap-full .pmap-axis text { font-size: 28px; }
 }
+/* The timeline keeps one label size at every width: on a phone it scrolls instead. */
+.pmap.time .pmap-node text { font-size: 16.5px; }

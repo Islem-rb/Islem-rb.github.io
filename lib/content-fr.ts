@@ -97,6 +97,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
           "kube-prometheus-stack et Loki avec Promtail installés via Helm.",
           "Un dashboard Grafana versionné dans le dépôt : débit, latence p95, taux d’erreur, heap JVM, CPU et logs Loki des 3 services.",
           "Infrastructure AWS associée provisionnée avec Terraform.",
+          "La base de la GitOps EKS Platform, qui a repris les mêmes idées sur AWS juste après.",
         ],
       },
     ],
@@ -106,8 +107,8 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
     headline:
       "Une plateforme citoyenne construite du cloud privé jusqu’à l’écran du citoyen.",
     summary:
-      "Un cloud privé OpenStack, un cluster Kubernetes automatisé avec Ansible, et neuf modules Spring Boot derrière une gateway, exposés via Cloudflare Tunnel.",
-    meta: "Projet académique en équipe, 2026",
+      "Un cloud privé OpenStack, un cluster Kubernetes automatisé avec Ansible, et neuf modules Spring Boot derrière une gateway, exposés via Cloudflare Tunnel. Un projet ESPRIT en équipe de 7 : ma part, c’était le cloud, le DevOps et une partie du backend.",
+    meta: "Projet ESPRIT en équipe de 7, 2025–2026",
     highlights: [
       "Cluster Ansible en 7 rôles",
       "9 modules Spring Boot",
@@ -117,9 +118,9 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
       {
         title: "Infrastructure",
         items: [
-          "IaaS complet sur OpenStack : Nova, Neutron, Heat, Octavia, supervisé avec Zabbix.",
+          "IaaS complet sur OpenStack, sur des VM imbriquées : Nova, Neutron, Heat, Octavia, supervisé avec Zabbix.",
           "Cluster Kubernetes automatisé avec Ansible en 7 rôles.",
-          "CI/CD Jenkins déclenché par webhooks GitHub, exposé publiquement via Cloudflare Tunnel sur un domaine personnalisé.",
+          "CI/CD Jenkins déclenché par webhooks GitHub. La démo publique passait par Cloudflare Tunnel sur un domaine personnalisé.",
         ],
       },
       {
@@ -145,7 +146,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
     headline:
       "Une plateforme de gestion des réseaux sociaux où l’IA planifie la stratégie et Celery publie à l’heure.",
     summary:
-      "Réalisée pendant mon stage ingénieur chez Verdustry : un backend FastAPI avec des workers Celery, un tableau de bord Next.js, la génération de contenu et de stratégies par IA, et la publication sur Facebook, Instagram et TikTok.",
+      "Un prototype fonctionnel réalisé seul pendant mon stage ingénieur chez Verdustry : un backend FastAPI avec des workers Celery, un tableau de bord Next.js, la génération de contenu et de stratégies par IA, et la publication sur Facebook, Instagram et TikTok.",
     meta: "Stagiaire ingénieur chez Verdustry, 2026",
     highlights: [
       "96 endpoints API · 14 tables",
@@ -188,8 +189,8 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
     headline:
       "Une marketplace automobile avec showrooms pour concessionnaires, un studio 3D three.js et des comptes sécurisés, en ligne sur un hébergement gratuit.",
     summary:
-      "Commencée pendant mon stage chez Al Idhafa Group, puis reconstruite en 2026 sur Angular 22 et Spring Boot 3.5 : annonces, showrooms, un studio 3D avec un mode conduite, et des comptes avec vérification d’e-mail et réinitialisation du mot de passe. Testée en CI à chaque push et déployée gratuitement sur Render et Neon.",
-    meta: "Stagiaire full-stack chez Al Idhafa Group, 2025 · reconstruite en 2026",
+      "Réalisée seul en 2025 pendant mon stage chez Al Idhafa Group, pour un client, sur Angular et Spring Boot : annonces, showrooms, un studio 3D avec un mode conduite, et des comptes avec vérification d’e-mail et réinitialisation du mot de passe. Testée en CI à chaque push et déployée gratuitement sur Render et Neon.",
+    meta: "Stagiaire full-stack chez Al Idhafa Group, 2025",
     highlights: [
       "10 contrôleurs · 42 endpoints",
       "Tests unitaires + navigateur en CI",
@@ -275,7 +276,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
       "Prédiction de prix et recommandation de voitures selon le budget, servies en application web.",
     summary:
       "Un pipeline scikit-learn complet, du nettoyage et du clustering aux modèles supervisés, déployé derrière Flask avec des prédictions en direct.",
-    meta: "Projet académique",
+    meta: "Projet de cours ESPRIT, 2025",
     highlights: [
       "3 tâches de prédiction",
       "Recommandation selon le budget",
@@ -304,7 +305,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
       "La supervision agricole à distance, sur le web et hors ligne sur desktop.",
     summary:
       "Une plateforme Symfony pour gérer cultures, équipements et ressources, avec une application JavaFX pensée pour les sites peu connectés.",
-    meta: "Projet académique en équipe",
+    meta: "Projet ESPRIT en équipe de 5, 2025",
     highlights: [
       "Web + desktop hors ligne",
       "Suivi des ressources en temps réel",
@@ -319,6 +320,33 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
           "Une application desktop JavaFX adaptée aux environnements hors ligne.",
           "Recrutement d’ouvriers et accès à des conseillers spécialisés.",
         ],
+      },
+    ],
+  },
+  readdly: {
+    kind: "Mobile · Stage",
+    headline:
+      "Une application qui lit le monde à voix haute pour les personnes malvoyantes.",
+    summary:
+      "Réalisée pendant mon stage chez Abajim : une application React Native qui reconnaît le texte et les objets par la caméra et les lit à voix haute, avec une interface à fort contraste et grand texte. Une application fonctionnelle, non publiée sur les stores.",
+    meta: "Stagiaire développeur mobile chez Abajim, 2024",
+    highlights: [
+      "Reconnaissance de texte et d’objets",
+      "Lit les PDF et les images à voix haute",
+      "Fort contraste, grand texte",
+    ],
+    sections: [
+      {
+        title: "Application",
+        items: [
+          "Reconnaissance de texte et d’objets par la caméra, avec OCR pour les PDF et les images.",
+          "La synthèse vocale transforme ce qui a été reconnu en audio.",
+          "Une interface basse vision : fort contraste et grand texte partout.",
+        ],
+      },
+      {
+        title: "Backend",
+        items: ["Le backend Node.js et MongoDB derrière l’application."],
       },
     ],
   },
@@ -352,7 +380,7 @@ export const EXPERIENCE_FR: Record<
     role: "Stagiaire développeur mobile",
     period: "févr. 2024 – juin 2024",
     points: [
-      "Développement d’une application React Native d’accessibilité pour les personnes malvoyantes, avec une interface basse vision.",
+      "Développement de Readdly, une application React Native d’accessibilité pour les personnes malvoyantes, avec reconnaissance de texte et d’objets et une interface à fort contraste et grand texte.",
       "Intégration de l’OCR pour extraire le texte des PDF et des images, et du TTS pour le convertir en audio.",
       "Développement du backend Node.js et MongoDB.",
     ],
@@ -362,9 +390,9 @@ export const EXPERIENCE_FR: Record<
 export const EDUCATION_FR: Record<string, { degree: string; period: string }> = {
   ESPRIT: {
     degree: "Diplôme d’ingénieur, Cloud & DevOps",
-    period: "2023 – aujourd’hui",
+    period: "2024 – 2027 (prévu)",
   },
-  ISITCOM: { degree: "Licence en informatique", period: "2021 – 2023" },
+  ISITCOM: { degree: "Licence en informatique", period: "2021 – 2024" },
   "Lycée El Manar": {
     degree: "Baccalauréat, Sciences mathématiques",
     period: "2021",

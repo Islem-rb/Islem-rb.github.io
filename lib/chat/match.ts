@@ -1,5 +1,6 @@
 import { getProjects, getSkillGroups, type Project } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
+import { yearSummary } from "@/lib/timeline";
 
 import {
   answerForIntent,
@@ -150,6 +151,21 @@ export function answer(query: string, lang: Lang): Answer {
       focus: { slugs: [project.slug] },
       open: project.slug,
       mode: "map",
+    };
+  }
+
+  // "What did you do in 2025?": the timeline, with that year lit.
+  const year = norm.match(/\b(20[12]\d)\b/)?.[1];
+  const summary = year
+    ? yearSummary(Number(year), lang, Object.fromEntries(projects.map((p) => [p.slug, p.name])))
+    : undefined;
+  if (year && summary) {
+    return {
+      text: summary.text,
+      blocks: summary.slugs.length > 0 ? [{ type: "projects", slugs: summary.slugs }] : [{ type: "education" }],
+      followUps: ["timeline", "experience", "projects"],
+      focus: { slugs: summary.slugs, year: Number(year) },
+      mode: "time",
     };
   }
 

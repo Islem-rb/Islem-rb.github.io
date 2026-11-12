@@ -12,6 +12,7 @@ const CATEGORY: Record<string, Category> = {
   "verdustry-social": "product",
   carnova: "product",
   sabeel: "product",
+  readdly: "product",
   dawrek: "ai",
   "automotive-ml": "ai",
 };

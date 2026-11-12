@@ -8,6 +8,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { categoryOf } from "@/lib/chat/map";
 import type { Project } from "@/lib/content";
 import { getDictionary, localePath, type Lang } from "@/lib/i18n";
+import { entryForProject, periodOf } from "@/lib/timeline";
 
 const HEADING =
   "mt-7 text-[12.5px] font-semibold tracking-[0.04em] text-muted-foreground uppercase";
@@ -18,17 +19,25 @@ const BUTTON =
 export function CaseStudy({
   project,
   next,
+  prev,
+  inTime,
   lang,
   onBack,
-  onNext,
+  onOpen,
 }: {
   project: Project;
-  next: Project;
+  /** The project after this one: in time on the timeline, in the list on the map. */
+  next: Project | undefined;
+  /** Only on the timeline: the project before this one in time. */
+  prev: Project | undefined;
+  inTime: boolean;
   lang: Lang;
   onBack: () => void;
-  onNext: () => void;
+  onOpen: (slug: string) => void;
 }): ReactNode {
   const t = getDictionary(lang);
+  const entry = entryForProject(project.slug);
+  const when = entry && !entry.approx ? periodOf(entry, lang) : project.year;
   const thumbnail = coverOf(project);
   const style = { "--c": `var(--${categoryOf(project.slug)})` } as CSSProperties;
 
@@ -46,7 +55,7 @@ export function CaseStudy({
 
       <p className="mt-6 flex items-center gap-2 text-[13.5px] font-medium text-[var(--c)]">
         <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--c)]" />
-        {project.kind} · {project.year}
+        {project.kind} · {when}
       </p>
       <h2 className="mt-2 font-serif text-[1.95rem] font-semibold leading-[1.04] tracking-[-0.04em] text-foreground sm:text-[2.4rem]">
         {project.name}
@@ -131,22 +140,48 @@ export function CaseStudy({
         ) : null}
       </div>
 
-      <button
-        type="button"
-        onClick={onNext}
-        className="focus-ring group mt-8 flex w-full cursor-pointer items-center justify-between border-t border-foreground py-4.5 text-left"
-      >
-        <span>
-          <span className="block text-[12.5px] text-muted-foreground">{t.projects.next}</span>
-          <span className="font-serif text-[21px] font-semibold tracking-[-0.02em]">
-            {next.name}
-          </span>
-        </span>
-        <ArrowRight
-          className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
-          aria-hidden="true"
-        />
-      </button>
+      <div className="mt-8 grid grid-cols-2 border-t border-foreground">
+        {prev ? (
+          <button
+            type="button"
+            onClick={() => onOpen(prev.slug)}
+            className="focus-ring group flex cursor-pointer items-center gap-3 py-4.5 text-left"
+          >
+            <ArrowLeft
+              className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-translate-x-1"
+              aria-hidden="true"
+            />
+            <span>
+              <span className="block text-[12.5px] text-muted-foreground">{t.map.earlier}</span>
+              <span className="font-serif text-[19px] font-semibold tracking-[-0.02em]">
+                {prev.name}
+              </span>
+            </span>
+          </button>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <button
+            type="button"
+            onClick={() => onOpen(next.slug)}
+            className="focus-ring group flex cursor-pointer items-center justify-end gap-3 py-4.5 text-right"
+          >
+            <span>
+              <span className="block text-[12.5px] text-muted-foreground">
+                {inTime ? t.map.later : t.projects.next}
+              </span>
+              <span className="font-serif text-[19px] font-semibold tracking-[-0.02em]">
+                {next.name}
+              </span>
+            </span>
+            <ArrowRight
+              className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </button>
+        ) : null}
+      </div>
     </article>
   );
 }

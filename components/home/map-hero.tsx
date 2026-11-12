@@ -8,6 +8,7 @@ import type { Answer } from "@/lib/chat/types";
 import { getProjects } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { useReducedMotion } from "@/lib/motion";
+import { chronological } from "@/lib/timeline";
 
 import { CaseStudy } from "./case-study";
 import { ProjectMap, type MapFocus, type MapMode } from "./project-map";
@@ -53,6 +54,14 @@ export function MapHero({
   };
 
   const open = projects.find((p) => p.slug === openSlug);
+  // On the timeline, the case study steps through time; on the map, through the list.
+  const order = mode === "time" ? chronological() : projects.map((p) => p.slug);
+  const at = open ? order.indexOf(open.slug) : -1;
+  const byOffset = (offset: number) =>
+    projects.find((p) => p.slug === order[(at + offset + order.length) % order.length]);
+  const nextProject = byOffset(1);
+  const prevProject = mode === "time" && at > 0 ? byOffset(-1) : undefined;
+  const laterProject = mode === "time" && at === order.length - 1 ? undefined : nextProject;
 
   const openProject = (slug: string): void => {
     const project = projects.find((p) => p.slug === slug);
@@ -89,7 +98,11 @@ export function MapHero({
       return;
     }
     const tool = result.focus?.tool ? ringTool(result.focus.tool) : undefined;
-    setFocus(result.focus ? { slugs: result.focus.slugs, tools: tool ? [tool] : [] } : null);
+    setFocus(
+      result.focus
+        ? { slugs: result.focus.slugs, tools: tool ? [tool] : [], year: result.focus.year }
+        : null,
+    );
   };
 
   const pickTool = (tool: string): void => {
@@ -157,14 +170,12 @@ export function MapHero({
           {open ? (
             <CaseStudy
               project={open}
-              next={projects[(projects.indexOf(open) + 1) % projects.length] ?? open}
+              next={laterProject}
+              prev={prevProject}
+              inTime={mode === "time"}
               lang={lang}
               onBack={closeProject}
-              onNext={() =>
-                openProject(
-                  (projects[(projects.indexOf(open) + 1) % projects.length] ?? open).slug,
-                )
-              }
+              onOpen={openProject}
             />
           ) : null}
         </div>

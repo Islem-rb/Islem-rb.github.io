@@ -23,16 +23,25 @@ import {
 import { getProjects, profile, type Project } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { useReducedMotion } from "@/lib/motion";
+import {
+  AS_OF,
+  AXIS_END,
+  AXIS_START,
+  inYear,
+  monthIndex,
+  periodOf,
+  TIMELINE,
+  type TimelineEntry,
+} from "@/lib/timeline";
 
 export type MapMode = "map" | "time";
 /** What is lit: some projects, and the ring tools their lines should reach. */
-export type MapFocus = { slugs: string[]; tools: string[] };
+export type MapFocus = { slugs: string[]; tools: string[]; year?: number | undefined };
 
 const CENTER = 300;
 const R_PROJECT = 132;
 const R_TOOL = 276;
 const R_FACE = 46;
-const ROW = 82;
 
 /** Rounded so the server and the browser always print the same coordinates. */
 const round = (n: number): number => Math.round(n * 100) / 100;
@@ -59,41 +68,76 @@ type Placed = {
   tools: string[];
   deg: number;
   ring: [number, number];
+  /** Timeline: where the bar starts, its width, and where its label sits. */
   time: [number, number];
+  bar: number;
+  approx: boolean;
+  period: string;
+  /** Projects from an internship sit right under it, with the label after the bar. */
+  under: boolean;
 };
 
-function layout(projects: Project[]) {
-  const years = [
-    ...new Set(projects.flatMap((p) => p.year.match(/\d{4}/g) ?? [])),
-  ].sort();
-  const yearX = (year: string): number =>
-    30 + years.indexOf(year) * (years.length > 1 ? 406 / (years.length - 1) : 0);
+/* Timeline geometry, in the same coordinates as the map. */
+const X0 = -70;
+const X1 = 690;
+const SPAN = monthIndex(AXIS_END) - monthIndex(AXIS_START) + 1;
+const PX = (X1 - X0) / SPAN;
+const Y_TOP = 56;
+const Y_BOTTOM = 560;
+const Y_BAND = { study: 96, work: 238, project: 374 } as const;
+const Y_STUDY = [132, 180];
+const Y_WORK = 276;
+const Y_UNDER = 314;
+const Y_LANES = [412, 456, 500, 544];
+/** Rough width of a project name at the timeline's label size. */
+const labelWidth = (name: string): number => name.length * 10.4 + 4;
 
-  // Timeline: one column per year, projects stacked inside it. A project that
-  // spans two years sits between the columns, and between two rows of the
-  // later column so its label never runs into a point there.
-  const groups = new Map<string, Project[]>();
-  for (const p of projects) groups.set(p.year, [...(groups.get(p.year) ?? []), p]);
-  const time = new Map<string, [number, number]>();
-  for (const [year, group] of groups) {
-    const [from = "", to] = year.match(/\d{4}/g) ?? [];
-    const x = to ? (yearX(from) + yearX(to)) / 2 - 2 : yearX(from);
-    group.forEach((p, i) => {
-      const beside = to ? (groups.get(to)?.length ?? 0) : 0;
-      const y = 330 + (i - (group.length - 1) / 2) * ROW + (beside % 2 === 1 ? ROW / 2 : 0);
-      time.set(p.slug, [round(x), round(y)]);
-    });
+function monthX(month: string): number {
+  const x = X0 + (monthIndex(month) - monthIndex(AXIS_START)) * PX;
+  return round(Math.min(Math.max(x, X0), X1));
+}
+
+/** Where a bar from `start` to `end` (both months included) begins and ends. */
+function span(entry: TimelineEntry): [number, number] {
+  const to = Math.min(X0 + (monthIndex(entry.end) - monthIndex(AXIS_START) + 1) * PX, X1);
+  return [monthX(entry.start), round(to)];
+}
+
+function layout(projects: Project[], lang: Lang) {
+  // Projects without an internship share a few lanes, each new bar in the first
+  // lane where neither it nor its label would touch the one before.
+  const lanes: number[] = [];
+  const time = new Map<string, { xy: [number, number]; bar: number; entry: TimelineEntry }>();
+  const entries = TIMELINE.filter((e) => e.kind === "project").sort(
+    (a, b) => monthIndex(a.start) - monthIndex(b.start),
+  );
+  for (const entry of entries) {
+    const [from, to] = span(entry);
+    let y = Y_UNDER;
+    if (!entry.parent) {
+      const reach = Math.max(to, from + labelWidth(entry.label[lang]));
+      let lane = lanes.findIndex((busy) => busy + 14 <= from);
+      if (lane === -1) lane = lanes.length;
+      lanes[lane] = reach;
+      y = Y_LANES[Math.min(lane, Y_LANES.length - 1)] ?? Y_UNDER;
+    }
+    time.set(entry.slug ?? entry.id, { xy: [from, y], bar: round(to - from), entry });
   }
 
   const placed: Placed[] = projects.map((project, i) => {
     const deg = (i * 360) / projects.length - 90;
+    const slot = time.get(project.slug);
     return {
       project,
       category: categoryOf(project.slug),
       tools: toolsOf(project),
       deg,
       ring: polar(R_PROJECT, deg),
-      time: time.get(project.slug) ?? [0, 0],
+      time: slot?.xy ?? [X0, Y_LANES[0] ?? 0],
+      bar: slot?.bar ?? 0,
+      approx: Boolean(slot?.entry.approx),
+      period: slot ? periodOf(slot.entry, lang) : project.year,
+      under: Boolean(slot?.entry.parent),
     };
   });
 
@@ -103,7 +147,26 @@ function layout(projects: Project[]) {
     return { name, deg, xy: polar(R_TOOL, deg) };
   });
 
-  return { placed, tools, years: years.map((y) => ({ year: y, x: round(yearX(y)) })) };
+  const first = Math.floor(monthIndex(AXIS_START) / 12);
+  const last = Math.floor(monthIndex(AXIS_END) / 12);
+  const years = Array.from({ length: last - first + 1 }, (_, i) => first + i).map((year) => ({
+    year,
+    x: monthX(`${year}-01`),
+    end: monthX(`${year + 1}-01`),
+  }));
+  const studies = TIMELINE.filter((e) => e.kind === "study").map((entry, i) => ({
+    entry,
+    span: span(entry),
+    y: Y_STUDY[i] ?? Y_STUDY[0] ?? 0,
+  }));
+  const work = TIMELINE.filter((e) => e.kind === "work").map((entry) => ({
+    entry,
+    span: span(entry),
+    period: periodOf(entry, lang),
+  }));
+  const today = round(span({ id: "", kind: "study", start: AS_OF, end: AS_OF, label: { en: "", fr: "" } })[1]);
+
+  return { placed, tools, years, studies, work, today };
 }
 
 function subscribeNarrow(callback: () => void): () => void {
@@ -263,9 +326,21 @@ export function ProjectMap({
   const goTool = pick(onTool);
   const goCategory = pick(onCategory);
 
-  const { placed, tools, years } = useMemo(() => layout(getProjects(lang)), [lang]);
+  const { placed, tools, years, studies, work, today } = useMemo(
+    () => layout(getProjects(lang), lang),
+    [lang],
+  );
+  const timeline = mode === "time";
+  // On a phone the timeline scrolls sideways, opening on today.
+  const sideways = narrow && timeline && !isFull;
+  useEffect(() => {
+    const box = scrollRef.current;
+    if (box && narrow && timeline) box.scrollLeft = box.scrollWidth;
+  }, [narrow, timeline, isFull]);
+  const nameOf = (slug: string | undefined): string =>
+    placed.find((p) => p.project.slug === slug)?.project.name ?? "";
 
-  const viewBox = narrow && !isFull ? "-45 5 690 590" : "-110 -10 820 620";
+  const viewBox = narrow && !isFull && !timeline ? "-45 5 690 590" : "-110 -10 820 620";
   const litProjects = new Set(focus?.slugs);
   const litTools = new Set(focus?.tools);
 
@@ -292,7 +367,10 @@ export function ProjectMap({
       return [name, [xy[0] + (safe[0] - xy[0]) * progress, xy[1] + (safe[1] - xy[1]) * progress]];
     }),
   );
-  const focused = litProjects.size > 0 || litTools.size > 0;
+  const year = focus?.year;
+  const litEntry = (entry: TimelineEntry): boolean =>
+    year !== undefined ? inYear(entry, year) : litProjects.has(entry.slug ?? "");
+  const focused = litProjects.size > 0 || litTools.size > 0 || year !== undefined;
 
   return (
     <figure
@@ -348,13 +426,19 @@ export function ProjectMap({
 
       <div
         ref={scrollRef}
-        className={isFull ? "flex flex-1 items-center overflow-auto overscroll-contain" : ""}
+        className={
+          isFull
+            ? "flex flex-1 items-center overflow-auto overscroll-contain"
+            : sideways
+              ? "overflow-x-auto overscroll-x-contain"
+              : ""
+        }
       >
       <svg
         viewBox={viewBox}
         role="group"
         aria-label={t.label}
-        style={isFull ? { minWidth: 860, flexShrink: 0 } : undefined}
+        style={isFull ? { minWidth: 860, flexShrink: 0 } : sideways ? { minWidth: 760 } : undefined}
       >
         <defs>
           <clipPath id="pmap-face">
@@ -362,13 +446,90 @@ export function ProjectMap({
           </clipPath>
         </defs>
 
-        <g className="pmap-axis" aria-hidden="true">
-          {years.map(({ year, x }) => (
-            <g key={year}>
-              <text x={x} y={78}>{year}</text>
-              <line x1={x} y1={100} x2={x} y2={560} />
+        <g className="pmap-tl">
+          {year !== undefined ? (
+            <rect
+              className="tl-year"
+              x={years.find((y) => y.year === year)?.x ?? X0}
+              y={Y_TOP}
+              width={Math.max(
+                0,
+                Math.min(years.find((y) => y.year === year)?.end ?? X0, X1) -
+                  (years.find((y) => y.year === year)?.x ?? X0),
+              )}
+              height={Y_BOTTOM - Y_TOP}
+            />
+          ) : null}
+          <g aria-hidden="true">
+            {years.map(({ year: y, x }) => (
+              <g key={y}>
+                <line className="tl-tick" x1={x} y1={Y_TOP} x2={x} y2={Y_BOTTOM} />
+                <text className="tl-yr" x={x + 6} y={44}>{y}</text>
+              </g>
+            ))}
+            {(["study", "work", "project"] as const).map((band) => (
+              <text key={band} className="tl-band" x={X0} y={Y_BAND[band]}>
+                {t.bands[band]}
+              </text>
+            ))}
+            <line className="tl-today" x1={today} y1={Y_TOP} x2={today} y2={Y_BOTTOM} />
+            <text className="tl-today-label" x={today - 5} y={70} textAnchor="end">
+              {t.today}
+            </text>
+          </g>
+
+          {studies.map(({ entry, span: [from, to], y }) => (
+            <g
+              key={entry.id}
+              className={`tl-item study ${litEntry(entry) ? "on" : ""}`}
+              aria-hidden="true"
+            >
+              <text className="tl-label" x={from} y={y - 13}>{entry.label[lang]}</text>
+              <rect x={from} y={y - 4} width={Math.max(0, Math.min(to, today) - from)} height={8} rx={4} />
+              {to > today ? (
+                <rect className="planned" x={today} y={y - 4} width={to - today} height={8} rx={4} />
+              ) : null}
+              {entry.milestones?.map((m) => {
+                const mx = round(monthX(m.month) + PX / 2);
+                return (
+                  <g key={m.month}>
+                    <path className="tl-flag" d={`M${mx} ${y - 6} l6 6 l-6 6 l-6 -6 z`} />
+                    <text className="tl-note" x={mx + 12} y={y + 9}>
+                      {m.label[lang]} · {periodOf({ ...entry, start: m.month, end: m.month }, lang)}
+                    </text>
+                  </g>
+                );
+              })}
             </g>
           ))}
+
+          {work.map(({ entry, span: [from, to], period }) => {
+            const project = placed.find((p) => p.project.slug === entry.slug);
+            return (
+              <g
+                key={entry.id}
+                role="button"
+                tabIndex={timeline ? 0 : -1}
+                aria-label={t.builtAt(entry.label[lang], period, nameOf(entry.slug))}
+                className={`tl-item work ${litEntry(entry) ? "on" : ""}`}
+                onClick={() => entry.slug && goProject(entry.slug)}
+                onKeyDown={activate(() => entry.slug && goProject(entry.slug))}
+              >
+                <text className="tl-label" x={from} y={Y_WORK - 13}>{entry.label[lang]}</text>
+                <rect x={from} y={Y_WORK - 5} width={to - from} height={10} rx={5} />
+                {project ? (
+                  <line
+                    className="tl-link"
+                    x1={from + 1.5}
+                    y1={Y_WORK + 5}
+                    x2={from + 1.5}
+                    y2={Y_UNDER - 5}
+                    style={{ "--c": `var(--${project.category})` } as CSSProperties}
+                  />
+                ) : null}
+              </g>
+            );
+          })}
         </g>
 
         <g className="pmap-zoom" transform={zoomTransform}>
@@ -412,7 +573,7 @@ export function ProjectMap({
           <g
             key={name}
             role="button"
-            tabIndex={mode === "time" ? -1 : 0}
+            tabIndex={timeline ? -1 : 0}
             aria-label={t.tool(name)}
             className={`pmap-node tool ${litTools.has(name) ? "on" : ""}`}
             style={{
@@ -426,8 +587,8 @@ export function ProjectMap({
           </g>
         ))}
 
-        {placed.map(({ project, category: cat, deg, ring, time }) => {
-          const [x, y] = mode === "time" ? time : ring;
+        {placed.map(({ project, category: cat, deg, ring, time, bar, approx, period, under }) => {
+          const [x, y] = timeline ? time : ring;
           const style = {
             "--c": `var(--${cat})`,
             transform: `translate(${x}px, ${y}px)`,
@@ -437,16 +598,21 @@ export function ProjectMap({
               key={project.slug}
               role="button"
               tabIndex={0}
-              aria-label={`${project.name}, ${project.kind}, ${project.year}`}
+              aria-label={`${project.name}, ${project.kind}, ${timeline ? period : project.year}${
+                timeline && approx ? ` (${t.yearOnly})` : ""
+              }`}
               aria-pressed={zoomTo === project.slug}
               className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""}`}
               style={style}
               onClick={() => goProject(project.slug)}
               onKeyDown={activate(() => goProject(project.slug))}
             >
+              <rect className={`bar ${approx ? "approx" : ""}`} x={0} y={-5} width={bar} height={10} rx={5} />
               <circle className="dot" r={12} />
               <text className="lm" {...labelAt(deg, 22)}>{mapLabel(project)}</text>
-              <text className="lt" {...labelAt(0, 22)}>{mapLabel(project)}</text>
+              <text className="lt" x={under ? bar + 8 : 0} y={under ? 6 : -12}>
+                {mapLabel(project)}
+              </text>
             </g>
           );
         })}
