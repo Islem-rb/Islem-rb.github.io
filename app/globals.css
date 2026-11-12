@@ -3,30 +3,43 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --border: #e5e5e5;
-  --ring: #0066ff;
-  --frame: #ffffff;
-  --signal: #15803d;
+  --background: #f6f6f3;
+  --foreground: #14161b;
+  --surface: #ffffff;
+  --muted: #ecece8;
+  --muted-foreground: #5c626e;
+  --border: #e2e2dd;
+  --ring: #2458e6;
+  --frame: #f6f6f3;
+  --signal: #18874a;
+  /* Project types, used as data colours on the map. */
+  --cloud: #2458e6;
+  --product: #7a3fe0;
+  --ai: #d97a06;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --muted: #171717;
-  --muted-foreground: #a3a3a3;
-  --border: #262626;
-  --ring: #3b82f6;
-  --frame: #0a0a0a;
-  --signal: #4ade80;
+  --background: #0d0f12;
+  --foreground: #f1f2f4;
+  --surface: #15181d;
+  --muted: #1a1d22;
+  --muted-foreground: #a0a6b1;
+  --border: #262a31;
+  --ring: #6c9cff;
+  --frame: #0d0f12;
+  --signal: #56cf8c;
+  --cloud: #6c9cff;
+  --product: #ad8eff;
+  --ai: #f4ad3d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-cloud: var(--cloud);
+  --color-product: var(--product);
+  --color-ai: var(--ai);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
@@ -56,9 +69,10 @@ html.dark {
 
 /* Declared on body: next/font puts the --font-geist-* variables on <body>, so they are undefined at :root. */
 body {
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
+  /* Display face for headings. The token keeps its old name so every heading picks it up. */
+  --font-serif: var(--font-bricolage), var(--font-inter), system-ui, sans-serif;
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
@@ -280,4 +294,122 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 
 .project-card:focus-within {
   border-color: color-mix(in srgb, var(--foreground) 14%, transparent);
+}
+
+/* ---- Home: the page arrives in three slices, like a careful release ---- */
+.rollout [data-at] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rollout[data-stage="1"] [data-at="1"],
+.rollout[data-stage="2"] [data-at="1"],
+.rollout[data-stage="3"] [data-at="1"],
+.rollout[data-stage="2"] [data-at="2"],
+.rollout[data-stage="3"] [data-at="2"],
+.rollout[data-stage="3"] [data-at="3"] {
+  opacity: 1;
+  transform: none;
+}
+.rollout-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  height: 2px;
+  width: 0;
+  background: var(--foreground);
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s 0.5s;
+}
+.rollout[data-stage="1"] .rollout-bar { width: 10%; }
+.rollout[data-stage="2"] .rollout-bar { width: 50%; }
+.rollout[data-stage="3"] .rollout-bar { width: 100%; opacity: 0; }
+
+.view-in { animation: view-in 0.5s both cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+/* ---- Project map ---- */
+.pmap {
+  --hair: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --hair-2: color-mix(in srgb, var(--foreground) 22%, transparent);
+  --faint: color-mix(in srgb, var(--foreground) 42%, transparent);
+}
+.pmap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.pmap-ring { fill: none; stroke: var(--hair); transition: opacity 0.5s; }
+.pmap-edge {
+  stroke: var(--hair-2);
+  stroke-width: 1;
+  opacity: 0.5;
+  transition: opacity 0.35s, stroke 0.35s, stroke-width 0.35s;
+}
+.pmap-node {
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+}
+.pmap-node .dot {
+  fill: color-mix(in srgb, var(--c) 14%, var(--surface));
+  stroke: var(--c);
+  stroke-width: 1.6;
+  transition: fill 0.3s;
+}
+.pmap-node:hover .dot,
+.pmap-node:focus-visible .dot { fill: color-mix(in srgb, var(--c) 40%, var(--surface)); }
+.pmap-node:focus-visible .dot { stroke-width: 3; }
+.pmap-node text {
+  fill: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  paint-order: stroke;
+  stroke: var(--background);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  transition: opacity 0.4s;
+}
+.pmap-node .lt { opacity: 0; }
+.pmap-node.tool { --c: var(--faint); }
+.pmap-node.tool .dot { fill: var(--surface); stroke-width: 1.2; }
+.pmap-node.tool text {
+  fill: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.pmap-core { transition: opacity 0.5s; }
+.pmap-core circle { fill: none; stroke: var(--foreground); stroke-width: 1.5; }
+.pmap-axis { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+.pmap-axis line { stroke: var(--hair-2); stroke-dasharray: 2 5; }
+.pmap-axis text {
+  fill: var(--faint);
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  text-anchor: middle;
+}
+.pmap.focus .pmap-edge { opacity: 0.1; }
+.pmap.focus .pmap-node { opacity: 0.28; }
+.pmap.focus .pmap-node.on { opacity: 1; }
+.pmap.focus .pmap-node.on .dot { fill: var(--c); }
+.pmap.focus .pmap-node.tool.on { --c: var(--foreground); }
+.pmap.focus .pmap-node.tool.on text { fill: var(--foreground); font-weight: 500; }
+.pmap.focus .pmap-edge.on { opacity: 1; stroke: var(--c); stroke-width: 1.7; }
+/* Timeline layout: the same points, rearranged by year. */
+.pmap.time .pmap-edge,
+.pmap.time .pmap-ring,
+.pmap.time .pmap-core,
+.pmap.time .pmap-node.tool { opacity: 0 !important; pointer-events: none; }
+.pmap.time .pmap-axis { opacity: 1; }
+.pmap.time .pmap-node .lm { opacity: 0; }
+.pmap.time .pmap-node .lt { opacity: 1; }
+@media (max-width: 1023px) {
+  .pmap-node text { font-size: 21px; }
+  .pmap-node.tool text { display: none; }
+  .pmap.focus .pmap-node.tool.on text { display: block; font-size: 17px; }
+  .pmap-axis text { font-size: 34px; }
 }

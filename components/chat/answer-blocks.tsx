@@ -1,12 +1,11 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Cloud, FileDown, Play } from "lucide-react";
+import { ArrowRight, ArrowUpRight, FileDown } from "lucide-react";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { ContactButton } from "@/components/contact/contact-button";
-import { PipelineTrace } from "@/components/hero/pipeline-trace";
-import { PROJECT_ICONS } from "@/components/projects/projects";
+import { categoryOf, mapLabel } from "@/lib/chat/map";
 import type { Block } from "@/lib/chat/types";
 import {
   getEducation,
@@ -19,34 +18,84 @@ import {
 import { localePath, type Dictionary, type Lang } from "@/lib/i18n";
 import { StaggerContainer, StaggerItem } from "@/lib/motion";
 
-const PANEL =
-  "rounded-3xl border border-foreground/8 bg-background p-4 sm:p-5";
-const LABEL = "font-mono text-[11px] tracking-tight text-foreground/45";
+const PANEL = "rounded-2xl border border-foreground/10 bg-background/60 p-4 sm:p-5";
+const LABEL = "text-[12.5px] text-foreground/50";
 const GHOST_LINK =
-  "focus-ring group inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border border-foreground/8 bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5";
+  "focus-ring group inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border border-foreground/20 px-4 text-sm font-medium text-foreground transition-colors hover:border-foreground";
 
-type BlockProps = { lang: Lang; t: Dictionary };
+type BlockProps = {
+  lang: Lang;
+  t: Dictionary;
+  onOpenProject: (slug: string) => void;
+};
 
 /** The cards under a typed answer. They fade up one after another. */
 export function AnswerBlocks({
   blocks,
-  lang,
-  t,
+  ...props
 }: BlockProps & { blocks: Block[] }): ReactNode {
   if (blocks.length === 0) return null;
   return (
     <StaggerContainer className="flex flex-col gap-3">
       {blocks.map((block) => (
-        <BlockView key={block.type} block={block} lang={lang} t={t} />
+        <BlockView key={block.type} block={block} {...props} />
       ))}
     </StaggerContainer>
   );
 }
 
-function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode {
+function BlockView({
+  block,
+  lang,
+  t,
+  onOpenProject,
+}: BlockProps & { block: Block }): ReactNode {
   switch (block.type) {
-    case "projects":
-      return <ProjectsBlock block={block} lang={lang} t={t} />;
+    case "projects": {
+      const all = getProjects(lang);
+      const items = block.slugs.flatMap((slug) => all.find((p) => p.slug === slug) ?? []);
+      return (
+        <>
+          <div className="border-b border-foreground/10">
+            {items.map((project) => (
+              <StaggerItem key={project.slug} className="border-t border-foreground/10">
+                <div style={{ "--c": `var(--${categoryOf(project.slug)})` } as CSSProperties}>
+                  <button
+                    type="button"
+                    onClick={() => onOpenProject(project.slug)}
+                    aria-label={t.ask.openProject(project.name)}
+                    className="focus-ring group flex min-h-12 w-full cursor-pointer items-center gap-3 rounded-md py-2.5 text-left"
+                  >
+                    <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--c)]" />
+                    <span className="font-serif text-[17px] font-semibold tracking-[-0.01em] text-foreground group-hover:underline group-hover:underline-offset-4">
+                      {mapLabel(project)}
+                    </span>
+                    <span className="ml-auto text-right text-[13px] text-foreground/45">
+                      {project.kind} · {project.year}
+                    </span>
+                    <ArrowRight
+                      className="h-4 w-4 shrink-0 text-foreground/40 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+              </StaggerItem>
+            ))}
+          </div>
+          {block.showAll ? (
+            <StaggerItem>
+              <Link href={localePath(lang, "/projects")} className={GHOST_LINK}>
+                {t.ask.allProjects(all.length)}
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+            </StaggerItem>
+          ) : null}
+        </>
+      );
+    }
     case "skills":
       return (
         <StaggerItem className={PANEL}>
@@ -57,7 +106,7 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
                 className="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-4"
               >
                 <dt className={`${LABEL} sm:pt-0.5`}>{group.label}</dt>
-                <dd className="text-[14px] leading-normal tracking-tight text-foreground/80 sm:text-[15px]">
+                <dd className="text-[14.5px] leading-normal text-foreground/85">
                   {group.items}
                 </dd>
               </div>
@@ -71,27 +120,28 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
           {getExperience(lang).map((job) => (
             <StaggerItem key={job.company} className={PANEL}>
               <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 className="text-[16px] font-medium tracking-tight text-foreground">
+                <h3 className="font-serif text-[17px] font-semibold tracking-[-0.01em] text-foreground">
                   {job.role} · {job.company}
                 </h3>
                 <span className={LABEL}>
                   {job.period} · {job.location}
                 </span>
               </div>
-              <p className="mt-2 text-[14px] leading-normal tracking-tight text-foreground/65 sm:text-[15px]">
+              <p className="mt-2 text-[14.5px] leading-normal text-foreground/65">
                 {job.points[0]}
               </p>
               {"project" in job && job.project ? (
-                <Link
-                  href={localePath(lang, `/projects/${job.project}`)}
-                  className="focus-ring group mt-3 inline-flex min-h-8 items-center gap-1.5 rounded-md text-sm font-medium text-foreground"
+                <button
+                  type="button"
+                  onClick={() => onOpenProject(job.project)}
+                  className="focus-ring group mt-3 inline-flex min-h-8 cursor-pointer items-center gap-1.5 rounded-md text-sm font-medium text-foreground"
                 >
                   {t.about.seeProject}
                   <ArrowRight
                     className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
                     aria-hidden="true"
                   />
-                </Link>
+                </button>
               ) : null}
             </StaggerItem>
           ))}
@@ -106,7 +156,7 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
                 key={item.school}
                 className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5"
               >
-                <span className="text-[15px] tracking-tight text-foreground">
+                <span className="text-[15px] text-foreground">
                   <span className="font-medium">{item.school}</span>
                   <span className="text-foreground/65"> · {item.degree}</span>
                 </span>
@@ -122,7 +172,7 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
           {getLanguages(lang).map((language) => (
             <span
               key={language.name}
-              className="inline-flex items-center gap-2 rounded-xl border border-foreground/8 bg-background px-3.5 py-2 text-sm tracking-tight text-foreground"
+              className="inline-flex items-center gap-2 rounded-full border border-foreground/10 px-3.5 py-2 text-sm text-foreground"
             >
               <span className="font-medium">{language.name}</span>
               <span className={LABEL}>{language.level}</span>
@@ -161,12 +211,6 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
         </StaggerItem>
       );
     }
-    case "pipeline":
-      return (
-        <StaggerItem>
-          <PipelineTrace />
-        </StaggerItem>
-      );
     case "facts":
       return (
         <StaggerItem className={PANEL}>
@@ -178,103 +222,13 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
             ].map(([label, value]) => (
               <div key={label} className="flex flex-col gap-1">
                 <dt className={LABEL}>{label}</dt>
-                <dd className="text-[15px] leading-snug tracking-tight text-foreground">
-                  {value}
-                </dd>
+                <dd className="text-[15px] leading-snug text-foreground">{value}</dd>
               </div>
             ))}
           </dl>
         </StaggerItem>
       );
   }
-}
-
-function ProjectsBlock({
-  block,
-  lang,
-  t,
-}: BlockProps & { block: Extract<Block, { type: "projects" }> }): ReactNode {
-  const all = getProjects(lang);
-  const items = block.slugs.flatMap((slug) => all.find((p) => p.slug === slug) ?? []);
-  return (
-    <>
-      <div className={`grid gap-3 ${items.length > 1 ? "sm:grid-cols-2" : ""}`}>
-        {items.map((project) => {
-          const Icon = PROJECT_ICONS[project.slug] ?? Cloud;
-          const thumbnail =
-            project.demo?.video?.poster ?? project.demo?.shots?.[0]?.src;
-          return (
-            <StaggerItem key={project.slug}>
-              <article className="group/card relative flex h-full flex-col gap-3 rounded-3xl border border-foreground/8 bg-background p-4 transition-colors hover:border-foreground/20 sm:p-5">
-                <header className="flex items-center gap-2.5">
-                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-foreground/10 bg-background">
-                    <Icon className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-medium tracking-tight text-foreground">
-                    {project.name}
-                  </span>
-                  {project.demo ? (
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-md border border-foreground/10 px-1.5 py-0.5 font-mono text-[10px] tracking-tight text-foreground/70">
-                      {project.demo.video ? (
-                        <Play className="h-2.5 w-2.5" aria-hidden="true" />
-                      ) : null}
-                      {t.projects.demo}
-                    </span>
-                  ) : null}
-                  <span className={`ml-auto shrink-0 ${LABEL}`}>{project.year}</span>
-                </header>
-                {thumbnail ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- static export, images are unoptimized
-                  <img
-                    src={thumbnail}
-                    alt=""
-                    loading="lazy"
-                    className="aspect-video w-full rounded-2xl border border-foreground/8 object-cover object-top"
-                  />
-                ) : null}
-                <h3 className="text-[17px] font-medium leading-[1.25] tracking-tight text-foreground">
-                  <Link
-                    href={localePath(lang, `/projects/${project.slug}`)}
-                    className="focus-ring rounded-md after:absolute after:inset-0 after:rounded-3xl after:content-['']"
-                  >
-                    {project.headline}
-                  </Link>
-                </h3>
-                <ul className="flex flex-wrap gap-1.5">
-                  {project.stack.slice(0, 5).map((tool) => (
-                    <li
-                      key={tool}
-                      className="rounded-md border border-foreground/10 px-1.5 py-0.5 font-mono text-[10.5px] tracking-tight text-foreground/65"
-                    >
-                      {tool}
-                    </li>
-                  ))}
-                </ul>
-                <span className="mt-auto inline-flex items-center gap-1.5 pt-1 text-sm font-medium text-foreground/65 transition-colors group-hover/card:text-foreground">
-                  {t.projects.caseStudy}
-                  <ArrowRight
-                    className="h-4 w-4 transition-transform duration-300 group-hover/card:translate-x-0.5"
-                    aria-hidden="true"
-                  />
-                </span>
-              </article>
-            </StaggerItem>
-          );
-        })}
-      </div>
-      {block.showAll ? (
-        <StaggerItem>
-          <Link href={localePath(lang, "/projects")} className={GHOST_LINK}>
-            {t.ask.allProjects(all.length)}
-            <ArrowRight
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
-              aria-hidden="true"
-            />
-          </Link>
-        </StaggerItem>
-      ) : null}
-    </>
-  );
 }
 
 function ExternalLink({ href, label }: { href: string; label: string }): ReactNode {

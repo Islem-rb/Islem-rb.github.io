@@ -1,16 +1,18 @@
 "use client";
 
-import { ArrowUp, CornerDownRight } from "lucide-react";
+import { ArrowRight, CornerDownRight } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   useEffect,
   useId,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
   type FormEvent,
   type KeyboardEvent,
   type ReactNode,
+  type Ref,
 } from "react";
 
 import { answerForIntent, DEFAULT_SUGGESTIONS } from "@/lib/chat/intents";
@@ -32,6 +34,12 @@ type Entry = {
   settled?: boolean;
 };
 
+/** Lets the map put questions and ready-made answers into the thread. */
+export type AskHandle = {
+  ask: (question: string) => void;
+  push: (question: string, result: Answer) => void;
+};
+
 /** Fired by the nav's ask button when it is clicked on the home page. */
 export const ASK_FOCUS_EVENT = "ask:focus";
 
@@ -39,10 +47,21 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const PLACEHOLDER_MS = 3200;
 const WELCOME_MS = 600;
 const MAX_QUESTION = 200;
-/** Older answers drop off so the hero never grows without bound. */
-const MAX_ENTRIES = 5;
+/** Older answers drop off so the page never grows without bound. */
+const MAX_ENTRIES = 4;
+const CHIP =
+  "focus-ring inline-flex min-h-9 cursor-pointer items-center rounded-full border border-foreground/10 bg-surface px-3.5 text-[13.5px] text-foreground/65 transition-colors hover:border-foreground/25 hover:text-foreground";
 
-export function Ask(): ReactNode {
+export function Ask({
+  ref,
+  onAnswer,
+  onOpenProject,
+}: {
+  ref?: Ref<AskHandle>;
+  /** Called with each new answer, and with null when the thread is cleared. */
+  onAnswer: (result: Answer | null) => void;
+  onOpenProject: (slug: string) => void;
+}): ReactNode {
   const { lang, t } = useLang();
   const reduced = useReducedMotion();
   const [value, setValue] = useState("");
@@ -72,25 +91,32 @@ export function Ask(): ReactNode {
     };
   };
 
+  const push = (question: string, result: Answer): void => {
+    nextId.current += 1;
+    const entry: Entry = { id: nextId.current, question, answer: result };
+    setEntries((prev) => [entry, ...prev].slice(0, MAX_ENTRIES));
+    onAnswer(result);
+    // Keep the address shareable: opening it replays this question.
+    window.history.replaceState(null, "", `?q=${encodeURIComponent(question)}`);
+  };
+
   const ask = (raw: string, intent?: IntentId): void => {
     const question = raw.trim().slice(0, MAX_QUESTION);
     if (!question) return;
     setValue("");
     setOpen(false);
     setActive(-1);
-    const result = intent ? answerForIntent(intent, lang) : answer(question, lang);
-    nextId.current += 1;
-    const entry: Entry = { id: nextId.current, question, answer: result };
-    setEntries((prev) => [entry, ...prev].slice(0, MAX_ENTRIES));
-    // Keep the address shareable: opening it replays this question.
-    window.history.replaceState(null, "", `?q=${encodeURIComponent(question)}`);
+    push(question, intent ? answerForIntent(intent, lang) : answer(question, lang));
   };
 
   const reset = (): void => {
     setEntries([welcome(true)]);
+    onAnswer(null);
     window.history.replaceState(null, "", window.location.pathname);
     inputRef.current?.focus();
   };
+
+  useImperativeHandle(ref, () => ({ ask: (question) => ask(question), push }));
 
   // First paint: replay a shared `?q=` link, or let the page introduce itself.
   useEffect(() => {
@@ -167,55 +193,53 @@ export function Ask(): ReactNode {
   const expanded = suggestions.length > 0;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3.5">
       <div className="relative z-20">
         <form
           id="ask"
           onSubmit={handleSubmit}
           role="search"
-          className="scroll-mt-32 rounded-4xl border border-foreground/8 bg-background/70 p-1.5 shadow-sm backdrop-blur-sm"
+          className="flex scroll-mt-32 items-center gap-2 rounded-2xl border border-foreground/20 bg-surface py-1.5 pr-1.5 pl-5 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_12px_32px_-18px_rgb(0_0_0/0.25)] transition-colors focus-within:border-foreground"
         >
-          <div className="flex items-center gap-2 rounded-[1.6rem] border border-foreground/8 bg-background py-1.5 pr-1.5 pl-5 transition-colors focus-within:border-foreground/30">
-            <input
-              ref={inputRef}
-              type="text"
-              role="combobox"
-              aria-expanded={expanded}
-              aria-controls={listId}
-              aria-autocomplete="list"
-              aria-activedescendant={
-                expanded && active >= 0 ? `${listId}-${active}` : undefined
-              }
-              value={value}
-              onChange={(e) => {
-                setValue(e.target.value);
-                setOpen(true);
-                setActive(-1);
-              }}
-              onKeyDown={handleKeyDown}
-              onBlur={() => setOpen(false)}
-              placeholder={t.ask.placeholders[placeholder]}
-              aria-label={t.ask.label}
-              autoComplete="off"
-              enterKeyHint="send"
-              maxLength={MAX_QUESTION}
-              className="h-12 min-w-0 flex-1 bg-transparent text-[16px] tracking-tight text-foreground outline-none placeholder:text-foreground/40 sm:text-[17px]"
-            />
-            <kbd
-              aria-hidden="true"
-              className="hidden h-6 min-w-6 items-center justify-center rounded-md border border-foreground/10 px-1.5 font-mono text-[11px] text-foreground/40 sm:inline-flex"
-            >
-              /
-            </kbd>
-            <button
-              type="submit"
-              disabled={!value.trim()}
-              aria-label={t.ask.submit}
-              className="focus-ring inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-foreground text-background transition-opacity disabled:cursor-default disabled:opacity-25"
-            >
-              <ArrowUp className="h-4.5 w-4.5" aria-hidden="true" />
-            </button>
-          </div>
+          <input
+            ref={inputRef}
+            type="text"
+            role="combobox"
+            aria-expanded={expanded}
+            aria-controls={listId}
+            aria-autocomplete="list"
+            aria-activedescendant={
+              expanded && active >= 0 ? `${listId}-${active}` : undefined
+            }
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setOpen(true);
+              setActive(-1);
+            }}
+            onKeyDown={handleKeyDown}
+            onBlur={() => setOpen(false)}
+            placeholder={t.ask.placeholders[placeholder]}
+            aria-label={t.ask.label}
+            autoComplete="off"
+            enterKeyHint="send"
+            maxLength={MAX_QUESTION}
+            className="h-12 min-w-0 flex-1 bg-transparent text-[17px] text-foreground outline-none placeholder:text-foreground/40"
+          />
+          <kbd
+            aria-hidden="true"
+            className="hidden h-6 min-w-6 items-center justify-center rounded-md border border-foreground/10 px-1.5 text-[12px] text-foreground/40 sm:inline-flex"
+          >
+            /
+          </kbd>
+          <button
+            type="submit"
+            disabled={!value.trim()}
+            aria-label={t.ask.submit}
+            className="focus-ring inline-flex h-11.5 w-11.5 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-foreground text-background transition-opacity disabled:cursor-default disabled:opacity-30"
+          >
+            <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
+          </button>
         </form>
 
         <ul
@@ -223,7 +247,7 @@ export function Ask(): ReactNode {
           role="listbox"
           aria-label={t.ask.suggestions}
           hidden={!expanded}
-          className="absolute top-full right-0 left-0 mt-2 overflow-hidden rounded-3xl border border-foreground/10 bg-background p-1.5 text-left shadow-xl"
+          className="absolute top-full right-0 left-0 mt-2 overflow-hidden rounded-2xl border border-foreground/10 bg-surface p-1.5 text-left shadow-xl"
         >
           {suggestions.map((suggestion, index) => (
             <li
@@ -235,12 +259,12 @@ export function Ask(): ReactNode {
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => pickSuggestion(suggestion)}
               onMouseEnter={() => setActive(index)}
-              className={`flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-2xl px-4 text-[15px] tracking-tight text-foreground transition-colors ${
+              className={`flex min-h-11 cursor-pointer items-center justify-between gap-4 rounded-xl px-4 text-[15px] text-foreground transition-colors ${
                 index === active ? "bg-foreground/6" : ""
               }`}
             >
               <span className="truncate">{suggestion.label}</span>
-              <span className="shrink-0 font-mono text-[11px] text-foreground/45">
+              <span className="shrink-0 text-[12px] text-foreground/45">
                 {t.ask.kinds[suggestion.kind]}
               </span>
             </li>
@@ -261,10 +285,10 @@ export function Ask(): ReactNode {
                 key={entry.id}
                 layout={reduced ? false : "position"}
                 initial={{ opacity: 0, y: reduced ? 0 : 14 }}
-                animate={{ opacity: index === 0 ? 1 : 0.6, y: 0 }}
+                animate={{ opacity: index === 0 ? 1 : 0.55, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.45, ease: EASE }}
-                className="rounded-4xl border border-foreground/8 bg-background/70 p-1.5 shadow-sm backdrop-blur-sm transition-opacity hover:!opacity-100 focus-within:!opacity-100"
+                className="rounded-[20px] border border-foreground/10 bg-surface px-5 py-5 transition-opacity hover:!opacity-100 focus-within:!opacity-100 sm:px-6"
               >
                 <EntryView
                   entry={entry}
@@ -272,20 +296,19 @@ export function Ask(): ReactNode {
                   lang={lang}
                   t={t}
                   onPick={(id) => ask(t.ask.chips[id], id)}
+                  onOpenProject={onOpenProject}
                 />
               </motion.article>
             ))}
           </AnimatePresence>
 
           {asked ? (
-            <div className="flex items-center justify-between gap-4 px-2">
-              <p className="font-mono text-[11px] tracking-tight text-foreground/45">
-                {t.ask.hint}
-              </p>
+            <div className="flex items-center justify-between gap-4 px-1">
+              <p className="text-[12.5px] text-foreground/45">{t.ask.hint}</p>
               <button
                 type="button"
                 onClick={reset}
-                className="focus-ring inline-flex min-h-8 shrink-0 cursor-pointer items-center rounded-lg px-2 font-mono text-[12px] tracking-tight text-foreground/55 transition-colors hover:text-foreground"
+                className="focus-ring inline-flex min-h-8 shrink-0 cursor-pointer items-center rounded-lg px-2 text-[13px] text-foreground/55 transition-colors hover:text-foreground"
               >
                 {t.ask.clear}
               </button>
@@ -303,20 +326,22 @@ function EntryView({
   lang,
   t,
   onPick,
+  onOpenProject,
 }: {
   entry: Entry;
   instant: boolean;
   lang: Lang;
   t: Dictionary;
   onPick: (id: IntentId) => void;
+  onOpenProject: (slug: string) => void;
 }): ReactNode {
   const [typed, setTyped] = useState(false);
   const done = instant || typed;
 
   return (
-    <div className="flex flex-col gap-4 rounded-[1.6rem] border border-foreground/5 bg-foreground/2 px-5 py-5 sm:px-7 sm:py-6 dark:bg-foreground/4">
+    <div className="flex flex-col gap-4">
       {entry.question ? (
-        <p className="flex items-start gap-2 font-mono text-[12px] tracking-tight text-foreground/55">
+        <p className="flex items-start gap-2 text-[13px] text-foreground/50">
           <CornerDownRight
             className="mt-0.5 h-3.5 w-3.5 shrink-0 text-foreground/35"
             aria-hidden="true"
@@ -333,7 +358,12 @@ function EntryView({
 
       {done ? (
         <>
-          <AnswerBlocks blocks={entry.answer.blocks} lang={lang} t={t} />
+          <AnswerBlocks
+            blocks={entry.answer.blocks}
+            lang={lang}
+            t={t}
+            onOpenProject={onOpenProject}
+          />
           <motion.ul
             aria-label={entry.question ? t.ask.followUps : t.ask.suggestions}
             initial={{ opacity: 0 }}
@@ -354,6 +384,3 @@ function EntryView({
     </div>
   );
 }
-
-const CHIP =
-  "focus-ring inline-flex min-h-9 cursor-pointer items-center rounded-full border border-foreground/10 bg-background px-3.5 text-[13px] tracking-tight text-foreground/75 transition-colors hover:border-foreground/25 hover:text-foreground";

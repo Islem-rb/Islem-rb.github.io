@@ -143,7 +143,9 @@ const en = {
       location: "Where are you based?",
       languages: "Which languages do you speak?",
       deploy: "How do you deploy?",
+      timeline: "Show the timeline",
     },
+    openProject: (name: string) => `Open ${name}`,
     navLabel: "Ask a question",
     kinds: { question: "Question", project: "Project", tool: "Tool" },
     answers: {
@@ -174,10 +176,44 @@ const en = {
         "I’m based in Ariana, Tunisia, and open to internships in Tunisia or Europe.",
       languages: "I speak Arabic, French and English.",
       deploy:
-        "Every change takes the same path: commit, build, scan, sign, sync, canary, observe. Git is the only way in, and nobody touches the cluster by hand.",
+        "The way this page just arrived: a small slice first, health checks, then everyone. My GitOps platform does that for every commit, and nobody touches the cluster by hand.",
+      timeline:
+        "Here is the same map by year. I started with a web and desktop app in 2024, moved through machine learning and full-stack products, and by 2026 most of what I build is cloud platforms.",
       fallback:
         "I don’t have an answer for that one. Try a project name, a tool like “kubernetes”, or one of these.",
     },
+  },
+  map: {
+    intro:
+      "Cloud & DevOps engineering student at ESPRIT. Everything I’ve built is on this map. Ask a question, or pick a point.",
+    label: "Map of my projects and the tools each one is built with",
+    layout: "Layout",
+    modes: { map: "Map", time: "Timeline" },
+    captions: {
+      map: "Each project is linked to the tools it is built with. Pick any point.",
+      time: "The same projects by year, from a web app in 2024 to cloud platforms in 2026.",
+    },
+    cats: { cloud: "Cloud & platform", product: "Products", ai: "AI & data" },
+    inCategory: (n: number, cat: string) =>
+      `${n} projects in ${cat}. Pick one to read more.`,
+    tool: (name: string) => `Projects using ${name}`,
+    phases: [
+      "Deploying this page…",
+      "Rolling out · 10%",
+      "Health checks passed · 50%",
+      "Live · rolled out in 3 steps",
+    ],
+    replay: "Replay",
+    back: "Back to the map",
+    fullStudy: "Full case study",
+  },
+  glance: {
+    title: "At a glance",
+    projects: { name: "Projects", what: "Cloud platforms, GitOps pipelines and full-stack products", go: "View all" },
+    experience: { name: "Experience", what: "Internships at Verdustry, Al Idhafa Group and Abajim", go: "Read" },
+    education: { name: "Education", what: "Engineering degree in Cloud & DevOps, ESPRIT", go: "Read" },
+    resume: { name: "Résumé", what: "English and French, PDF", go: "Download" },
+    contact: { name: "Contact", what: "Open to PFE internships in Tunisia or Europe", go: "Get in touch" },
   },
   notFound: {
     title: "This page was never deployed.",
@@ -326,7 +362,9 @@ const fr: Dictionary = {
       location: "Où es-tu basé ?",
       languages: "Quelles langues parles-tu ?",
       deploy: "Comment déploies-tu ?",
+      timeline: "Voir la chronologie",
     },
+    openProject: (name: string) => `Ouvrir ${name}`,
     navLabel: "Poser une question",
     kinds: { question: "Question", project: "Projet", tool: "Outil" },
     answers: {
@@ -357,10 +395,44 @@ const fr: Dictionary = {
         "Je suis basé à Ariana, en Tunisie, et ouvert aux stages en Tunisie ou en Europe.",
       languages: "Je parle arabe, français et anglais.",
       deploy:
-        "Chaque changement suit le même chemin : commit, build, scan, signature, sync, canary, observation. Git est la seule porte d’entrée, et personne ne touche au cluster à la main.",
+        "Comme cette page vient d’arriver : une petite tranche d’abord, des contrôles de santé, puis tout le monde. Ma plateforme GitOps fait ça à chaque commit, et personne ne touche au cluster à la main.",
+      timeline:
+        "Voici la même carte par année. J’ai commencé par une application web et desktop en 2024, puis du machine learning et des produits full-stack, et en 2026 je construis surtout des plateformes cloud.",
       fallback:
         "Je n’ai pas de réponse à ça. Essayez un nom de projet, un outil comme « kubernetes », ou l’une de ces questions.",
     },
+  },
+  map: {
+    intro:
+      "Élève ingénieur Cloud & DevOps à ESPRIT. Tout ce que j’ai construit est sur cette carte. Posez une question, ou choisissez un point.",
+    label: "Carte de mes projets et des outils utilisés par chacun",
+    layout: "Disposition",
+    modes: { map: "Carte", time: "Chronologie" },
+    captions: {
+      map: "Chaque projet est relié aux outils qui le composent. Choisissez un point.",
+      time: "Les mêmes projets par année, d’une application web en 2024 aux plateformes cloud en 2026.",
+    },
+    cats: { cloud: "Cloud & plateforme", product: "Produits", ai: "IA & données" },
+    inCategory: (n: number, cat: string) =>
+      `${n} projets en ${cat}. Choisissez-en un pour en savoir plus.`,
+    tool: (name: string) => `Projets utilisant ${name}`,
+    phases: [
+      "Déploiement de cette page…",
+      "Déploiement progressif · 10 %",
+      "Contrôles de santé validés · 50 %",
+      "En ligne · déployée en 3 étapes",
+    ],
+    replay: "Rejouer",
+    back: "Retour à la carte",
+    fullStudy: "Étude de cas complète",
+  },
+  glance: {
+    title: "En un coup d’œil",
+    projects: { name: "Projets", what: "Plateformes cloud, pipelines GitOps et produits full-stack", go: "Tout voir" },
+    experience: { name: "Expérience", what: "Stages chez Verdustry, Al Idhafa Group et Abajim", go: "Lire" },
+    education: { name: "Formation", what: "Diplôme d’ingénieur Cloud & DevOps, ESPRIT", go: "Lire" },
+    resume: { name: "CV", what: "Français et anglais, PDF", go: "Télécharger" },
+    contact: { name: "Contact", what: "Ouvert aux stages PFE en Tunisie ou en Europe", go: "Me contacter" },
   },
   notFound: {
     title: "Cette page n’a jamais été déployée.",

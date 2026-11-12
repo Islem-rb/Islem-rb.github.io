@@ -17,16 +17,22 @@ type Intent = {
 /** Order matters: on a tie, the earlier intent wins. */
 export const INTENTS: Intent[] = [
   {
+    id: "timeline",
+    keywords: [
+      "timeline", "years", "year", "history", "journey", "evolution",
+      "chronology", "chronologie", "annees", "historique", "frise",
+    ],
+    blocks: () => [],
+    followUps: ["projects", "experience", "skills"],
+  },
+  {
     id: "deploy",
     keywords: [
       "deploy", "deploys", "deployment", "deployments", "pipeline",
       "pipelines", "cicd", "ci cd", "release", "releases", "delivery",
       "rollout", "ship", "deployer", "deploies", "deploiement", "livraison",
     ],
-    blocks: () => [
-      { type: "pipeline" },
-      { type: "projects", slugs: ["gitops-eks-platform"] },
-    ],
+    blocks: () => [{ type: "projects", slugs: ["gitops-eks-platform"] }],
     followUps: ["projects", "skills", "availability"],
   },
   {
@@ -38,10 +44,7 @@ export const INTENTS: Intent[] = [
     blocks: (lang) => [
       {
         type: "projects",
-        slugs: getProjects(lang)
-          .filter((p) => p.featured)
-          .slice(0, 4)
-          .map((p) => p.slug),
+        slugs: getProjects(lang).map((p) => p.slug),
         showAll: true,
       },
     ],
@@ -144,9 +147,9 @@ export const INTENTS: Intent[] = [
 export const DEFAULT_SUGGESTIONS: IntentId[] = [
   "projects",
   "skills",
+  "timeline",
   "deploy",
   "availability",
-  "contact",
 ];
 
 
@@ -163,5 +166,21 @@ export function answerForIntent(id: IntentId, lang: Lang): Answer {
   const intent = INTENTS.find((i) => i.id === id)!;
   const a = getDictionary(lang).ask.answers;
   const text = id === "projects" ? a.projects(getProjects(lang).length) : a[id];
-  return { text, blocks: intent.blocks(lang), followUps: intent.followUps };
+  const answer: Answer = {
+    text,
+    blocks: intent.blocks(lang),
+    followUps: intent.followUps,
+  };
+  // What the map should do while this answer is on screen.
+  if (id === "projects") {
+    answer.focus = { slugs: getProjects(lang).map((p) => p.slug) };
+    answer.mode = "map";
+  } else if (id === "deploy") {
+    answer.focus = { slugs: ["gitops-eks-platform"] };
+    answer.mode = "map";
+    answer.replay = true;
+  } else if (id === "timeline") {
+    answer.mode = "time";
+  }
+  return answer;
 }

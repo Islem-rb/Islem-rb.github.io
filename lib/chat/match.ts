@@ -147,6 +147,9 @@ export function answer(query: string, lang: Lang): Answer {
       text: `${project.name} (${project.kind}, ${project.year}). ${project.summary}`,
       blocks: [{ type: "projects", slugs: [project.slug] }],
       followUps: ["projects", "skills", "contact"],
+      focus: { slugs: [project.slug] },
+      open: project.slug,
+      mode: "map",
     };
   }
 
@@ -157,8 +160,10 @@ export function answer(query: string, lang: Lang): Answer {
     return tech.slugs.length > 0
       ? {
           text: t.tech(tech.label, tech.slugs.length),
-          blocks: [{ type: "projects", slugs: tech.slugs.slice(0, 4) }],
+          blocks: [{ type: "projects", slugs: tech.slugs }],
           followUps: ["skills", "projects", "experience"],
+          focus: { slugs: tech.slugs, tool: tech.label },
+          mode: "map",
         }
       : {
           text: t.techSkill(tech.label),

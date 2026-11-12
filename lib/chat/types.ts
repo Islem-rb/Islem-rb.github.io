@@ -10,7 +10,8 @@ export type IntentId =
   | "availability"
   | "location"
   | "languages"
-  | "deploy";
+  | "deploy"
+  | "timeline";
 
 /** A rich card rendered under the typed answer. Data is read by the renderer. */
 export type Block =
@@ -21,13 +22,20 @@ export type Block =
   | { type: "languages" }
   | { type: "contact" }
   | { type: "cv" }
-  | { type: "facts" }
-  | { type: "pipeline" };
+  | { type: "facts" };
 
 export type Answer = {
   text: string;
   blocks: Block[];
   followUps: IntentId[];
+  /** Projects, and optionally the one tool, to light up on the map. */
+  focus?: { slugs: string[]; tool?: string };
+  /** A project whose case study should open beside the map. */
+  open?: string;
+  /** Switch the map between its two layouts. */
+  mode?: "map" | "time";
+  /** Replay the page's staged arrival. */
+  replay?: boolean;
 };
 
 /** A live suggestion shown under the input while typing. */
