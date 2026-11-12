@@ -46,6 +46,8 @@ export type Project = {
   repo?: string;
   live?: string;
   result?: string;
+  /** The one number to show large on cards and case studies. */
+  figure?: { value: string; label: string };
   demo?: Demo;
 };
 
@@ -63,6 +65,7 @@ export const PROJECTS: Project[] = [
     name: "GitOps EKS Platform",
     kind: "Cloud platform",
     year: "2026",
+    figure: { value: "245–328 s", label: "to abort a bad release, automatically" },
     headline:
       "A commit-to-production platform on AWS, where a bad release stops itself before it reaches everyone.",
     summary:
@@ -151,6 +154,7 @@ export const PROJECTS: Project[] = [
     name: "DevOps Observability",
     kind: "Automation & observability",
     year: "2026",
+    figure: { value: "8", label: "Jenkins stages, from commit to GitOps sync" },
     headline:
       "Three microservices, one pipeline, and the metrics that tie them together.",
     summary:
@@ -232,6 +236,7 @@ export const PROJECTS: Project[] = [
     name: "CityVoice",
     kind: "End-to-end engineering",
     year: "2025–2026",
+    figure: { value: "9", label: "Spring Boot modules on a private OpenStack cloud" },
     headline:
       "A civic platform built from the bare-metal cloud up to the citizen's screen.",
     summary:
@@ -291,6 +296,7 @@ export const PROJECTS: Project[] = [
     name: "Verdustry Social",
     kind: "AI SaaS · Internship",
     year: "2026",
+    figure: { value: "96", label: "API endpoints across 18 routers" },
     headline:
       "A social media management platform where AI plans the strategy and Celery publishes on time.",
     summary:
@@ -398,6 +404,7 @@ export const PROJECTS: Project[] = [
     name: "Carnova",
     kind: "Full-stack · Internship",
     year: "2025",
+    figure: { value: "233 → 100 s", label: "cold start on 0.1 CPU" },
     headline:
       "An automotive marketplace with dealer showrooms, a three.js 3D studio and secure accounts, live on free hosting.",
     summary:
@@ -454,6 +461,7 @@ export const PROJECTS: Project[] = [
     name: "Dawrek",
     kind: "AI · Real-time SaaS",
     year: "2025",
+    figure: { value: "5", label: "languages, Darija in Arabic and Latin script" },
     headline:
       "Clinic queues that patients follow from their phone, with an assistant that speaks Tunisian.",
     summary:
@@ -566,6 +574,7 @@ export const PROJECTS: Project[] = [
     name: "Automotive ML",
     kind: "Machine learning",
     year: "2025",
+    figure: { value: "3", label: "prediction tasks: price, fuel type, horsepower" },
     headline:
       "Price prediction and a budget-based car recommender, served as a web app.",
     summary:
@@ -601,6 +610,7 @@ export const PROJECTS: Project[] = [
     name: "Sabeel",
     kind: "Web & desktop",
     year: "2025",
+    figure: { value: "2", label: "apps: Symfony on the web, JavaFX offline on the desktop" },
     headline:
       "Remote supervision for farms, on the web and offline on the desktop.",
     summary:
@@ -632,6 +642,7 @@ export const PROJECTS: Project[] = [
     name: "Readdly",
     kind: "Mobile · Internship",
     year: "2024",
+    figure: { value: "2", label: "kinds of recognition: text and objects" },
     headline:
       "A phone app that reads the world out loud for people with low vision.",
     summary:

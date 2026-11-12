@@ -6,6 +6,8 @@ import type { CSSProperties, ReactNode } from "react";
 
 import { ArchitectureDiagram } from "@/components/projects/architecture-diagram";
 import { DemoMedia } from "@/components/projects/demo";
+import { FlowCover } from "@/components/projects/flow-cover";
+import { KeyFigure } from "@/components/projects/key-figure";
 import { categoryOf } from "@/lib/chat/map";
 import { getArchitecture, getLessons } from "@/lib/case-studies";
 import { FadeIn } from "@/components/ui/motion-primitives";
@@ -47,8 +49,8 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
       className="flex flex-1 flex-col"
       style={{ "--c": `var(--${cat})` } as CSSProperties}
     >
-      <section className="mx-auto w-full max-w-310 px-5 pt-28 sm:px-8 sm:pt-36">
-        <FadeIn className="flex flex-col gap-6">
+      <section className="mx-auto grid w-full max-w-310 grid-cols-1 gap-10 px-5 pt-28 sm:px-8 sm:pt-36 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end lg:gap-14">
+        <FadeIn className="flex min-w-0 flex-col gap-6">
           <Link
             href={localePath(lang, "/projects")}
             className="focus-ring group inline-flex w-fit items-center gap-1.5 rounded-sm text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -103,6 +105,19 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
             </span>
           </div>
         </FadeIn>
+
+        {project.figure || !project.demo ? (
+          <FadeIn delay={0.1}>
+            <div className="sheet flex flex-col gap-5 p-5">
+              {project.demo ? null : (
+                <div className="aspect-video overflow-hidden rounded-md border border-border">
+                  <FlowCover project={project} />
+                </div>
+              )}
+              {project.figure ? <KeyFigure figure={project.figure} size="lg" /> : null}
+            </div>
+          </FadeIn>
+        ) : null}
       </section>
 
       {project.demo ? (

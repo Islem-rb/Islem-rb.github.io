@@ -3,11 +3,12 @@ import type { Project } from "./content";
 type ProjectText = Pick<
   Project,
   "kind" | "headline" | "summary" | "meta" | "highlights" | "sections"
-> & { result?: string };
+> & { result?: string; figure?: NonNullable<Project["figure"]> };
 
 export const PROJECTS_FR: Record<string, ProjectText> = {
   "gitops-eks-platform": {
     kind: "Plateforme cloud",
+    figure: { value: "245–328 s", label: "pour annuler une mauvaise release, automatiquement" },
     headline:
       "Une plateforme du commit à la production sur AWS, où une mauvaise release s’arrête d’elle-même avant de toucher tout le monde.",
     summary:
@@ -65,6 +66,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   "devops-observability-platform": {
     kind: "Automatisation & observabilité",
+    figure: { value: "8", label: "étapes Jenkins, du commit à la sync GitOps" },
     headline:
       "Trois microservices, un pipeline, et les métriques qui les relient.",
     summary:
@@ -104,6 +106,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   cityvoice: {
     kind: "Ingénierie de bout en bout",
+    figure: { value: "9", label: "modules Spring Boot sur un cloud OpenStack privé" },
     headline:
       "Une plateforme citoyenne construite du cloud privé jusqu’à l’écran du citoyen.",
     summary:
@@ -143,6 +146,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   "verdustry-social": {
     kind: "SaaS IA · Stage",
+    figure: { value: "96", label: "endpoints API répartis sur 18 routeurs" },
     headline:
       "Une plateforme de gestion des réseaux sociaux où l’IA planifie la stratégie et Celery publie à l’heure.",
     summary:
@@ -186,6 +190,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   carnova: {
     kind: "Full-stack · Stage",
+    figure: { value: "233 → 100 s", label: "démarrage à froid sur 0,1 CPU" },
     headline:
       "Une marketplace automobile avec showrooms pour concessionnaires, un studio 3D three.js et des comptes sécurisés, en ligne sur un hébergement gratuit.",
     summary:
@@ -225,6 +230,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   dawrek: {
     kind: "IA · SaaS temps réel",
+    figure: { value: "5", label: "langues, darija en écriture arabe et latine" },
     headline:
       "Des files d’attente de cliniques suivies depuis le téléphone, avec un assistant qui parle tunisien.",
     summary:
@@ -272,6 +278,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   "automotive-ml": {
     kind: "Machine learning",
+    figure: { value: "3", label: "tâches de prédiction : prix, carburant, puissance" },
     headline:
       "Prédiction de prix et recommandation de voitures selon le budget, servies en application web.",
     summary:
@@ -301,6 +308,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   sabeel: {
     kind: "Web & desktop",
+    figure: { value: "2", label: "applications : Symfony sur le web, JavaFX hors ligne sur desktop" },
     headline:
       "La supervision agricole à distance, sur le web et hors ligne sur desktop.",
     summary:
@@ -325,6 +333,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   readdly: {
     kind: "Mobile · Stage",
+    figure: { value: "2", label: "types de reconnaissance : texte et objets" },
     headline:
       "Une application qui lit le monde à voix haute pour les personnes malvoyantes.",
     summary:

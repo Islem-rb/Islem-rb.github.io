@@ -1,5 +1,7 @@
 "use client";
 
+import { FlowCover } from "@/components/projects/flow-cover";
+import { KeyFigure, withoutFigure } from "@/components/projects/key-figure";
 import { coverOf } from "@/components/projects/projects";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
@@ -64,6 +66,8 @@ export function CaseStudy({
         {project.headline}
       </p>
 
+      {project.figure ? <KeyFigure figure={project.figure} size="md" className="mt-5" /> : null}
+
       {thumbnail ? (
         // eslint-disable-next-line @next/next/no-img-element -- static export, images are unoptimized
         <img
@@ -71,7 +75,11 @@ export function CaseStudy({
           alt=""
           className="mt-6 aspect-video w-full rounded-2xl border border-foreground/10 object-cover object-top"
         />
-      ) : null}
+      ) : (
+        <div className="mt-6 aspect-video w-full overflow-hidden rounded-2xl border border-foreground/10">
+          <FlowCover project={project} />
+        </div>
+      )}
 
       <p className="mt-5 text-pretty text-foreground/65">{project.summary}</p>
 
@@ -86,7 +94,7 @@ export function CaseStudy({
 
       <h3 className={HEADING}>{t.projects.highlights}</h3>
       <ul>
-        {project.highlights.slice(0, 4).map((point) => (
+        {withoutFigure(project).slice(0, 4).map((point) => (
           <li
             key={point}
             className="relative border-b border-foreground/10 py-2.5 pl-5 text-[15.5px] before:absolute before:top-[1.15rem] before:left-0.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-[var(--c)]"

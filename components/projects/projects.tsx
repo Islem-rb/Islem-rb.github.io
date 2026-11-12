@@ -2,6 +2,8 @@ import { ArrowRight, Github, Play } from "lucide-react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
+import { FlowCover } from "@/components/projects/flow-cover";
+import { KeyFigure, withoutFigure } from "@/components/projects/key-figure";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { categoryOf } from "@/lib/chat/map";
 import { getProjects, type Project } from "@/lib/content";
@@ -77,28 +79,8 @@ function ProjectCard({
             ) : null}
           </div>
         ) : (
-          <div
-            aria-hidden="true"
-            className="relative mt-5 flex aspect-[16/9] items-end overflow-hidden rounded-md border border-border p-4"
-            style={{
-              backgroundColor: "color-mix(in srgb, var(--c) 8%, var(--background))",
-              backgroundImage:
-                "linear-gradient(color-mix(in srgb, var(--c) 14%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--c) 14%, transparent) 1px, transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
-          >
-            <span className="absolute top-1/2 left-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-[var(--c)]" />
-            <span className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--c)]" />
-            <span className="relative flex flex-wrap gap-1.5">
-              {project.stack.slice(0, 3).map((tool) => (
-                <span
-                  key={tool}
-                  className="rounded-sm border border-border bg-surface px-2 py-1 text-[12px] text-foreground/80"
-                >
-                  {tool}
-                </span>
-              ))}
-            </span>
+          <div className="mt-5 aspect-[16/9] overflow-hidden rounded-md border border-border">
+            <FlowCover project={project} />
           </div>
         )}
 
@@ -113,6 +95,7 @@ function ProjectCard({
         <p className="mt-2 text-[16px] leading-snug text-pretty text-foreground/85">
           {project.headline}
         </p>
+        {project.figure ? <KeyFigure figure={project.figure} className="mt-4" /> : null}
         {project.result ? (
           <p className="mt-4 rounded-r-md border-l-[3px] border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_8%,var(--background))] px-3.5 py-2.5 text-[14.5px] leading-snug font-medium text-foreground">
             {project.result}
@@ -120,7 +103,7 @@ function ProjectCard({
         ) : null}
         {/* Figures first: what was built, in numbers, before the long description. */}
         <ul className="mt-4 grid gap-1.5" aria-label={t.projects.highlights}>
-          {project.highlights.map((h) => (
+          {withoutFigure(project).map((h) => (
             <li key={h} className="flex items-baseline gap-2.5 text-[14.5px] text-foreground">
               <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 translate-y-[-2px] rounded-full bg-[var(--c)]" />
               {h}
