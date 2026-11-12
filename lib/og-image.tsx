@@ -23,9 +23,9 @@ const C = {
   border: "#cfd4ca",
   grid: "rgba(15,26,38,0.06)",
   accent: "#bf3c1c",
-  cloud: "#1d5bc0",
-  product: "#7637d0",
-  ai: "#b86e00",
+  cloud: "#1f4f8f",
+  product: "#2a6f69",
+  ai: "#8a5c0c",
   signal: "#187a45",
 };
 

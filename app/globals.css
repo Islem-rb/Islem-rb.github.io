@@ -15,9 +15,9 @@
   --grid: rgb(15 26 38 / 0.055);
   --signal: #187a45;
   /* Project types, used as data colours on the map. */
-  --cloud: #1d5bc0;
-  --product: #7637d0;
-  --ai: #b86e00;
+  --cloud: #1f4f8f;
+  --product: #2a6f69;
+  --ai: #8a5c0c;
 }
 
 .dark {
@@ -31,9 +31,9 @@
   --ring: #ff7349;
   --grid: rgb(231 235 227 / 0.05);
   --signal: #5bd08f;
-  --cloud: #72a6ff;
-  --product: #b597ff;
-  --ai: #f2b04a;
+  --cloud: #82abe6;
+  --product: #6cc0b5;
+  --ai: #e2b25c;
 }
 
 @theme inline {
