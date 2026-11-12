@@ -363,7 +363,7 @@ export function ProjectMap({
   const toolXY = new Map<string, [number, number]>(
     tools.map(({ name, deg, xy }): [string, [number, number]] => {
       if (!zoomOn || progress === 0 || !zoomOn.tools.includes(name)) return [name, xy];
-      const safe = keepInFrame(xy, deg, name, origin, viewBox, narrow ? 17 : 12);
+      const safe = keepInFrame(xy, deg, name, origin, viewBox, narrow ? 17 : 14);
       return [name, [xy[0] + (safe[0] - xy[0]) * progress, xy[1] + (safe[1] - xy[1]) * progress]];
     }),
   );

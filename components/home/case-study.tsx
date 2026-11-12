@@ -55,7 +55,7 @@ export function CaseStudy({
         {t.map.back}
       </button>
 
-      <p className="mt-6 flex items-center gap-2 text-[13.5px] font-medium text-[var(--c)]">
+      <p className="mt-6 flex items-center gap-2 text-[13.5px] font-medium text-[var(--c)] tabular-nums">
         <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--c)]" />
         {project.kind} · {when}
       </p>

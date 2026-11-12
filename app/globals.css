@@ -295,12 +295,12 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   transition: opacity 0.4s;
 }
 .pmap-node .lt { opacity: 0; }
-.pmap-node.tool { --c: var(--faint); transition: opacity 0.4s; }
+.pmap-node.tool { --c: color-mix(in srgb, var(--foreground) 55%, transparent); transition: opacity 0.4s; }
 .pmap-node.tool .dot { fill: var(--surface); stroke-width: 1.2; }
 .pmap-node.tool text {
   fill: var(--muted-foreground);
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: 0;
 }
@@ -311,7 +311,8 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 .pmap.time .pmap-tl { opacity: 1; pointer-events: auto; transition-delay: 0.25s; }
 .tl-tick { stroke: var(--hair-2); stroke-dasharray: 2 5; }
 .tl-yr {
-  fill: var(--faint);
+  fill: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
   font-family: var(--font-serif);
   font-stretch: 125%;
   font-size: 26px;
@@ -332,6 +333,7 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 .tl-item { transition: opacity 0.4s; outline: none; }
 .tl-item text {
   font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 14.5px;
   paint-order: stroke;
   stroke: var(--background);
@@ -389,7 +391,7 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   .pmap.focus .pmap-node.tool.on text { display: block; font-size: 17px; }
   /* Full screen on a phone: the map is wider than the screen, so names fit again. */
   .pmap-full .pmap-node text { font-size: 15px; }
-  .pmap-full .pmap-node.tool text { display: block; font-size: 12px; }
+  .pmap-full .pmap-node.tool text { display: block; font-size: 13px; }
 }
 /* The timeline keeps one label size at every width: on a phone it scrolls instead. */
 .pmap.time .pmap-node text { font-size: 16.5px; }

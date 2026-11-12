@@ -34,7 +34,7 @@ export function Education({ lang }: { lang: Lang }): ReactNode {
                 <span className="text-muted-foreground mt-0.5 text-[14px] sm:text-[15px]">
                   {entry.degree}
                   <span className="text-foreground/30 mx-2">•</span>
-                  <span className="text-muted-foreground whitespace-nowrap">{entry.period}</span>
+                  <span className="text-muted-foreground whitespace-nowrap tabular-nums">{entry.period}</span>
                 </span>
               </div>
             </li>

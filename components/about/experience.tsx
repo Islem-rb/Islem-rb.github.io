@@ -64,7 +64,7 @@ export function Experience(): ReactNode {
                     <span className="text-muted-foreground mt-0.5 text-[14px] sm:text-[15px]">
                       {entry.role}
                       <span className="text-foreground/30 mx-2">•</span>
-                      <span className="text-muted-foreground">{entry.period}</span>
+                      <span className="text-muted-foreground tabular-nums">{entry.period}</span>
                     </span>
                   </span>
                   <motion.span

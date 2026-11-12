@@ -19,7 +19,7 @@ import { localePath, type Dictionary, type Lang } from "@/lib/i18n";
 import { StaggerContainer, StaggerItem } from "@/lib/motion";
 
 const PANEL = "rounded-lg border border-border bg-background/60 p-4 sm:p-5";
-const LABEL = "text-[12.5px] text-muted-foreground";
+const LABEL = "text-[12.5px] text-muted-foreground tabular-nums";
 const GHOST_LINK =
   "focus-ring group inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border border-foreground/20 px-4 text-sm font-medium text-foreground transition-colors hover:border-foreground";
 
