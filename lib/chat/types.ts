@@ -22,8 +22,7 @@ export type Block =
   | { type: "contact" }
   | { type: "cv" }
   | { type: "facts" }
-  | { type: "pipeline" }
-  | { type: "terminal"; lines: string[] };
+  | { type: "pipeline" };
 
 export type Answer = {
   text: string;

@@ -149,8 +149,6 @@ export const DEFAULT_SUGGESTIONS: IntentId[] = [
   "contact",
 ];
 
-/** The terminal command advertised next to the suggestions. */
-export const COMMAND_HINT = "kubectl get projects";
 
 /** Extra names people use for a project, beyond its full name. */
 export const PROJECT_ALIASES: Record<string, string[]> = {

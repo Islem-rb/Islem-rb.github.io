@@ -7,7 +7,6 @@ import {
   INTENTS,
   PROJECT_ALIASES,
 } from "./intents";
-import { runCommand } from "./commands";
 import type { Answer, Suggestion } from "./types";
 
 const STOPWORDS = new Set([
@@ -138,9 +137,6 @@ function findTech(
 
 /** Turn a free-form question into an answer built from the site's own content. */
 export function answer(query: string, lang: Lang): Answer {
-  const command = runCommand(query, lang);
-  if (command) return command;
-
   const t = getDictionary(lang).ask.answers;
   const norm = normalize(query);
   const projects = getProjects(lang);

@@ -167,14 +167,6 @@ function BlockView({ block, lang, t }: BlockProps & { block: Block }): ReactNode
           <PipelineTrace />
         </StaggerItem>
       );
-    case "terminal":
-      return (
-        <StaggerItem className="overflow-x-auto rounded-2xl border border-foreground/8 bg-foreground/4 px-4 py-3.5 dark:bg-foreground/6">
-          <pre className="font-mono text-[12px] leading-[1.7] tracking-tight text-foreground/80">
-            {block.lines.join("\n")}
-          </pre>
-        </StaggerItem>
-      );
     case "facts":
       return (
         <StaggerItem className={PANEL}>

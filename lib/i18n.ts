@@ -146,17 +146,6 @@ const en = {
     },
     navLabel: "Ask a question",
     kinds: { question: "Question", project: "Project", tool: "Tool" },
-    commands: {
-      help: "Here’s what this terminal understands.",
-      whoami: "That would be me.",
-      ls: "Everything in the workspace.",
-      projects: "All workloads healthy.",
-      skills: "The toolbox, grouped by layer.",
-      plan: "Clean plan. Ready to apply whenever you are.",
-      log: "My history, newest first.",
-      hire: "Excellent decision. Here’s how to make it official.",
-      unknown: "That one isn’t installed here. Type “help” to see what is.",
-    },
     answers: {
       greeting:
         "Hey! I’m Islem. Ask me about my projects, my stack, or whether I’m free for an internship.",
@@ -340,18 +329,6 @@ const fr: Dictionary = {
     },
     navLabel: "Poser une question",
     kinds: { question: "Question", project: "Projet", tool: "Outil" },
-    commands: {
-      help: "Voici ce que ce terminal comprend.",
-      whoami: "Ça, c’est moi.",
-      ls: "Tout ce qu’il y a dans l’espace de travail.",
-      projects: "Tous les workloads sont sains.",
-      skills: "La boîte à outils, couche par couche.",
-      plan: "Plan propre. Prêt à appliquer quand vous voulez.",
-      log: "Mon historique, du plus récent au plus ancien.",
-      hire: "Excellente décision. Voici comment l’officialiser.",
-      unknown:
-        "Celle-ci n’est pas installée ici. Tapez « help » pour voir ce qui l’est.",
-    },
     answers: {
       greeting:
         "Salut ! Moi c’est Islem. Demandez-moi mes projets, ma stack, ou si je suis disponible pour un stage.",

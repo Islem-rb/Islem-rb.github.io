@@ -13,11 +13,7 @@ import {
   type ReactNode,
 } from "react";
 
-import {
-  answerForIntent,
-  COMMAND_HINT,
-  DEFAULT_SUGGESTIONS,
-} from "@/lib/chat/intents";
+import { answerForIntent, DEFAULT_SUGGESTIONS } from "@/lib/chat/intents";
 import { answer, suggest } from "@/lib/chat/match";
 import type { Answer, IntentId, Suggestion } from "@/lib/chat/types";
 import type { Dictionary, Lang } from "@/lib/i18n";
@@ -82,10 +78,6 @@ export function Ask(): ReactNode {
     setValue("");
     setOpen(false);
     setActive(-1);
-    if (question.toLowerCase() === "clear") {
-      reset();
-      return;
-    }
     const result = intent ? answerForIntent(intent, lang) : answer(question, lang);
     nextId.current += 1;
     const entry: Entry = { id: nextId.current, question, answer: result };
@@ -280,7 +272,6 @@ export function Ask(): ReactNode {
                   lang={lang}
                   t={t}
                   onPick={(id) => ask(t.ask.chips[id], id)}
-                  onCommand={entry.question ? undefined : () => ask(COMMAND_HINT)}
                 />
               </motion.article>
             ))}
@@ -312,14 +303,12 @@ function EntryView({
   lang,
   t,
   onPick,
-  onCommand,
 }: {
   entry: Entry;
   instant: boolean;
   lang: Lang;
   t: Dictionary;
   onPick: (id: IntentId) => void;
-  onCommand: (() => void) | undefined;
 }): ReactNode {
   const [typed, setTyped] = useState(false);
   const done = instant || typed;
@@ -359,18 +348,6 @@ function EntryView({
                 </button>
               </li>
             ))}
-            {onCommand ? (
-              <li>
-                <button
-                  type="button"
-                  onClick={onCommand}
-                  className={`${CHIP} font-mono text-[12px]`}
-                >
-                  <span className="mr-1.5 text-foreground/35">$</span>
-                  {COMMAND_HINT}
-                </button>
-              </li>
-            ) : null}
           </motion.ul>
         </>
       ) : null}
