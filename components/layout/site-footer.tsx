@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 
 import { ContactButton } from "@/components/contact/contact-button";
 import { cvFor, profile } from "@/lib/content";
-import { getDictionary, type Lang } from "@/lib/i18n";
+import { getDictionary, localePath, type Lang } from "@/lib/i18n";
+import Link from "next/link";
 
 const GHOST =
   "focus-ring group inline-flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-foreground/25 px-4 text-sm font-medium text-foreground transition-colors hover:border-foreground";
@@ -30,7 +31,7 @@ export function SiteFooter({ lang }: { lang: Lang }): ReactNode {
       value: (
         <span className="inline-flex items-center gap-2">
           <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--signal)]" />
-          {c.available}
+          {t.hero.availability}
         </span>
       ),
     },
@@ -52,14 +53,14 @@ export function SiteFooter({ lang }: { lang: Lang }): ReactNode {
             <ContactButton />
             <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className={GHOST}>
               LinkedIn
-              <ArrowUpRight className="h-4 w-4 text-foreground/50" aria-hidden="true" />
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             </a>
             <a href={profile.github} target="_blank" rel="noopener noreferrer" className={GHOST}>
               GitHub
-              <ArrowUpRight className="h-4 w-4 text-foreground/50" aria-hidden="true" />
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             </a>
             <a href={cvFor(lang)} download className={GHOST}>
-              <FileDown className="h-4 w-4 text-foreground/50" aria-hidden="true" />
+              <FileDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               {c.cv}
             </a>
           </div>
@@ -83,6 +84,13 @@ export function SiteFooter({ lang }: { lang: Lang }): ReactNode {
           <p>
             &copy; {new Date().getFullYear()} {profile.name} · {c.rights}
           </p>
+          <Link
+            href={localePath(lang, "/how-it-ships")}
+            className="focus-ring inline-flex items-center gap-2 rounded-sm font-medium text-foreground underline decoration-foreground/25 underline-offset-4 hover:decoration-accent sm:mr-auto sm:ml-6"
+          >
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--signal)]" />
+            {t.ships.link}
+          </Link>
           <a
             href="#main-content"
             className="focus-ring group inline-flex items-center gap-1.5 rounded-sm font-medium text-foreground"

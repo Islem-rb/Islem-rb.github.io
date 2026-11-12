@@ -10,8 +10,8 @@
   --muted: #e2e5dc;
   --muted-foreground: #4f5b67;
   --border: #cfd4ca;
-  --accent: #d9431f;
-  --ring: #d9431f;
+  --accent: #bf3c1c;
+  --ring: #bf3c1c;
   --grid: rgb(15 26 38 / 0.055);
   --signal: #187a45;
   /* Project types, used as data colours on the map. */
@@ -258,6 +258,9 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   --faint: color-mix(in srgb, var(--foreground) 42%, transparent);
 }
 .pmap svg { display: block; width: 100%; height: auto; overflow: visible; }
+.pmap-zoom { transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+/* Leaning in pushes the outer ring past the edges: clip it instead of spilling onto the page. */
+.pmap.zoomed svg { overflow: hidden; }
 .pmap-ring { fill: none; stroke: var(--hair); transition: opacity 0.5s; }
 .pmap-edge {
   stroke: var(--hair-2);
@@ -335,4 +338,8 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   .pmap-node.tool text { display: none; }
   .pmap.focus .pmap-node.tool.on text { display: block; font-size: 17px; }
   .pmap-axis text { font-size: 34px; }
+  /* Full screen on a phone: the map is wider than the screen, so names fit again. */
+  .pmap-full .pmap-node text { font-size: 15px; }
+  .pmap-full .pmap-node.tool text { display: block; font-size: 12px; }
+  .pmap-full .pmap-axis text { font-size: 28px; }
 }

@@ -55,7 +55,7 @@ export function ArchitectureDiagram({
             {i < lanes.length - 1 ? (
               <div
                 aria-hidden="true"
-                className="flex items-center justify-center py-0.5 text-foreground/40 lg:py-0"
+                className="flex items-center justify-center py-0.5 text-muted-foreground lg:py-0"
               >
                 <ArrowDown className="h-4 w-4 lg:hidden" />
                 <ArrowRight className="hidden h-4 w-4 lg:block" />

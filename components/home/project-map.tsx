@@ -1,7 +1,11 @@
 "use client";
 
+import { Maximize2, X } from "lucide-react";
 import {
+  useEffect,
   useMemo,
+  useRef,
+  useState,
   useSyncExternalStore,
   type CSSProperties,
   type KeyboardEvent,
@@ -137,6 +141,7 @@ export function ProjectMap({
   onProject,
   onTool,
   onCategory,
+  zoomTo,
 }: {
   lang: Lang;
   mode: MapMode;
@@ -146,18 +151,92 @@ export function ProjectMap({
   onProject: (slug: string) => void;
   onTool: (tool: string) => void;
   onCategory: (category: Category) => void;
+  /** A project whose case study is open: the map leans in toward it. */
+  zoomTo?: string | null | undefined;
 }): ReactNode {
   const t = getDictionary(lang).map;
   const narrow = useNarrow();
+  // On a phone the map can open full screen, wider than the screen, to pan around.
+  const [full, setFull] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isFull = full && narrow;
+
+  useEffect(() => {
+    if (!isFull) return;
+    const box = scrollRef.current;
+    if (box) box.scrollLeft = (box.scrollWidth - box.clientWidth) / 2;
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+    const onKey = (event: globalThis.KeyboardEvent): void => {
+      if (event.key === "Escape") setFull(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isFull]);
+
+  // Picking something closes full screen, so the answer is in view.
+  const pick =
+    <T,>(run: (value: T) => void) =>
+    (value: T): void => {
+      setFull(false);
+      run(value);
+    };
+  const goProject = pick(onProject);
+  const goTool = pick(onTool);
+  const goCategory = pick(onCategory);
+
   const { placed, tools, years } = useMemo(() => layout(getProjects(lang)), [lang]);
+
+  const viewBox = narrow && !isFull ? "-45 5 690 590" : "-110 -10 820 620";
+  const viewMin = viewBox.split(" ").map(Number) as [number, number];
+  // Scale around the point halfway between the project and the centre, so both stay in view.
+  const target = mode === "map" && !isFull ? placed.find((p) => p.project.slug === zoomTo) : undefined;
+  const zoomStyle: CSSProperties | undefined = target
+    ? {
+        // SVG transform origins are measured from the viewBox corner, not from 0,0.
+        transformOrigin: `${(target.ring[0] + CENTER) / 2 - viewMin[0]}px ${
+          (target.ring[1] + CENTER) / 2 - viewMin[1]
+        }px`,
+        transform: "scale(1.16)",
+      }
+    : undefined;
 
   const litProjects = new Set(focus?.slugs);
   const litTools = new Set(focus?.tools);
   const focused = litProjects.size > 0 || litTools.size > 0;
 
   return (
-    <figure className={`pmap ${mode === "time" ? "time" : ""} ${focused ? "focus" : ""}`}>
-      <div className="mb-1 flex justify-end">
+    <figure
+      className={`pmap ${mode === "time" ? "time" : ""} ${focused ? "focus" : ""} ${
+        isFull ? "pmap-full fixed inset-0 z-[70] flex flex-col bg-background" : ""
+      } ${target ? "zoomed" : ""}`}
+      role={isFull ? "dialog" : undefined}
+      aria-modal={isFull ? true : undefined}
+      aria-label={isFull ? t.label : undefined}
+      data-lenis-prevent={isFull ? "" : undefined}
+    >
+      <div
+        className={`mb-1 flex items-center justify-end gap-2 ${
+          isFull ? "border-b border-border px-4 py-3" : ""
+        }`}
+      >
+        {narrow ? (
+          <button
+            type="button"
+            onClick={() => setFull(!isFull)}
+            className="focus-ring mr-auto inline-flex min-h-9 cursor-pointer items-center gap-2 rounded-md border border-border bg-surface px-3 text-[13.5px] font-medium text-foreground"
+          >
+            {isFull ? (
+              <X className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Maximize2 className="h-4 w-4" aria-hidden="true" />
+            )}
+            {isFull ? t.close : t.expand}
+          </button>
+        ) : null}
         <div
           role="group"
           aria-label={t.layout}
@@ -181,7 +260,16 @@ export function ProjectMap({
         </div>
       </div>
 
-      <svg viewBox={narrow ? "-45 5 690 590" : "-110 -10 820 620"} role="group" aria-label={t.label}>
+      <div
+        ref={scrollRef}
+        className={isFull ? "flex flex-1 items-center overflow-auto overscroll-contain" : ""}
+      >
+      <svg
+        viewBox={viewBox}
+        role="group"
+        aria-label={t.label}
+        style={isFull ? { minWidth: 860, flexShrink: 0 } : undefined}
+      >
         <defs>
           <clipPath id="pmap-face">
             <circle cx={CENTER} cy={CENTER} r={R_FACE} />
@@ -197,6 +285,7 @@ export function ProjectMap({
           ))}
         </g>
 
+        <g className="pmap-zoom" style={zoomStyle}>
         {[R_TOOL, R_PROJECT, 60].map((r) => (
           <circle key={r} className="pmap-ring" cx={CENTER} cy={CENTER} r={r} />
         ))}
@@ -241,8 +330,8 @@ export function ProjectMap({
             aria-label={t.tool(name)}
             className={`pmap-node tool ${litTools.has(name) ? "on" : ""}`}
             style={{ transform: `translate(${xy[0]}px, ${xy[1]}px)` }}
-            onClick={() => onTool(name)}
-            onKeyDown={activate(() => onTool(name))}
+            onClick={() => goTool(name)}
+            onKeyDown={activate(() => goTool(name))}
           >
             <circle className="dot" r={4.5} />
             <text className="lm" {...labelAt(deg, 14)}>{name}</text>
@@ -263,8 +352,8 @@ export function ProjectMap({
               aria-label={`${project.name}, ${project.kind}, ${project.year}`}
               className={`pmap-node ${litProjects.has(project.slug) ? "on" : ""}`}
               style={style}
-              onClick={() => onProject(project.slug)}
-              onKeyDown={activate(() => onProject(project.slug))}
+              onClick={() => goProject(project.slug)}
+              onKeyDown={activate(() => goProject(project.slug))}
             >
               <circle className="dot" r={12} />
               <text className="lm" {...labelAt(deg, 22)}>{mapLabel(project)}</text>
@@ -289,27 +378,29 @@ export function ProjectMap({
           ))}
           <circle cx={CENTER} cy={CENTER} r={R_FACE} />
         </g>
+        </g>
       </svg>
+      </div>
 
-      <div className="mt-1 flex flex-wrap justify-center gap-2">
+      <div className={`mt-1 flex flex-wrap justify-center gap-2 ${isFull ? "px-4 pb-4" : ""}`}>
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
             type="button"
             aria-pressed={category === cat}
-            onClick={() => onCategory(cat)}
+            onClick={() => goCategory(cat)}
             className={`${PILL} ${category === cat ? "!border-[var(--c)] !text-foreground" : ""}`}
             style={{ "--c": `var(--${cat})` } as CSSProperties}
           >
             <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--c)]" />
             {t.cats[cat]}
-            <span className="text-[12px] text-foreground/40">
+            <span className="text-[12px] text-muted-foreground">
               {placed.filter((entry) => entry.category === cat).length}
             </span>
           </button>
         ))}
       </div>
-      <figcaption className="mt-3 text-center text-[13px] text-foreground/45">
+      <figcaption className={`mt-3 text-center text-[13px] text-muted-foreground ${isFull ? "hidden" : ""}`}>
         {t.captions[mode]}
       </figcaption>
     </figure>

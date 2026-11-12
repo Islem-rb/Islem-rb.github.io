@@ -64,7 +64,8 @@ function ProjectCard({
             <img
               src={cover}
               alt=""
-              loading="lazy"
+              loading={index < 2 ? "eager" : "lazy"}
+              fetchPriority={index < 2 ? "high" : "auto"}
               decoding="async"
               className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
             />
@@ -112,7 +113,21 @@ function ProjectCard({
         <p className="mt-2 text-[16px] leading-snug text-pretty text-foreground/85">
           {project.headline}
         </p>
-        <p className="mt-3 text-[14.5px] leading-relaxed text-pretty text-muted-foreground">
+        {project.result ? (
+          <p className="mt-4 rounded-r-md border-l-[3px] border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_8%,var(--background))] px-3.5 py-2.5 text-[14.5px] leading-snug font-medium text-foreground">
+            {project.result}
+          </p>
+        ) : null}
+        {/* Figures first: what was built, in numbers, before the long description. */}
+        <ul className="mt-4 grid gap-1.5" aria-label={t.projects.highlights}>
+          {project.highlights.map((h) => (
+            <li key={h} className="flex items-baseline gap-2.5 text-[14.5px] text-foreground">
+              <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 translate-y-[-2px] rounded-full bg-[var(--c)]" />
+              {h}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 line-clamp-3 text-[14.5px] leading-relaxed text-pretty text-muted-foreground">
           {project.summary}
         </p>
         <p className="mt-4 text-[13px] text-muted-foreground">

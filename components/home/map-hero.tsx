@@ -138,6 +138,10 @@ export function MapHero({
             <p className="mt-5 max-w-[44ch] text-[17.5px] leading-relaxed text-pretty text-muted-foreground">
               {t.map.intro}
             </p>
+            <p className="mt-4 inline-flex items-center gap-2 text-[14.5px] font-medium text-foreground">
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--signal)]" />
+              {t.hero.availability}
+            </p>
 
             <div className="mt-7">
               <Ask ref={askRef} onAnswer={handleAnswer} onOpenProject={openProject} />
@@ -169,6 +173,7 @@ export function MapHero({
             onProject={openProject}
             onTool={pickTool}
             onCategory={pickCategory}
+            zoomTo={openSlug}
           />
         </div>
       </div>

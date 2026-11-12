@@ -64,13 +64,13 @@ export function Experience(): ReactNode {
                     <span className="text-muted-foreground mt-0.5 text-[14px] sm:text-[15px]">
                       {entry.role}
                       <span className="text-foreground/30 mx-2">•</span>
-                      <span className="text-foreground/55">{entry.period}</span>
+                      <span className="text-muted-foreground">{entry.period}</span>
                     </span>
                   </span>
                   <motion.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.25 }}
-                    className="text-foreground/50 mr-2 inline-flex"
+                    className="text-muted-foreground mr-2 inline-flex"
                   >
                     <ChevronDown className="h-4 w-4" aria-hidden="true" />
                   </motion.span>

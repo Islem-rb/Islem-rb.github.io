@@ -42,7 +42,7 @@ export function AtAGlance({ lang }: { lang: Lang }): ReactNode {
               <span className="font-serif text-[20px] font-semibold tracking-[-0.03em] text-foreground">
                 {row.name}
                 {"count" in row ? (
-                  <sup className="ml-1.5 font-sans text-[12px] font-medium text-foreground/45">
+                  <sup className="ml-1.5 font-sans text-[12px] font-medium text-muted-foreground">
                     {row.count}
                   </sup>
                 ) : null}

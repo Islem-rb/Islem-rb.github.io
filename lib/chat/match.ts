@@ -188,7 +188,11 @@ export function answer(query: string, lang: Lang): Answer {
   }
   if (best) return answerForIntent(best.id, lang);
 
-  return { text: t.fallback, blocks: [], followUps: DEFAULT_SUGGESTIONS };
+  return {
+    text: t.fallback,
+    blocks: [{ type: "ask", question: query.trim() }],
+    followUps: DEFAULT_SUGGESTIONS,
+  };
 }
 
 const MAX_SUGGESTIONS = 5;

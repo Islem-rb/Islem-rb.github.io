@@ -81,6 +81,26 @@ export const INTENTS: Intent[] = [
     followUps: ["experience", "skills", "availability"],
   },
   {
+    id: "why",
+    keywords: [
+      "why", "why you", "why should", "why hire", "why would", "stand out",
+      "different", "strengths", "strength", "pourquoi", "pourquoi toi",
+      "pourquoi te", "points forts", "difference",
+    ],
+    blocks: () => [{ type: "projects", slugs: ["gitops-eks-platform"] }],
+    followUps: ["projects", "availability", "cv"],
+  },
+  {
+    id: "learning",
+    keywords: [
+      "learning", "learn", "currently", "improving", "studying now",
+      "working on", "apprends", "apprendre", "actuellement", "en ce moment",
+      "travailles sur",
+    ],
+    blocks: () => [{ type: "projects", slugs: ["gitops-eks-platform"] }],
+    followUps: ["projects", "skills", "availability"],
+  },
+  {
     id: "availability",
     keywords: [
       "available", "availability", "hire", "hiring", "pfe", "internship",
@@ -150,6 +170,7 @@ export const DEFAULT_SUGGESTIONS: IntentId[] = [
   "timeline",
   "deploy",
   "availability",
+  "why",
 ];
 
 
@@ -179,6 +200,9 @@ export function answerForIntent(id: IntentId, lang: Lang): Answer {
     answer.focus = { slugs: ["gitops-eks-platform"] };
     answer.mode = "map";
     answer.replay = true;
+  } else if (id === "why" || id === "learning") {
+    answer.focus = { slugs: ["gitops-eks-platform"] };
+    answer.mode = "map";
   } else if (id === "timeline") {
     answer.mode = "time";
   }

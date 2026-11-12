@@ -224,11 +224,11 @@ export function Ask({
             autoComplete="off"
             enterKeyHint="send"
             maxLength={MAX_QUESTION}
-            className="h-12 min-w-0 flex-1 bg-transparent text-[17px] text-foreground outline-none placeholder:text-foreground/40"
+            className="h-12 min-w-0 flex-1 bg-transparent text-[17px] text-foreground outline-none placeholder:text-muted-foreground"
           />
           <kbd
             aria-hidden="true"
-            className="hidden h-6 min-w-6 items-center justify-center rounded-md border border-foreground/10 px-1.5 text-[12px] text-foreground/40 sm:inline-flex"
+            className="hidden h-6 min-w-6 items-center justify-center rounded-md border border-foreground/10 px-1.5 text-[12px] text-muted-foreground sm:inline-flex"
           >
             /
           </kbd>
@@ -236,7 +236,7 @@ export function Ask({
             type="submit"
             disabled={!value.trim()}
             aria-label={t.ask.submit}
-            className="focus-ring inline-flex h-11.5 w-11.5 shrink-0 cursor-pointer items-center justify-center rounded-md bg-accent text-white transition-colors dark:text-background disabled:cursor-default disabled:bg-foreground/10 disabled:text-foreground/40"
+            className="focus-ring inline-flex h-11.5 w-11.5 shrink-0 cursor-pointer items-center justify-center rounded-md bg-accent text-white transition-colors dark:text-background disabled:cursor-default disabled:bg-foreground/10 disabled:text-muted-foreground"
           >
             <ArrowRight className="h-4.5 w-4.5" aria-hidden="true" />
           </button>
@@ -264,7 +264,7 @@ export function Ask({
               }`}
             >
               <span className="truncate">{suggestion.label}</span>
-              <span className="shrink-0 text-[12px] text-foreground/45">
+              <span className="shrink-0 text-[12px] text-muted-foreground">
                 {t.ask.kinds[suggestion.kind]}
               </span>
             </li>
@@ -304,11 +304,11 @@ export function Ask({
 
           {asked ? (
             <div className="flex items-center justify-between gap-4 px-1">
-              <p className="text-[12.5px] text-foreground/45">{t.ask.hint}</p>
+              <p className="text-[12.5px] text-muted-foreground">{t.ask.hint}</p>
               <button
                 type="button"
                 onClick={reset}
-                className="focus-ring inline-flex min-h-8 shrink-0 cursor-pointer items-center rounded-lg px-2 text-[13px] text-foreground/55 transition-colors hover:text-foreground"
+                className="focus-ring inline-flex min-h-8 shrink-0 cursor-pointer items-center rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t.ask.clear}
               </button>
@@ -341,9 +341,9 @@ function EntryView({
   return (
     <div className="flex flex-col gap-4">
       {entry.question ? (
-        <p className="flex items-start gap-2 text-[13px] text-foreground/50">
+        <p className="flex items-start gap-2 text-[13px] text-muted-foreground">
           <CornerDownRight
-            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-foreground/35"
+            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
             aria-hidden="true"
           />
           <span className="break-words">{entry.question}</span>

@@ -27,12 +27,6 @@ export const profile = {
     light: "/portrait/islem-light.a712c17d.webp",
     dark: "/portrait/islem-dark.5f442658.webp",
   },
-  /** Dithered "render" the portrait morphs into on hover. */
-  portraitAlt: {
-    light: "/portrait/islem-light-dither.b8196374.png",
-    dark: "/portrait/islem-dark-dither.fba0a371.png",
-  },
-  availability: "Open to PFE internships · Tunisia or Europe",
 } as const;
 
 export type Project = {

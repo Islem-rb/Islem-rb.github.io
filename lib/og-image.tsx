@@ -22,7 +22,7 @@ const C = {
   muted: "#4f5b67",
   border: "#cfd4ca",
   grid: "rgba(15,26,38,0.06)",
-  accent: "#d9431f",
+  accent: "#bf3c1c",
   cloud: "#1d5bc0",
   product: "#7637d0",
   ai: "#b86e00",
@@ -104,7 +104,7 @@ export function renderOgImage(lang: Lang): ImageResponse {
             <span style={{ color: C.muted, fontFamily: "Noto", fontSize: 21 }}>{t.meta.ogTagline}</span>
             <span style={{ display: "flex", alignItems: "center", gap: 12, fontWeight: 600 }}>
               <span style={{ width: 12, height: 12, borderRadius: 6, background: C.signal }} />
-              {t.contact.available}
+              {t.hero.availability}
             </span>
           </div>
         </div>

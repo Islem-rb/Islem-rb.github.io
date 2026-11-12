@@ -11,7 +11,9 @@ export type IntentId =
   | "location"
   | "languages"
   | "deploy"
-  | "timeline";
+  | "timeline"
+  | "why"
+  | "learning";
 
 /** A rich card rendered under the typed answer. Data is read by the renderer. */
 export type Block =
@@ -22,7 +24,9 @@ export type Block =
   | { type: "languages" }
   | { type: "contact" }
   | { type: "cv" }
-  | { type: "facts" };
+  | { type: "facts" }
+  /** Offer to send a question the site could not answer by email. */
+  | { type: "ask"; question: string };
 
 export type Answer = {
   text: string;

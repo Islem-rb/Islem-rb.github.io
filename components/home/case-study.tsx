@@ -10,7 +10,7 @@ import type { Project } from "@/lib/content";
 import { getDictionary, localePath, type Lang } from "@/lib/i18n";
 
 const HEADING =
-  "mt-7 text-[12.5px] font-semibold tracking-[0.04em] text-foreground/45 uppercase";
+  "mt-7 text-[12.5px] font-semibold tracking-[0.04em] text-muted-foreground uppercase";
 const BUTTON =
   "focus-ring inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border px-4.5 text-[14.5px] font-medium transition-colors";
 
@@ -115,7 +115,7 @@ export function CaseStudy({
             className={`${BUTTON} border-foreground/20 hover:border-foreground`}
           >
             {t.projects.readSource}
-            <ArrowUpRight className="h-4 w-4 text-foreground/55" aria-hidden="true" />
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           </a>
         ) : null}
         {project.live ? (
@@ -126,7 +126,7 @@ export function CaseStudy({
             className={`${BUTTON} border-foreground/20 hover:border-foreground`}
           >
             {t.projects.liveDemo}
-            <ArrowUpRight className="h-4 w-4 text-foreground/55" aria-hidden="true" />
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           </a>
         ) : null}
       </div>
@@ -137,7 +137,7 @@ export function CaseStudy({
         className="focus-ring group mt-8 flex w-full cursor-pointer items-center justify-between border-t border-foreground py-4.5 text-left"
       >
         <span>
-          <span className="block text-[12.5px] text-foreground/45">{t.projects.next}</span>
+          <span className="block text-[12.5px] text-muted-foreground">{t.projects.next}</span>
           <span className="font-serif text-[21px] font-semibold tracking-[-0.02em]">
             {next.name}
           </span>

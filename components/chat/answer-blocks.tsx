@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, FileDown } from "lucide-react";
+import { ArrowRight, ArrowUpRight, FileDown, Mail } from "lucide-react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
@@ -70,11 +70,11 @@ function BlockView({
                     <span className="font-serif text-[17px] font-semibold tracking-[-0.01em] text-foreground group-hover:underline group-hover:underline-offset-4">
                       {mapLabel(project)}
                     </span>
-                    <span className="ml-auto text-right text-[13px] text-foreground/45">
+                    <span className="ml-auto text-right text-[13px] text-muted-foreground">
                       {project.kind} · {project.year}
                     </span>
                     <ArrowRight
-                      className="h-4 w-4 shrink-0 text-foreground/40 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground"
+                      className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-foreground"
                       aria-hidden="true"
                     />
                   </button>
@@ -211,6 +211,18 @@ function BlockView({
         </StaggerItem>
       );
     }
+    case "ask":
+      return (
+        <StaggerItem>
+          <a
+            href={`mailto:${profile.email}?subject=${encodeURIComponent(t.ask.questionSubject)}&body=${encodeURIComponent(block.question)}`}
+            className="focus-ring inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background"
+          >
+            <Mail className="h-4 w-4" aria-hidden="true" />
+            {t.ask.emailQuestion}
+          </a>
+        </StaggerItem>
+      );
     case "facts":
       return (
         <StaggerItem className={PANEL}>
@@ -235,7 +247,7 @@ function ExternalLink({ href, label }: { href: string; label: string }): ReactNo
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" className={GHOST_LINK}>
       {label}
-      <ArrowUpRight className="h-4 w-4 text-foreground/55" aria-hidden="true" />
+      <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
     </a>
   );
 }
