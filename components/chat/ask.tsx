@@ -58,8 +58,11 @@ export function Ask({
   ref,
   onAnswer,
   onOpenProject,
+  about,
 }: {
   ref?: Ref<AskHandle>;
+  /** The project whose case study is open: the thread hides, the input stays. */
+  about?: string | undefined;
   /** Called with each new answer, and with null when the thread is cleared. */
   onAnswer: (result: Answer | null) => void;
   onOpenProject: (slug: string) => void;
@@ -257,7 +260,7 @@ export function Ask({
             onFocus={() => {
               if (slash) setOpen(true);
             }}
-            placeholder={t.ask.placeholders[placeholder]}
+            placeholder={about ? t.ask.askAbout(about) : t.ask.placeholders[placeholder]}
             aria-label={t.ask.label}
             autoComplete="off"
             enterKeyHint="send"
@@ -327,7 +330,7 @@ export function Ask({
         {latest?.answer.text}
       </p>
 
-      {latest ? (
+      {latest && !about ? (
         <div className="flex flex-col gap-3 text-left">
           {/* One answer at a time: a new question replaces the card instead of stacking. */}
           <AnimatePresence initial={false} mode="wait">

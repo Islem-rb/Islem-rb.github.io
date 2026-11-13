@@ -166,6 +166,7 @@ const en = {
     earlier: "Earlier:",
     questionSubject: "A question from your portfolio",
     openProject: (name: string) => `Open ${name}`,
+    askAbout: (name: string) => `Ask about ${name}: is it live? your role?`,
     navLabel: "Ask a question",
     kinds: { question: "Question", project: "Project", tool: "Tool" },
     answers: {
@@ -420,6 +421,7 @@ const fr: Dictionary = {
     earlier: "Avant :",
     questionSubject: "Une question depuis ton portfolio",
     openProject: (name: string) => `Ouvrir ${name}`,
+    askAbout: (name: string) => `Une question sur ${name} : en ligne ? ton rôle ?`,
     navLabel: "Poser une question",
     kinds: { question: "Question", project: "Projet", tool: "Outil" },
     answers: {

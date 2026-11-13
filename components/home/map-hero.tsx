@@ -88,6 +88,8 @@ export function MapHero({
 
   const handleAnswer = (result: Answer | null): void => {
     setCategory(null);
+    // A question asked from a case study is answered in the chat, which comes back.
+    setOpenSlug(null);
     if (!result) {
       setFocus(null);
       return;
@@ -146,7 +148,7 @@ export function MapHero({
 
       <div className="mx-auto grid w-full max-w-310 grid-cols-1 items-start gap-x-12 gap-y-6 px-5 pt-24 sm:px-8 sm:pt-26 lg:pt-23 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <div ref={leftRef} data-at="1" className="scroll-mt-24">
-          {/* Kept mounted while a case study is open, so the thread is still there on return. */}
+          {/* The introduction steps aside for a case study; the question box never does. */}
           <div hidden={Boolean(open)}>
             <p className="inline-flex items-center gap-2 rounded-md border border-border bg-surface py-1 pr-3 pl-2.5 text-[13px] text-muted-foreground">
               <span
@@ -176,10 +178,15 @@ export function MapHero({
               <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--signal)]" />
               {t.hero.availability}
             </p>
+          </div>
 
-            <div className="mt-5">
-              <Ask ref={askRef} onAnswer={handleAnswer} onOpenProject={openProject} />
-            </div>
+          <div className={open ? "mb-8" : "mt-5"}>
+            <Ask
+              ref={askRef}
+              onAnswer={handleAnswer}
+              onOpenProject={openProject}
+              about={open?.name}
+            />
           </div>
 
           {open ? (

@@ -138,15 +138,16 @@ function findTech(
   return best ? { label: best.label, slugs } : undefined;
 }
 
-/** Turn a free-form question into an answer built from the site's own content. */
-/** A project's introduction, with its case study opened beside the map. */
+/**
+ * A project's introduction, answered in the chat. The case study opens only
+ * when the visitor clicks the project, so the conversation is never taken away.
+ */
 function projectAnswer(project: Project): Answer {
   return {
     text: `${project.name} (${project.kind}, ${project.year}). ${project.summary}`,
     blocks: [{ type: "projects", slugs: [project.slug] }],
     followUps: ["projects", "skills", "contact"],
     focus: { slugs: [project.slug] },
-    open: project.slug,
     mode: "map",
     matched: `project:${project.slug}`,
     context: { project: project.slug },
