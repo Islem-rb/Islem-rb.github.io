@@ -1,40 +1,29 @@
 import { Analytics } from "@/components/layout/analytics";
 import { Nav } from "@/components/layout/nav";
-import { PageBackdrop } from "@/components/layout/page-backdrop";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { Providers } from "@/components/layout/providers";
 import { SkipToContent } from "@/components/layout/skip-to-content";
 import type { Lang } from "@/lib/i18n";
 import type { Viewport } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Archivo } from "next/font/google";
 import type { ReactNode } from "react";
 import "@/app/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// One variable family: normal width for text, expanded for headings.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  axes: ["opsz", "SOFT"],
+  axes: ["wdth"],
   display: "swap",
 });
 
 /** Font CSS variables, shared with app/global-not-found.tsx. */
-export const fontVariables = `${geistSans.variable} ${geistMono.variable} ${fraunces.variable}`;
+export const fontVariables = archivo.variable;
 
 export const siteViewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#eceee7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1420" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -55,19 +44,10 @@ export function SiteShell({
         className={`${fontVariables} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <Providers>
-          <div className="site-frame site-frame--top" aria-hidden="true" />
-          <div className="site-frame site-frame--left" aria-hidden="true" />
-          <div className="site-frame site-frame--right" aria-hidden="true" />
-          <svg className="site-corner site-corner--top-left" width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/>
-          </svg>
-          <svg className="site-corner site-corner--top-right" width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/>
-          </svg>
           <SkipToContent lang={lang} />
-          <PageBackdrop />
           <Nav />
           {children}
+          <SiteFooter lang={lang} />
         </Providers>
         <Analytics />
       </body>

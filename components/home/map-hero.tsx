@@ -1,0 +1,218 @@
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+import { Ask, type AskHandle } from "@/components/chat/ask";
+import { categoryOf, ringTool, toolsOf, type Category } from "@/lib/chat/map";
+import type { Answer } from "@/lib/chat/types";
+import { getProjects } from "@/lib/content";
+import { getDictionary, type Lang } from "@/lib/i18n";
+import { useReducedMotion } from "@/lib/motion";
+import { chronological } from "@/lib/timeline";
+
+import { CaseStudy } from "./case-study";
+import { ProjectMap, type MapFocus, type MapMode } from "./project-map";
+
+const STEP_MS = 700;
+
+/**
+ * The home page: a question box on the left, the map of everything on the
+ * right. Answers light the map, and picking a point opens its case study.
+ */
+export function MapHero({
+  lang,
+  children,
+}: {
+  lang: Lang;
+  /** Shown under the map, as the last slice of the page to arrive. */
+  children?: ReactNode;
+}): ReactNode {
+  const t = getDictionary(lang);
+  const projects = getProjects(lang);
+  const reduced = useReducedMotion();
+
+  const [stage, setStage] = useState(0);
+  const [run, setRun] = useState(0);
+  const [mode, setMode] = useState<MapMode>("map");
+  const [focus, setFocus] = useState<MapFocus | null>(null);
+  const [category, setCategory] = useState<Category | null>(null);
+  const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const askRef = useRef<AskHandle>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+
+  // The page arrives the way I ship: a small slice, health checks, then everyone.
+  useEffect(() => {
+    const timers = [1, 2, 3].map((step) =>
+      window.setTimeout(() => setStage(step), reduced ? 0 : step * STEP_MS),
+    );
+    return () => timers.forEach((id) => window.clearTimeout(id));
+  }, [run, reduced]);
+
+  const replay = (): void => {
+    setStage(0);
+    setRun((n) => n + 1);
+  };
+
+  const open = projects.find((p) => p.slug === openSlug);
+  // On the timeline, the case study steps through time; on the map, through the list.
+  const order = mode === "time" ? chronological() : projects.map((p) => p.slug);
+  const at = open ? order.indexOf(open.slug) : -1;
+  const byOffset = (offset: number) =>
+    projects.find((p) => p.slug === order[(at + offset + order.length) % order.length]);
+  const nextProject = byOffset(1);
+  const prevProject = mode === "time" && at > 0 ? byOffset(-1) : undefined;
+  const laterProject = mode === "time" && at === order.length - 1 ? undefined : nextProject;
+
+  const openProject = (slug: string): void => {
+    const project = projects.find((p) => p.slug === slug);
+    if (!project) return;
+    setOpenSlug(slug);
+    setCategory(null);
+    setFocus({ slugs: [slug], tools: toolsOf(project) });
+    askRef.current?.setContext({ project: slug });
+    // On a phone the study replaces the chat above the map, so bring it into view.
+    const top = leftRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 0) leftRef.current?.scrollIntoView({ block: "start" });
+  };
+
+  const closeProject = (): void => {
+    setOpenSlug(null);
+    setFocus(null);
+  };
+
+  // On the map, clicking the open project again deselects it and zooms back out.
+  const toggleProject = (slug: string): void => {
+    if (slug === openSlug) closeProject();
+    else openProject(slug);
+  };
+
+  const handleAnswer = (result: Answer | null): void => {
+    setCategory(null);
+    // A question asked from a case study is answered in the chat, which comes back.
+    setOpenSlug(null);
+    if (!result) {
+      setFocus(null);
+      return;
+    }
+    if (result.mode) setMode(result.mode);
+    if (result.replay) replay();
+    if (result.open) {
+      openProject(result.open);
+      return;
+    }
+    const tools = (result.focus?.tools ?? []).flatMap((label) => ringTool(label) ?? []);
+    setFocus(
+      result.focus ? { slugs: result.focus.slugs, tools, year: result.focus.year } : null,
+    );
+  };
+
+  // A second click on the tool or category that is selected clears it, like projects.
+  const clearSelection = (): void => {
+    setCategory(null);
+    setFocus(null);
+  };
+
+  const pickTool = (tool: string): void => {
+    if (!openSlug && focus?.tools.length === 1 && focus.tools[0] === tool) {
+      clearSelection();
+      return;
+    }
+    setOpenSlug(null);
+    askRef.current?.ask(tool);
+  };
+
+  const pickCategory = (cat: Category): void => {
+    if (category === cat) {
+      clearSelection();
+      return;
+    }
+    const slugs = projects.filter((p) => categoryOf(p.slug) === cat).map((p) => p.slug);
+    setOpenSlug(null);
+    askRef.current?.push(t.map.cats[cat], {
+      text: t.map.inCategory(slugs.length, t.map.cats[cat]),
+      blocks: [{ type: "projects", slugs }],
+      followUps: ["projects", "timeline", "skills"],
+      focus: { slugs },
+    });
+    setCategory(cat);
+  };
+
+  return (
+    <section className="rollout relative w-full" data-stage={stage} data-run={run % 2}>
+      <div className="rollout-bar" aria-hidden="true" />
+
+      <div className="mx-auto grid w-full max-w-310 grid-cols-1 items-start gap-x-12 gap-y-6 px-5 pt-24 sm:px-8 sm:pt-26 lg:pt-23 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <div ref={leftRef} data-at="1" className="scroll-mt-24">
+          {/* The introduction steps aside for a case study; the question box never does. */}
+          <div hidden={Boolean(open)}>
+            <p className="inline-flex items-center gap-2 rounded-md border border-border bg-surface py-1 pr-3 pl-2.5 text-[13px] text-muted-foreground">
+              <span
+                aria-hidden="true"
+                className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                  stage === 3 ? "bg-[var(--signal)]" : "bg-foreground/30"
+                }`}
+              />
+              <span aria-live="polite">{t.map.phases[stage]}</span>
+              <button
+                type="button"
+                onClick={replay}
+                className="focus-ring cursor-pointer rounded-sm font-medium text-foreground underline decoration-foreground/25 underline-offset-4"
+              >
+                {t.map.replay}
+              </button>
+            </p>
+
+            <h1 className="mt-5 font-serif text-[2.2rem] font-semibold leading-[1.02] tracking-[-0.04em] text-balance text-foreground sm:text-[2.6rem] xl:text-[2.9rem]">
+              {t.hero.line1} {t.hero.line2}{" "}
+              <span className="text-accent">{t.hero.emphasis}</span>
+            </h1>
+            <p className="mt-4 max-w-[44ch] text-[17px] leading-relaxed text-pretty text-muted-foreground">
+              {t.map.intro}
+            </p>
+            <p className="mt-3 inline-flex items-start gap-2 text-[14.5px] font-medium text-foreground">
+              <span aria-hidden="true" className="mt-[0.45em] h-2 w-2 shrink-0 rounded-full bg-[var(--signal)]" />
+              {t.hero.availability}
+            </p>
+          </div>
+
+          <div className={open ? "mb-8" : "mt-5"}>
+            <Ask
+              ref={askRef}
+              onAnswer={handleAnswer}
+              onOpenProject={openProject}
+              about={open?.name}
+            />
+          </div>
+
+          {open ? (
+            <CaseStudy
+              project={open}
+              next={laterProject}
+              prev={prevProject}
+              inTime={mode === "time"}
+              lang={lang}
+              onBack={closeProject}
+              onOpen={openProject}
+            />
+          ) : null}
+        </div>
+
+        <div data-at="2" className="lg:sticky lg:top-24">
+          <ProjectMap
+            lang={lang}
+            mode={mode}
+            focus={focus}
+            category={category}
+            onMode={setMode}
+            onProject={toggleProject}
+            onTool={pickTool}
+            onCategory={pickCategory}
+            zoomTo={openSlug}
+          />
+        </div>
+      </div>
+
+      <div data-at="3">{children}</div>
+    </section>
+  );
+}

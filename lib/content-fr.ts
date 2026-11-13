@@ -3,11 +3,16 @@ import type { Project } from "./content";
 type ProjectText = Pick<
   Project,
   "kind" | "headline" | "summary" | "meta" | "highlights" | "sections"
-> & { result?: string };
+> & {
+  result?: string;
+  figure?: NonNullable<Project["figure"]>;
+  crew?: NonNullable<Project["crew"]>;
+};
 
 export const PROJECTS_FR: Record<string, ProjectText> = {
   "gitops-eks-platform": {
     kind: "Plateforme cloud",
+    figure: { value: "245–328 s", label: "pour annuler une mauvaise release, automatiquement" },
     headline:
       "Une plateforme du commit à la production sur AWS, où une mauvaise release s’arrête d’elle-même avant de toucher tout le monde.",
     summary:
@@ -65,6 +70,7 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   "devops-observability-platform": {
     kind: "Automatisation & observabilité",
+    figure: { value: "8", label: "étapes Jenkins, du commit à la sync GitOps" },
     headline:
       "Trois microservices, un pipeline, et les métriques qui les relient.",
     summary:
@@ -97,17 +103,20 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
           "kube-prometheus-stack et Loki avec Promtail installés via Helm.",
           "Un dashboard Grafana versionné dans le dépôt : débit, latence p95, taux d’erreur, heap JVM, CPU et logs Loki des 3 services.",
           "Infrastructure AWS associée provisionnée avec Terraform.",
+          "La base de la GitOps EKS Platform, qui a repris les mêmes idées sur AWS juste après.",
         ],
       },
     ],
   },
   cityvoice: {
     kind: "Ingénierie de bout en bout",
+    figure: { value: "9", label: "modules Spring Boot sur un cloud OpenStack privé" },
+    crew: { size: 7, role: "le cloud, le DevOps et une partie du backend" },
     headline:
       "Une plateforme citoyenne construite du cloud privé jusqu’à l’écran du citoyen.",
     summary:
-      "Un cloud privé OpenStack, un cluster Kubernetes automatisé avec Ansible, et neuf modules Spring Boot derrière une gateway, exposés via Cloudflare Tunnel.",
-    meta: "Projet académique en équipe, 2026",
+      "Un cloud privé OpenStack, un cluster Kubernetes automatisé avec Ansible, et neuf modules Spring Boot derrière une gateway, exposés via Cloudflare Tunnel. Un projet ESPRIT en équipe de 7 : ma part, c’était le cloud, le DevOps et une partie du backend.",
+    meta: "Projet ESPRIT en équipe de 7, 2025–2026",
     highlights: [
       "Cluster Ansible en 7 rôles",
       "9 modules Spring Boot",
@@ -117,9 +126,9 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
       {
         title: "Infrastructure",
         items: [
-          "IaaS complet sur OpenStack : Nova, Neutron, Heat, Octavia, supervisé avec Zabbix.",
+          "IaaS complet sur OpenStack, sur des VM imbriquées : Nova, Neutron, Heat, Octavia, supervisé avec Zabbix.",
           "Cluster Kubernetes automatisé avec Ansible en 7 rôles.",
-          "CI/CD Jenkins déclenché par webhooks GitHub, exposé publiquement via Cloudflare Tunnel sur un domaine personnalisé.",
+          "CI/CD Jenkins déclenché par webhooks GitHub. La démo publique passait par Cloudflare Tunnel sur un domaine personnalisé.",
         ],
       },
       {
@@ -142,10 +151,11 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   "verdustry-social": {
     kind: "SaaS IA · Stage",
+    figure: { value: "96", label: "endpoints API répartis sur 18 routeurs" },
     headline:
       "Une plateforme de gestion des réseaux sociaux où l’IA planifie la stratégie et Celery publie à l’heure.",
     summary:
-      "Réalisée pendant mon stage ingénieur chez Verdustry : un backend FastAPI avec des workers Celery, un tableau de bord Next.js, la génération de contenu et de stratégies par IA, et la publication sur Facebook, Instagram et TikTok.",
+      "Un prototype fonctionnel réalisé seul pendant mon stage ingénieur chez Verdustry : un backend FastAPI avec des workers Celery, un tableau de bord Next.js, la génération de contenu et de stratégies par IA, et la publication sur Facebook, Instagram et TikTok.",
     meta: "Stagiaire ingénieur chez Verdustry, 2026",
     highlights: [
       "96 endpoints API · 14 tables",
@@ -185,11 +195,12 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   carnova: {
     kind: "Full-stack · Stage",
+    figure: { value: "233 → 100 s", label: "démarrage à froid sur 0,1 CPU" },
     headline:
       "Une marketplace automobile avec showrooms pour concessionnaires, un studio 3D three.js et des comptes sécurisés, en ligne sur un hébergement gratuit.",
     summary:
-      "Commencée pendant mon stage chez Al Idhafa Group, puis reconstruite en 2026 sur Angular 22 et Spring Boot 3.5 : annonces, showrooms, un studio 3D avec un mode conduite, et des comptes avec vérification d’e-mail et réinitialisation du mot de passe. Testée en CI à chaque push et déployée gratuitement sur Render et Neon.",
-    meta: "Stagiaire full-stack chez Al Idhafa Group, 2025 · reconstruite en 2026",
+      "Réalisée seul en 2025 pendant mon stage chez Al Idhafa Group, pour un client, sur Angular et Spring Boot : annonces, showrooms, un studio 3D avec un mode conduite, et des comptes avec vérification d’e-mail et réinitialisation du mot de passe. Testée en CI à chaque push et déployée gratuitement sur Render et Neon.",
+    meta: "Stagiaire full-stack chez Al Idhafa Group, 2025",
     highlights: [
       "10 contrôleurs · 42 endpoints",
       "Tests unitaires + navigateur en CI",
@@ -224,11 +235,12 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   dawrek: {
     kind: "IA · SaaS temps réel",
+    figure: { value: "5", label: "langues, darija en écriture arabe et latine" },
     headline:
       "Des files d’attente de cliniques suivies depuis le téléphone, avec un assistant qui parle tunisien.",
     summary:
       "Les patients prennent un ticket par QR code, suivent leur tour en direct et posent leurs questions à l’écrit ou à la voix en darija, arabe, français ou anglais. Les vues accueil, salle d’attente et direction tournent sur le même backend FastAPI.",
-    meta: "Projet personnel, 2026",
+    meta: "Projet personnel, 2025",
     highlights: [
       "5 langues, darija en écriture arabe et latine",
       "Questions vocales via Whisper",
@@ -271,11 +283,12 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   "automotive-ml": {
     kind: "Machine learning",
+    figure: { value: "3", label: "tâches de prédiction : prix, carburant, puissance" },
     headline:
       "Prédiction de prix et recommandation de voitures selon le budget, servies en application web.",
     summary:
       "Un pipeline scikit-learn complet, du nettoyage et du clustering aux modèles supervisés, déployé derrière Flask avec des prédictions en direct.",
-    meta: "Projet académique",
+    meta: "Projet de cours ESPRIT, 2025",
     highlights: [
       "3 tâches de prédiction",
       "Recommandation selon le budget",
@@ -300,11 +313,12 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
   },
   sabeel: {
     kind: "Web & desktop",
+    figure: { value: "2", label: "applications : Symfony sur le web, JavaFX hors ligne sur desktop" },
     headline:
       "La supervision agricole à distance, sur le web et hors ligne sur desktop.",
     summary:
       "Une plateforme Symfony pour gérer cultures, équipements et ressources, avec une application JavaFX pensée pour les sites peu connectés.",
-    meta: "Projet académique en équipe",
+    meta: "Projet ESPRIT en équipe de 5, 2025",
     highlights: [
       "Web + desktop hors ligne",
       "Suivi des ressources en temps réel",
@@ -319,6 +333,34 @@ export const PROJECTS_FR: Record<string, ProjectText> = {
           "Une application desktop JavaFX adaptée aux environnements hors ligne.",
           "Recrutement d’ouvriers et accès à des conseillers spécialisés.",
         ],
+      },
+    ],
+  },
+  readdly: {
+    kind: "Mobile · Stage",
+    figure: { value: "2", label: "types de reconnaissance : texte et objets" },
+    headline:
+      "Une application qui lit le monde à voix haute pour les personnes malvoyantes.",
+    summary:
+      "Réalisée pendant mon stage chez Abajim : une application React Native qui reconnaît le texte et les objets par la caméra et les lit à voix haute, avec une interface à fort contraste et grand texte. Une application fonctionnelle, non publiée sur les stores.",
+    meta: "Stagiaire développeur mobile chez Abajim, 2024",
+    highlights: [
+      "Reconnaissance de texte et d’objets",
+      "Lit les PDF et les images à voix haute",
+      "Fort contraste, grand texte",
+    ],
+    sections: [
+      {
+        title: "Application",
+        items: [
+          "Reconnaissance de texte et d’objets par la caméra, avec OCR pour les PDF et les images.",
+          "La synthèse vocale transforme ce qui a été reconnu en audio.",
+          "Une interface basse vision : fort contraste et grand texte partout.",
+        ],
+      },
+      {
+        title: "Backend",
+        items: ["Le backend Node.js et MongoDB derrière l’application."],
       },
     ],
   },
@@ -352,7 +394,7 @@ export const EXPERIENCE_FR: Record<
     role: "Stagiaire développeur mobile",
     period: "févr. 2024 – juin 2024",
     points: [
-      "Développement d’une application React Native d’accessibilité pour les personnes malvoyantes, avec une interface basse vision.",
+      "Développement de Readdly, une application React Native d’accessibilité pour les personnes malvoyantes, avec reconnaissance de texte et d’objets et une interface à fort contraste et grand texte.",
       "Intégration de l’OCR pour extraire le texte des PDF et des images, et du TTS pour le convertir en audio.",
       "Développement du backend Node.js et MongoDB.",
     ],
@@ -362,9 +404,9 @@ export const EXPERIENCE_FR: Record<
 export const EDUCATION_FR: Record<string, { degree: string; period: string }> = {
   ESPRIT: {
     degree: "Diplôme d’ingénieur, Cloud & DevOps",
-    period: "2023 – aujourd’hui",
+    period: "2024 – 2027 (prévu)",
   },
-  ISITCOM: { degree: "Licence en informatique", period: "2021 – 2023" },
+  ISITCOM: { degree: "Licence en informatique", period: "2021 – 2024" },
   "Lycée El Manar": {
     degree: "Baccalauréat, Sciences mathématiques",
     period: "2021",
@@ -383,7 +425,7 @@ export const CAPABILITIES_FR = [
 ];
 
 export const SKILL_GROUPS_FR = [
-  { label: "Cloud", items: "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V" },
+  { label: "Cloud", items: "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper‑V" },
   { label: "IaC & livraison", items: "Terraform, Ansible, GitHub Actions, Jenkins, Argo CD, Helm" },
   { label: "Conteneurs", items: "Docker, Kubernetes, Docker Swarm" },
   { label: "Observabilité", items: "Prometheus, Grafana, Loki, Alertmanager, Zabbix" },

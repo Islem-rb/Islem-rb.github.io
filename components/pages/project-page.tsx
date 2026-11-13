@@ -2,12 +2,13 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Github } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-import { ContactCard } from "@/components/contact/contact-card";
 import { ArchitectureDiagram } from "@/components/projects/architecture-diagram";
 import { DemoMedia } from "@/components/projects/demo";
-import { FlowPanel, PROJECT_ICONS } from "@/components/projects/projects";
+import { FlowCover } from "@/components/projects/flow-cover";
+import { KeyFigure } from "@/components/projects/key-figure";
+import { categoryOf } from "@/lib/chat/map";
 import { getArchitecture, getLessons } from "@/lib/case-studies";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { getProjects, PROJECTS } from "@/lib/content";
@@ -31,41 +32,48 @@ export function projectMetadata(lang: Lang, slug: string): Metadata {
 
 export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): ReactNode {
   const projects = getProjects(lang);
-  const t = getDictionary(lang).projects;
+  const dict = getDictionary(lang);
+  const t = dict.projects;
   const index = projects.findIndex((p) => p.slug === slug);
   const project = projects[index];
   if (!project) notFound();
 
   const next = projects[(index + 1) % projects.length]!;
-  const Icon = PROJECT_ICONS[project.slug];
+  const cat = categoryOf(project.slug);
   const architecture = getArchitecture(lang, project.slug);
   const lessons = getLessons(lang, project.slug);
 
   return (
-    <main id="main-content" className="flex flex-1 flex-col">
-      <section className="mx-auto w-full max-w-275 px-6 pt-36 sm:px-10 sm:pt-44">
-        <FadeIn className="flex flex-col gap-6">
+    <main
+      id="main-content"
+      className="flex flex-1 flex-col"
+      style={{ "--c": `var(--${cat})` } as CSSProperties}
+    >
+      <section className="mx-auto grid w-full max-w-310 grid-cols-1 gap-10 px-5 pt-28 sm:px-8 sm:pt-36 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-end lg:gap-14">
+        <FadeIn className="flex min-w-0 flex-col gap-6">
           <Link
             href={localePath(lang, "/projects")}
-            className="focus-ring group inline-flex w-fit items-center gap-1.5 rounded-md text-[14px] font-medium tracking-tight text-foreground/55 transition-colors hover:text-foreground"
+            className="focus-ring group inline-flex w-fit items-center gap-1.5 rounded-sm text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground print:hidden"
           >
             <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden="true" />
             {t.back}
           </Link>
 
-          <div className="flex items-center gap-2.5 font-mono text-[12px] tracking-tight text-foreground/50">
-            {Icon ? (
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-foreground/10 bg-background">
-                <Icon className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
-              </span>
-            ) : null}
-            {project.kind} · {project.year}
-          </div>
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13.5px]">
+            <span className="inline-flex items-center gap-2 font-medium text-[var(--c)]">
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--c)]" />
+              {dict.map.cats[cat]}
+            </span>
+            <span aria-hidden="true" className="h-px w-5 bg-border" />
+            <span className="text-muted-foreground">
+              {project.kind} · {project.year}
+            </span>
+          </p>
 
-          <h1 className="font-serif text-[2.75rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[3.25rem] lg:text-[4rem]">
+          <h1 className="font-serif text-[2.4rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance text-foreground sm:text-[3.2rem] lg:text-[3.8rem]">
             {project.name}
           </h1>
-          <p className="max-w-[40ch] text-[20px] leading-[1.4] tracking-tight text-foreground/65 sm:text-[24px]">
+          <p className="max-w-[42ch] text-[19px] leading-snug text-pretty text-foreground/80 sm:text-[22px]">
             {project.headline}
           </p>
 
@@ -75,7 +83,7 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
                 href={project.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="focus-ring inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-5 text-sm font-medium text-background"
+                className="focus-ring inline-flex h-11 items-center gap-2 rounded-md bg-foreground px-5 text-sm font-medium text-background"
               >
                 <Github className="h-4 w-4" aria-hidden="true" />
                 {t.readSource}
@@ -86,28 +94,41 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="focus-ring group inline-flex h-11 items-center gap-2 rounded-xl border border-foreground/8 bg-background px-5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/4"
+                className="focus-ring group inline-flex h-11 items-center gap-2 rounded-md border border-foreground/25 px-5 text-sm font-medium text-foreground transition-colors hover:border-foreground"
               >
                 {t.liveDemo}
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
               </a>
             ) : null}
-            <span className="text-[13px] tracking-tight text-foreground/50">
+            <span className="text-[13px] text-muted-foreground">
               {project.meta}
             </span>
           </div>
         </FadeIn>
+
+        {project.figure || !project.demo ? (
+          <FadeIn delay={0.1}>
+            <div className="sheet flex flex-col gap-5 p-5">
+              {project.demo ? null : (
+                <div className="aspect-video overflow-hidden rounded-md border border-border">
+                  <FlowCover project={project} />
+                </div>
+              )}
+              {project.figure ? <KeyFigure figure={project.figure} size="lg" /> : null}
+            </div>
+          </FadeIn>
+        ) : null}
       </section>
 
       {project.demo ? (
         <section
           aria-labelledby="demo-heading"
-          className="mx-auto w-full max-w-275 px-6 pt-14 sm:px-10 sm:pt-20"
+          className="mx-auto w-full max-w-310 px-5 pt-14 sm:px-8 sm:pt-20 print:hidden"
         >
           <FadeIn delay={0.1} className="flex flex-col gap-5">
             <h2
               id="demo-heading"
-              className="font-mono text-[12px] tracking-tight text-foreground/50 uppercase"
+              className="eyebrow"
             >
               {t.demo}
             </h2>
@@ -119,12 +140,12 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
       {architecture ? (
         <section
           aria-labelledby="architecture-heading"
-          className="mx-auto w-full max-w-275 px-6 pt-14 sm:px-10 sm:pt-20"
+          className="mx-auto w-full max-w-310 px-5 pt-14 sm:px-8 sm:pt-20"
         >
           <FadeIn delay={0.1} className="flex flex-col gap-5">
             <h2
               id="architecture-heading"
-              className="font-mono text-[12px] tracking-tight text-foreground/50 uppercase"
+              className="eyebrow"
             >
               {t.architecture}
             </h2>
@@ -137,19 +158,19 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
         </section>
       ) : null}
 
-      <section className="mx-auto w-full max-w-275 px-6 pt-14 pb-10 sm:px-10 sm:pt-20">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_22rem] md:gap-14">
+      <section className="mx-auto w-full max-w-310 px-5 pt-14 pb-10 sm:px-8 sm:pt-20">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_20rem] md:gap-16">
           <FadeIn delay={0.15} className="flex min-w-0 flex-col gap-12">
-            <p className="max-w-[60ch] text-[18px] leading-[1.65] tracking-tight text-foreground/80 sm:text-[19px]">
+            <p className="max-w-[60ch] text-[18px] leading-[1.65] text-foreground/85 sm:text-[19px]">
               {project.summary}
             </p>
 
             {project.result ? (
-              <div className="rounded-3xl border border-foreground/8 bg-foreground/2 p-6 dark:bg-foreground/4">
-                <p className="mb-2 font-mono text-[11px] tracking-tight text-foreground/50 uppercase">
+              <div className="rounded-r-md border-l-[3px] border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_9%,var(--surface))] px-6 py-5">
+                <p className="mb-1.5 text-[12px] font-semibold tracking-[0.1em] text-[var(--c)] uppercase">
                   {t.result}
                 </p>
-                <p className="text-[18px] leading-[1.5] font-medium tracking-tight text-foreground sm:text-[20px]">
+                <p className="text-[18px] leading-normal font-medium text-foreground sm:text-[20px]">
                   {project.result}
                 </p>
               </div>
@@ -157,14 +178,14 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
 
             {project.sections.map((section) => (
               <div key={section.title} className="flex flex-col gap-4">
-                <h2 className="text-[22px] font-medium tracking-tight text-foreground">
+                <h2 className="font-serif text-[1.35rem] font-semibold tracking-[-0.03em] text-foreground">
                   {section.title}
                 </h2>
                 <ul className="flex max-w-[62ch] flex-col gap-3">
                   {section.items.map((item) => (
                     <li
                       key={item}
-                      className="relative pl-5 text-[16px] leading-[1.6] tracking-tight text-foreground/70 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2.5 before:bg-foreground/30 sm:text-[17px]"
+                      className="relative border-b border-border pb-3 pl-5 text-[16px] leading-[1.6] text-foreground/80 before:absolute before:top-[0.6em] before:left-0.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-[var(--c)] sm:text-[17px]"
                     >
                       {item}
                     </li>
@@ -175,30 +196,29 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
           </FadeIn>
 
           <FadeIn delay={0.25}>
-            <aside className="project-card flex flex-col gap-6 rounded-3xl border border-foreground/8 bg-background p-3.5 md:sticky md:top-28">
-              <FlowPanel project={project} />
-              <div className="flex flex-col gap-3 px-1.5">
-                <h2 className="text-[13px] font-semibold tracking-tight text-foreground">
+            <aside className="sheet flex flex-col gap-6 p-5 md:sticky md:top-24">
+              <div className="flex flex-col gap-3">
+                <h2 className="eyebrow">
                   {t.stack}
                 </h2>
                 <ul className="flex flex-wrap gap-1.5">
                   {project.stack.map((s) => (
                     <li
                       key={s}
-                      className="rounded-md border border-foreground/8 bg-foreground/2 px-2 py-1 font-mono text-[11px] tracking-tight text-foreground/70"
+                      className="rounded-sm border border-border bg-background px-2 py-1 text-[13px] text-foreground/80"
                     >
                       {s}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="flex flex-col gap-3 px-1.5 pb-2">
-                <h2 className="text-[13px] font-semibold tracking-tight text-foreground">
+              <div className="flex flex-col gap-3 border-t border-border pt-5">
+                <h2 className="eyebrow">
                   {t.glance}
                 </h2>
                 <ul className="flex flex-col gap-1.5">
                   {project.highlights.map((h) => (
-                    <li key={h} className="font-mono text-[12px] tracking-tight text-foreground/65">
+                    <li key={h} className="text-[14.5px] leading-snug text-foreground/80">
                       {h}
                     </li>
                   ))}
@@ -210,24 +230,24 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
       </section>
 
       {lessons ? (
-        <section className="mx-auto w-full max-w-275 px-6 pb-10 sm:px-10">
-          <FadeIn className="grid grid-cols-1 gap-3 rounded-4xl border border-foreground/8 bg-background p-1.5 shadow-sm md:grid-cols-2">
+        <section className="mx-auto w-full max-w-310 px-5 pb-10 sm:px-8">
+          <FadeIn className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
             {[
               { title: t.learned, items: lessons.learned },
               { title: t.nextSteps, items: lessons.next },
             ].map((block) => (
               <div
                 key={block.title}
-                className="flex flex-col gap-4 rounded-[1.6rem] border border-foreground/5 bg-foreground/2 p-6 sm:p-7 dark:bg-foreground/4"
+                className="sheet flex flex-col gap-4 p-6 sm:p-7"
               >
-                <h2 className="text-[20px] font-medium tracking-tight text-foreground">
+                <h2 className="font-serif text-[1.3rem] font-semibold tracking-[-0.03em] text-foreground">
                   {block.title}
                 </h2>
                 <ul className="flex flex-col gap-3">
                   {block.items.map((item) => (
                     <li
                       key={item}
-                      className="relative pl-5 text-[16px] leading-[1.6] tracking-tight text-foreground/70 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2.5 before:bg-foreground/30"
+                      className="relative pl-5 text-[16px] leading-[1.6] text-foreground/80 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2.5 before:bg-accent"
                     >
                       {item}
                     </li>
@@ -239,16 +259,14 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
         </section>
       ) : null}
 
-      <section className="mx-auto w-full max-w-275 px-6 pt-6 sm:px-10">
+      <section className="mx-auto w-full max-w-310 px-5 pt-6 sm:px-8 print:hidden">
         <Link
           href={localePath(lang, `/projects/${next.slug}`)}
-          className="focus-ring group flex items-center justify-between gap-6 rounded-3xl border border-foreground/8 bg-background px-6 py-6 transition-colors hover:bg-foreground/2 sm:px-8"
+          className="focus-ring group flex items-center justify-between gap-6 border-y border-foreground py-6 transition-colors hover:bg-surface sm:px-2"
         >
-          <span className="flex flex-col gap-1">
-            <span className="font-mono text-[11px] tracking-tight text-foreground/45 uppercase">
-              {t.next}
-            </span>
-            <span className="font-serif text-[1.75rem] font-medium tracking-tight text-foreground sm:text-[2rem]">
+          <span className="flex flex-col gap-1.5">
+            <span className="eyebrow">{t.next}</span>
+            <span className="font-serif text-[1.6rem] font-semibold tracking-[-0.035em] text-foreground sm:text-[2rem]">
               {next.name}
             </span>
           </span>
@@ -256,8 +274,6 @@ export function ProjectPage({ lang, slug }: { lang: Lang; slug: string }): React
         </Link>
       </section>
 
-      <ContactCard lang={lang} />
-      <div className="h-12 sm:h-16" />
     </main>
   );
 }

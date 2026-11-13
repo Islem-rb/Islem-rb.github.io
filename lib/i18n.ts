@@ -30,19 +30,13 @@ const en = {
     toggleTheme: "Toggle theme",
     switchLang: "Version française",
     switchLangShort: "FR",
+    role: "Cloud & DevOps",
   },
   hero: {
-    greeting: "Hey, I’m",
     line1: "I build platforms",
     line2: "that",
     emphasis: "ship themselves.",
-    intro:
-      "Cloud & DevOps engineering student at ESPRIT. Infrastructure as code, GitOps delivery, and systems you can actually observe.",
-    availability: "Open to PFE internships · Tunisia or Europe",
-    portraitAlt: "Portrait of Islem Rebhi",
-    hoverHint: "hover to render",
-    viewWork: "View my work",
-    resume: "Résumé",
+    availability: "Open to a PFE internship from Jan 2027 · Tunisia, Europe or remote",
   },
   contactButton: {
     label: "Contact",
@@ -50,18 +44,10 @@ const en = {
     copy: "Copy",
     show: "Show email",
   },
-  pipeline: {
-    label: "Delivery pipeline from commit to production",
-    stages: ["commit", "build", "scan", "sign", "sync", "canary", "observe"],
-    replay: "Replay",
-    waiting: "waiting for runner…",
-    done: "rollout healthy, no one touched the cluster.",
-  },
   projects: {
     heading: "Selected work",
     intro:
       "Platforms I designed, provisioned, and shipped, from the cloud account up to the user’s screen.",
-    all: (n: number) => `All ${n} projects`,
     highlights: "Highlights",
     caseStudy: "Case study",
     source: (name: string) => `${name} source on GitHub`,
@@ -86,17 +72,42 @@ const en = {
     learned: "What I learned",
     nextSteps: "What I’d do next",
   },
+  ships: {
+    eyebrow: "Colophon",
+    title: "How this site ships",
+    intro:
+      "The site is a small platform of its own: every change goes through the same gates I put on real services before anyone sees it.",
+    lanes: [
+      { title: "Change", nodes: ["Branch + pull request", "One commit per idea"] },
+      { title: "Checks", nodes: ["TypeScript, strict", "ESLint", "Static build, 2 languages"] },
+      { title: "Gates", nodes: ["No broken links", "Lighthouse budgets", "Accessibility ≥ 95"] },
+      { title: "Release", nodes: ["Merge to main", "GitHub Pages deploy", "Static files, no server"] },
+      { title: "Observe", nodes: ["Cookieless analytics", "Questions people email"] },
+    ],
+    feedback: "a failed gate blocks the merge, so main is always deployable",
+    note: "Checks run in GitHub Actions on every pull request; only main is published.",
+    factsTitle: "Under the hood",
+    facts: [
+      ["Framework", "Next.js static export, React, Tailwind CSS"],
+      ["Hosting", "GitHub Pages: plain files, nothing to patch or scale"],
+      ["The chat", "Runs in your browser. Answers come from this site’s own content, no AI and no data sent anywhere."],
+      ["Languages", "English and French, every page"],
+      ["Privacy", "No cookies, no tracking banner"],
+    ] as [string, string][],
+    source: "Read the source",
+    link: "How this site ships",
+  },
   contact: {
     heading: "Let’s build something",
     body: "I’m looking for a PFE internship in Cloud, DevOps or Platform Engineering. Email is the fastest way to reach me.",
-    seeProjects: "See projects",
     subject: "Hello Islem, about an opportunity",
     email: "Email",
-    credit: "Built with Next.js · Template by React Bits Pro",
+    eyebrow: "Contact",
+    cv: "Résumé",
+    top: "Back to top",
+    rights: "Designed and built from scratch.",
   },
   about: {
-    snapshotsLabel:
-      "A few snapshots: portrait, daily commands, hometown to school, languages",
     experience: "Experience",
     seeProject: "See the project",
     education: "Education",
@@ -113,8 +124,145 @@ const en = {
     studying: "Studying",
     studyingValue: "Engineering, Cloud & DevOps · ESPRIT",
     lookingFor: "Looking for",
-    lookingForValue: "PFE internship · Tunisia or Europe",
+    lookingForValue: "PFE internship from Jan 2027 · Tunisia, Europe or remote",
     emailLabel: "Email",
+  },
+  ask: {
+    label: "Ask anything about me",
+    placeholders: [
+      "Ask about my projects…",
+      "What’s your stack?",
+      "Are you available for an internship?",
+      "Try “kubernetes” or “terraform”…",
+      "Type / to see every question…",
+    ],
+    submit: "Ask",
+    clear: "Clear",
+    hint: "Answers come straight from this site, no AI involved.",
+    suggestions: "Suggestions",
+    followUps: "Keep going",
+    allProjects: (n: number) => `All ${n} projects`,
+    chips: {
+      greeting: "Say hi",
+      about: "Who are you?",
+      projects: "Show me your projects",
+      skills: "What’s your stack?",
+      experience: "Where have you worked?",
+      education: "What did you study?",
+      contact: "How do I reach you?",
+      cv: "Get the résumé",
+      availability: "Are you available?",
+      location: "Where are you based?",
+      languages: "Which languages do you speak?",
+      deploy: "How do you deploy?",
+      timeline: "Show the timeline",
+      why: "Why should we hire you?",
+      learning: "What are you learning now?",
+      hardest: "Hardest problem you solved?",
+      team: "Have you worked in a team?",
+      whyDevops: "Why DevOps?",
+      certifications: "Any certifications?",
+      salary: "Salary expectations?",
+    },
+    emailQuestion: "Email me this question",
+    didYouMean: "Did you mean",
+    showAll: "Show every question",
+    slashHint: "Type / to see every question",
+    slashTitle: "Everything you can ask",
+    earlier: "Earlier:",
+    questionSubject: "A question from your portfolio",
+    openProject: (name: string) => `Open ${name}`,
+    askAbout: (name: string) => `Ask about ${name}: is it live? your role?`,
+    navLabel: "Ask a question",
+    kinds: { question: "Question", project: "Project", tool: "Tool" },
+    answers: {
+      greeting:
+        "Hey! I’m Islem. Ask me about my projects, my stack, or whether I’m free for an internship.",
+      about:
+        "I’m Islem Rebhi, a Cloud & DevOps engineering student at ESPRIT. I like building platforms that ship themselves: infrastructure as code, GitOps delivery, and systems you can actually observe.",
+      projects: (n: number) =>
+        `I’ve shipped ${n} projects so far, from cloud platforms to full-stack products. These are the ones I’m proudest of.`,
+      tech: (tech: string, n: number) =>
+        n === 1
+          ? `Yes, I’ve used ${tech}. Here’s the project where it does real work.`
+          : `Yes, ${tech} shows up in ${n} of my projects. Here they are.`,
+      techSkill: (tech: string) =>
+        `${tech} is in my toolbox, even if no project on this site is built around it. Here’s the full stack.`,
+      skills:
+        "Mostly cloud and delivery tooling: AWS, Terraform, Kubernetes, Argo CD and a full observability stack, with backend code when the platform needs it.",
+      experience:
+        "Three internships so far, moving from mobile to full-stack to AI-powered SaaS.",
+      education:
+        "I’m in the engineering cycle at ESPRIT, specialising in Cloud & DevOps, after a bachelor in computer science.",
+      contact:
+        "Email is the fastest way to reach me. I’m also on LinkedIn and GitHub.",
+      cv: "Here’s my résumé, in English and in French.",
+      availability:
+        "Yes. I’m looking for a PFE internship in Cloud, DevOps or Platform Engineering, starting as early as January 2027 and by March at the latest. In Tunisia, in Europe or remote.",
+      location:
+        "I’m based in Ariana, Tunisia. I’m happy to relocate for the internship, in Tunisia or Europe, and open to remote work.",
+      languages: "I speak Arabic, French and English.",
+      deploy:
+        "The way this page just arrived: a small slice first, health checks, then everyone. My GitOps platform does that for every commit, and nobody touches the cluster by hand.",
+      timeline:
+        "Here is everything by month: studies, internships and projects. I started with a mobile accessibility app during my 2024 internship, built web, machine learning and full-stack products in 2025, and in 2026 most of what I build is cloud platforms. Ask about a year, like “what did you do in 2025?”.",
+      why:
+        "Because I’ve already done the work an intern usually learns on the job: a GitOps platform on EKS where a bad release stops itself, Terraform instead of console clicks, signed images, and alerts that fire before users notice. And I write down what broke and why.",
+      learning:
+        "Right now: Karpenter for node autoscaling with cost visibility per namespace on EKS, and finding the root cause of a DNS failure I hit after restoring a cluster with Velero.",
+      hardest:
+        "Making a bad release stop itself on my GitOps EKS platform. The API ships as a canary, and a Prometheus check on its error rate decides whether it goes on. With 50% of requests failing on purpose, the release was aborted automatically in 245–328 s while the stable version kept serving. One problem is still open: a DNS failure after restoring the cluster with Velero, which I’m still tracking down.",
+      team:
+        "Yes. At ESPRIT I built CityVoice in a team of 7, where my part was the cloud, the DevOps and some of the backend, and Sabeel in a team of 5. My other projects I built alone, end to end.",
+      whyDevops:
+        "My path made the choice for me: a mobile app in 2024, full-stack products in 2025, and by 2026 most of what I build is the platform underneath. I like the part that lets everything else ship safely, without anyone touching a server by hand.",
+      certifications:
+        "Not yet. For now the proof is the work itself: Terraform on AWS, Kubernetes and GitOps delivery, all public on GitHub.",
+      salary:
+        "That depends on the internship and the country, so I’d rather discuss it with you directly. Send me an email and I’ll answer.",
+      didYouMean: "I’m not sure I understood. Did you mean one of these?",
+      fallback:
+        "I don’t have an answer for that one yet. Send it to me and I’ll reply by email, or try a project name, a tool like “kubernetes”, or one of these.",
+    },
+  },
+  map: {
+    intro:
+      "Cloud & DevOps engineering student at ESPRIT. Everything I’ve built is on this map. Ask a question, or pick a point.",
+    label: "Map of my projects and the tools each one is built with",
+    layout: "Layout",
+    expand: "Full screen",
+    close: "Close",
+    modes: { map: "Map", time: "Timeline" },
+    captions: {
+      map: "Each project is linked to the tools it is built with. Pick any point.",
+      time: "Studies, internships and projects by month. Pick a bar to open it.",
+    },
+    bands: { study: "Studies", work: "Internships", project: "Projects" },
+    today: "Today",
+    yearOnly: "months not given",
+    builtAt: (company: string, period: string, project: string) =>
+      `Internship at ${company}, ${period}. Opens ${project}`,
+    earlier: "Earlier",
+    later: "Later",
+    cats: { cloud: "Cloud & platform", product: "Products", ai: "AI & data" },
+    inCategory: (n: number, cat: string) =>
+      `${n} projects in ${cat}. Pick one to read more.`,
+    tool: (name: string) => `Projects using ${name}`,
+    phases: [
+      "Deploying this page…",
+      "Rolling out · 10%",
+      "Health checks passed · 50%",
+      "Live · rolled out in 3 steps",
+    ],
+    replay: "Replay",
+    back: "Back to the map",
+    fullStudy: "Full case study",
+  },
+  glance: {
+    title: "At a glance",
+    projects: { name: "Projects", what: "Cloud platforms, GitOps pipelines and full-stack products", go: "View all" },
+    experience: { name: "Experience", what: "Internships at Verdustry, Al Idhafa Group and Abajim", go: "Read" },
+    education: { name: "Education", what: "Engineering degree in Cloud & DevOps, ESPRIT", go: "Read" },
   },
   notFound: {
     title: "This page was never deployed.",
@@ -129,6 +277,8 @@ const en = {
     projectsTitle: "Projects",
     projectsDescription:
       "Cloud platforms, GitOps pipelines and full-stack products built by Islem Rebhi.",
+    shipsTitle: "How this site ships",
+    shipsDescription: "The checks and pipeline behind this portfolio: types, lint, links, Lighthouse budgets, then GitHub Pages.",
     aboutTitle: "About",
     aboutDescription:
       "Islem Rebhi, Cloud & DevOps engineering student at ESPRIT: background, experience, education and toolbox.",
@@ -150,19 +300,13 @@ const fr: Dictionary = {
     toggleTheme: "Changer de thème",
     switchLang: "English version",
     switchLangShort: "EN",
+    role: "Cloud & DevOps",
   },
   hero: {
-    greeting: "Salut, moi c’est",
     line1: "Je construis des plateformes",
     line2: "qui",
     emphasis: "se déploient seules.",
-    intro:
-      "Étudiant ingénieur Cloud & DevOps à ESPRIT. Infrastructure as code, livraison GitOps et systèmes réellement observables.",
-    availability: "Disponible pour un stage PFE · Tunisie ou Europe",
-    portraitAlt: "Portrait d’Islem Rebhi",
-    hoverHint: "survolez pour le rendu",
-    viewWork: "Voir mes projets",
-    resume: "CV",
+    availability: "Disponible pour un stage PFE dès janvier 2027 · Tunisie, Europe ou à distance",
   },
   contactButton: {
     label: "Contact",
@@ -170,18 +314,10 @@ const fr: Dictionary = {
     copy: "Copier",
     show: "Afficher l’e-mail",
   },
-  pipeline: {
-    label: "Pipeline de livraison, du commit à la production",
-    stages: ["commit", "build", "scan", "signature", "sync", "canary", "observe"],
-    replay: "Rejouer",
-    waiting: "en attente du runner…",
-    done: "déploiement sain, personne n’a touché au cluster.",
-  },
   projects: {
     heading: "Projets choisis",
     intro:
       "Des plateformes que j’ai conçues, provisionnées et livrées, du compte cloud jusqu’à l’écran de l’utilisateur.",
-    all: (n: number) => `Les ${n} projets`,
     highlights: "Points clés",
     caseStudy: "Étude de cas",
     source: (name: string) => `Code source de ${name} sur GitHub`,
@@ -206,17 +342,42 @@ const fr: Dictionary = {
     learned: "Ce que j’ai appris",
     nextSteps: "Ce que je ferais ensuite",
   },
+  ships: {
+    eyebrow: "Colophon",
+    title: "Comment ce site est livré",
+    intro:
+      "Le site est une petite plateforme à part entière : chaque changement passe par les mêmes contrôles que je mets sur de vrais services avant que quiconque le voie.",
+    lanes: [
+      { title: "Changement", nodes: ["Branche + pull request", "Un commit par idée"] },
+      { title: "Contrôles", nodes: ["TypeScript strict", "ESLint", "Build statique, 2 langues"] },
+      { title: "Portes", nodes: ["Aucun lien cassé", "Budgets Lighthouse", "Accessibilité ≥ 95"] },
+      { title: "Mise en ligne", nodes: ["Fusion dans main", "Déploiement GitHub Pages", "Fichiers statiques, sans serveur"] },
+      { title: "Observer", nodes: ["Analytics sans cookies", "Questions reçues par e-mail"] },
+    ],
+    feedback: "une porte en échec bloque la fusion, donc main est toujours déployable",
+    note: "Les contrôles tournent dans GitHub Actions à chaque pull request ; seule main est publiée.",
+    factsTitle: "Sous le capot",
+    facts: [
+      ["Framework", "Next.js en export statique, React, Tailwind CSS"],
+      ["Hébergement", "GitHub Pages : des fichiers simples, rien à patcher ni à dimensionner"],
+      ["Le chat", "Il tourne dans votre navigateur. Les réponses viennent du contenu du site, sans IA et sans rien envoyer."],
+      ["Langues", "Anglais et français, sur chaque page"],
+      ["Vie privée", "Pas de cookies, pas de bandeau de suivi"],
+    ] as [string, string][],
+    source: "Lire le code source",
+    link: "Comment ce site est livré",
+  },
   contact: {
     heading: "Construisons quelque chose",
     body: "Je cherche un stage PFE en Cloud, DevOps ou Platform Engineering. Le plus rapide pour me joindre, c’est l’e-mail.",
-    seeProjects: "Voir les projets",
     subject: "Bonjour Islem, à propos d’une opportunité",
     email: "E-mail",
-    credit: "Réalisé avec Next.js · Modèle React Bits Pro",
+    eyebrow: "Contact",
+    cv: "CV",
+    top: "Haut de page",
+    rights: "Conçu et développé de A à Z.",
   },
   about: {
-    snapshotsLabel:
-      "Quelques instantanés : portrait, commandes du quotidien, parcours, langues",
     experience: "Expérience",
     seeProject: "Voir le projet",
     education: "Formation",
@@ -233,8 +394,145 @@ const fr: Dictionary = {
     studying: "Études",
     studyingValue: "Ingénieur Cloud & DevOps · ESPRIT",
     lookingFor: "Recherche",
-    lookingForValue: "Stage PFE · Tunisie ou Europe",
+    lookingForValue: "Stage PFE dès janvier 2027 · Tunisie, Europe ou à distance",
     emailLabel: "E-mail",
+  },
+  ask: {
+    label: "Posez-moi une question",
+    placeholders: [
+      "Demandez-moi mes projets…",
+      "Quelle est ta stack ?",
+      "Es-tu disponible pour un stage ?",
+      "Essayez « kubernetes » ou « terraform »…",
+      "Tapez / pour voir toutes les questions…",
+    ],
+    submit: "Demander",
+    clear: "Effacer",
+    hint: "Les réponses viennent directement de ce site, sans IA.",
+    suggestions: "Suggestions",
+    followUps: "Pour continuer",
+    allProjects: (n: number) => `Les ${n} projets`,
+    chips: {
+      greeting: "Dire bonjour",
+      about: "Qui es-tu ?",
+      projects: "Montre-moi tes projets",
+      skills: "Quelle est ta stack ?",
+      experience: "Où as-tu travaillé ?",
+      education: "Qu’as-tu étudié ?",
+      contact: "Comment te contacter ?",
+      cv: "Télécharger le CV",
+      availability: "Es-tu disponible ?",
+      location: "Où es-tu basé ?",
+      languages: "Quelles langues parles-tu ?",
+      deploy: "Comment déploies-tu ?",
+      timeline: "Voir la chronologie",
+      why: "Pourquoi te recruter ?",
+      learning: "Qu’apprends-tu en ce moment ?",
+      hardest: "Ton problème le plus difficile ?",
+      team: "As-tu travaillé en équipe ?",
+      whyDevops: "Pourquoi le DevOps ?",
+      certifications: "Des certifications ?",
+      salary: "Tes prétentions salariales ?",
+    },
+    emailQuestion: "M’envoyer cette question",
+    didYouMean: "Vouliez-vous dire",
+    showAll: "Voir toutes les questions",
+    slashHint: "Tapez / pour voir toutes les questions",
+    slashTitle: "Tout ce que vous pouvez demander",
+    earlier: "Avant :",
+    questionSubject: "Une question depuis ton portfolio",
+    openProject: (name: string) => `Ouvrir ${name}`,
+    askAbout: (name: string) => `Une question sur ${name} : en ligne ? ton rôle ?`,
+    navLabel: "Poser une question",
+    kinds: { question: "Question", project: "Projet", tool: "Outil" },
+    answers: {
+      greeting:
+        "Salut ! Moi c’est Islem. Demandez-moi mes projets, ma stack, ou si je suis disponible pour un stage.",
+      about:
+        "Je suis Islem Rebhi, élève ingénieur Cloud & DevOps à ESPRIT. J’aime construire des plateformes qui se déploient toutes seules : infrastructure as code, livraison GitOps et systèmes réellement observables.",
+      projects: (n: number) =>
+        `J’ai livré ${n} projets jusqu’ici, des plateformes cloud aux produits full-stack. Voici ceux dont je suis le plus fier.`,
+      tech: (tech: string, n: number) =>
+        n === 1
+          ? `Oui, j’ai utilisé ${tech}. Voici le projet où il sert vraiment.`
+          : `Oui, ${tech} apparaît dans ${n} de mes projets. Les voici.`,
+      techSkill: (tech: string) =>
+        `${tech} fait partie de ma boîte à outils, même si aucun projet de ce site n’est construit autour. Voici la stack complète.`,
+      skills:
+        "Surtout de l’outillage cloud et de livraison : AWS, Terraform, Kubernetes, Argo CD et une stack d’observabilité complète, avec du code backend quand la plateforme en a besoin.",
+      experience:
+        "Trois stages jusqu’ici, du mobile au full-stack puis à un SaaS dopé à l’IA.",
+      education:
+        "Je suis en cycle ingénieur à ESPRIT, spécialité Cloud & DevOps, après une licence en informatique.",
+      contact:
+        "L’e-mail est le moyen le plus rapide de me joindre. Je suis aussi sur LinkedIn et GitHub.",
+      cv: "Voici mon CV, en français et en anglais.",
+      availability:
+        "Oui. Je cherche un stage PFE en Cloud, DevOps ou Platform Engineering, à partir de janvier 2027 et au plus tard en mars. En Tunisie, en Europe ou à distance.",
+      location:
+        "Je suis basé à Ariana, en Tunisie. Je suis prêt à déménager pour le stage, en Tunisie ou en Europe, et ouvert au télétravail.",
+      languages: "Je parle arabe, français et anglais.",
+      deploy:
+        "Comme cette page vient d’arriver : une petite tranche d’abord, des contrôles de santé, puis tout le monde. Ma plateforme GitOps fait ça à chaque commit, et personne ne touche au cluster à la main.",
+      timeline:
+        "Voici tout, mois par mois : études, stages et projets. J’ai commencé par une application mobile d’accessibilité pendant mon stage de 2024, puis des produits web, machine learning et full-stack en 2025, et en 2026 je construis surtout des plateformes cloud. Demandez une année, par exemple « qu’as-tu fait en 2025 ? ».",
+      why:
+        "Parce que j’ai déjà fait ce qu’un stagiaire apprend d’habitude sur le terrain : une plateforme GitOps sur EKS où une mauvaise version s’arrête toute seule, Terraform plutôt que des clics dans la console, des images signées, et des alertes qui sonnent avant les utilisateurs. Et je note ce qui a cassé, et pourquoi.",
+      learning:
+        "En ce moment : Karpenter pour l’autoscaling des nœuds avec le coût par namespace sur EKS, et la cause d’une panne DNS rencontrée après la restauration d’un cluster avec Velero.",
+      hardest:
+        "Faire qu’une mauvaise version s’arrête toute seule sur ma plateforme GitOps EKS. L’API est livrée en canary, et une vérification Prometheus de son taux d’erreur décide si elle continue. Avec 50 % de requêtes en erreur volontaire, la version a été annulée automatiquement en 245 à 328 s pendant que la version stable continuait de servir. Un problème reste ouvert : une panne DNS après la restauration du cluster avec Velero, dont je cherche encore la cause.",
+      team:
+        "Oui. À ESPRIT, j’ai réalisé CityVoice dans une équipe de 7, où ma part était le cloud, le DevOps et une partie du backend, et Sabeel dans une équipe de 5. Mes autres projets, je les ai réalisés seul, de bout en bout.",
+      whyDevops:
+        "Mon parcours a choisi pour moi : une application mobile en 2024, des produits full-stack en 2025, et en 2026 je construis surtout la plateforme en dessous. J’aime la partie qui permet à tout le reste d’être livré sans risque, sans que personne ne touche un serveur à la main.",
+      certifications:
+        "Pas encore. Pour l’instant, la preuve, c’est le travail : Terraform sur AWS, Kubernetes et livraison GitOps, le tout public sur GitHub.",
+      salary:
+        "Cela dépend du stage et du pays, donc je préfère en parler directement avec vous. Envoyez-moi un e-mail et je vous répondrai.",
+      didYouMean: "Je ne suis pas sûr d’avoir compris. Vouliez-vous dire l’un de ces sujets ?",
+      fallback:
+        "Je n’ai pas encore de réponse à ça. Envoyez-la-moi et je répondrai par e-mail, ou essayez un nom de projet, un outil comme « kubernetes », ou l’une de ces questions.",
+    },
+  },
+  map: {
+    intro:
+      "Élève ingénieur Cloud & DevOps à ESPRIT. Tout ce que j’ai construit est sur cette carte. Posez une question, ou choisissez un point.",
+    label: "Carte de mes projets et des outils utilisés par chacun",
+    layout: "Disposition",
+    expand: "Plein écran",
+    close: "Fermer",
+    modes: { map: "Carte", time: "Chronologie" },
+    captions: {
+      map: "Chaque projet est relié aux outils qui le composent. Choisissez un point.",
+      time: "Études, stages et projets, mois par mois. Choisissez une barre pour l’ouvrir.",
+    },
+    bands: { study: "Études", work: "Stages", project: "Projets" },
+    today: "Aujourd’hui",
+    yearOnly: "mois non précisés",
+    builtAt: (company: string, period: string, project: string) =>
+      `Stage chez ${company}, ${period}. Ouvre ${project}`,
+    earlier: "Avant",
+    later: "Après",
+    cats: { cloud: "Cloud & plateforme", product: "Produits", ai: "IA & données" },
+    inCategory: (n: number, cat: string) =>
+      `${n} projets en ${cat}. Choisissez-en un pour en savoir plus.`,
+    tool: (name: string) => `Projets utilisant ${name}`,
+    phases: [
+      "Déploiement de cette page…",
+      "Déploiement progressif · 10 %",
+      "Contrôles de santé validés · 50 %",
+      "En ligne · déployée en 3 étapes",
+    ],
+    replay: "Rejouer",
+    back: "Retour à la carte",
+    fullStudy: "Étude de cas complète",
+  },
+  glance: {
+    title: "En un coup d’œil",
+    projects: { name: "Projets", what: "Plateformes cloud, pipelines GitOps et produits full-stack", go: "Tout voir" },
+    experience: { name: "Expérience", what: "Stages chez Verdustry, Al Idhafa Group et Abajim", go: "Lire" },
+    education: { name: "Formation", what: "Diplôme d’ingénieur Cloud & DevOps, ESPRIT", go: "Lire" },
   },
   notFound: {
     title: "Cette page n’a jamais été déployée.",
@@ -249,6 +547,8 @@ const fr: Dictionary = {
     projectsTitle: "Projets",
     projectsDescription:
       "Plateformes cloud, pipelines GitOps et produits full-stack réalisés par Islem Rebhi.",
+    shipsTitle: "Comment ce site est livré",
+    shipsDescription: "Les contrôles et le pipeline derrière ce portfolio : types, lint, liens, budgets Lighthouse, puis GitHub Pages.",
     aboutTitle: "À propos",
     aboutDescription:
       "Islem Rebhi, étudiant ingénieur Cloud & DevOps à ESPRIT : parcours, expérience, formation et outils.",

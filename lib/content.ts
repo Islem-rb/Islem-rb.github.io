@@ -27,12 +27,6 @@ export const profile = {
     light: "/portrait/islem-light.a712c17d.webp",
     dark: "/portrait/islem-dark.5f442658.webp",
   },
-  /** Dithered "render" the portrait morphs into on hover. */
-  portraitAlt: {
-    light: "/portrait/islem-light-dither.b8196374.png",
-    dark: "/portrait/islem-dark-dither.fba0a371.png",
-  },
-  availability: "Open to PFE internships · Tunisia or Europe",
 } as const;
 
 export type Project = {
@@ -52,11 +46,17 @@ export type Project = {
   repo?: string;
   live?: string;
   result?: string;
+  /** Who built it: alone, or a team (with my part when it is known). Unset when not stated. */
+  crew?: "solo" | { size: number; role?: string };
+  /** The one number to show large on cards and case studies. */
+  figure?: { value: string; label: string };
   demo?: Demo;
 };
 
 /** Self-hosted demo media under public/demos/<slug>/. */
 export type Demo = {
+  /** Picture for cards, when the video poster is not the best first look. */
+  cover?: string;
   video?: { src: string; poster: string; duration: string; lang: Lang };
   shots?: { src: string; width: number; height: number; alt: Record<Lang, string> }[];
 };
@@ -67,6 +67,7 @@ export const PROJECTS: Project[] = [
     name: "GitOps EKS Platform",
     kind: "Cloud platform",
     year: "2026",
+    figure: { value: "245–328 s", label: "to abort a bad release, automatically" },
     headline:
       "A commit-to-production platform on AWS, where a bad release stops itself before it reaches everyone.",
     summary:
@@ -141,6 +142,7 @@ export const PROJECTS: Project[] = [
     ],
     repo: "https://github.com/Islem-rb/gitops-eks-platform",
     demo: {
+      cover: "/demos/gitops-eks-platform/cover.webp",
       video: {
         src: "/demos/gitops-eks-platform/demo.mp4",
         poster: "/demos/gitops-eks-platform/poster.webp",
@@ -154,6 +156,7 @@ export const PROJECTS: Project[] = [
     name: "DevOps Observability",
     kind: "Automation & observability",
     year: "2026",
+    figure: { value: "8", label: "Jenkins stages, from commit to GitOps sync" },
     headline:
       "Three microservices, one pipeline, and the metrics that tie them together.",
     summary:
@@ -202,6 +205,7 @@ export const PROJECTS: Project[] = [
           "kube-prometheus-stack and Loki with Promtail installed through Helm.",
           "A Grafana dashboard kept as code: request rate, p95 latency, error rate, JVM heap, CPU and the Loki logs of all 3 services.",
           "Supporting AWS infrastructure provisioned with Terraform.",
+          "The groundwork for the GitOps EKS Platform, which took the same ideas to AWS right after.",
         ],
       },
     ],
@@ -233,12 +237,14 @@ export const PROJECTS: Project[] = [
     slug: "cityvoice",
     name: "CityVoice",
     kind: "End-to-end engineering",
-    year: "2026",
+    year: "2025–2026",
+    figure: { value: "9", label: "Spring Boot modules on a private OpenStack cloud" },
+    crew: { size: 7, role: "the cloud, the DevOps and some of the backend" },
     headline:
       "A civic platform built from the bare-metal cloud up to the citizen's screen.",
     summary:
-      "A private OpenStack cloud, a Kubernetes cluster automated with Ansible, and nine Spring Boot modules behind a gateway, exposed through Cloudflare Tunnel.",
-    meta: "Academic team project, 2026",
+      "A private OpenStack cloud, a Kubernetes cluster automated with Ansible, and nine Spring Boot modules behind a gateway, exposed through Cloudflare Tunnel. An ESPRIT project in a team of 7: my part was the cloud, the DevOps and some of the backend.",
+    meta: "ESPRIT team project of 7, 2025–2026",
     featured: true,
     stack: [
       "OpenStack (Nova, Neutron, Heat, Octavia)",
@@ -263,9 +269,9 @@ export const PROJECTS: Project[] = [
       {
         title: "Infrastructure",
         items: [
-          "Full IaaS on OpenStack: Nova, Neutron, Heat, Octavia, monitored with Zabbix.",
+          "Full IaaS on OpenStack, running on nested VMs: Nova, Neutron, Heat, Octavia, monitored with Zabbix.",
           "Kubernetes cluster automated with Ansible in 7 roles.",
-          "Jenkins CI/CD triggered by GitHub webhooks, exposed publicly through Cloudflare Tunnel on a custom domain.",
+          "Jenkins CI/CD triggered by GitHub webhooks. The public demo ran through Cloudflare Tunnel on a custom domain.",
         ],
       },
       {
@@ -293,10 +299,12 @@ export const PROJECTS: Project[] = [
     name: "Verdustry Social",
     kind: "AI SaaS · Internship",
     year: "2026",
+    figure: { value: "96", label: "API endpoints across 18 routers" },
+    crew: "solo",
     headline:
       "A social media management platform where AI plans the strategy and Celery publishes on time.",
     summary:
-      "Built during my engineering internship at Verdustry: a FastAPI backend with Celery workers, a Next.js dashboard, AI content and strategy generation, and publishing to Facebook, Instagram and TikTok.",
+      "A working prototype built alone during my engineering internship at Verdustry: a FastAPI backend with Celery workers, a Next.js dashboard, AI content and strategy generation, and publishing to Facebook, Instagram and TikTok.",
     meta: "Engineering Intern at Verdustry, 2026",
     featured: true,
     stack: [
@@ -399,12 +407,14 @@ export const PROJECTS: Project[] = [
     slug: "carnova",
     name: "Carnova",
     kind: "Full-stack · Internship",
-    year: "2025–2026",
+    year: "2025",
+    figure: { value: "233 → 100 s", label: "cold start on 0.1 CPU" },
+    crew: "solo",
     headline:
       "An automotive marketplace with dealer showrooms, a three.js 3D studio and secure accounts, live on free hosting.",
     summary:
-      "Started during my internship at Al Idhafa Group, then rebuilt in 2026 on Angular 22 and Spring Boot 3.5: listings, showrooms, a 3D studio with a driving sandbox, and accounts with email verification and password reset. Tested in CI on every push and deployed for free on Render and Neon.",
-    meta: "Full-Stack Intern at Al Idhafa Group, 2025 · rebuilt in 2026",
+      "Built alone in 2025 during my internship at Al Idhafa Group, for a client, on Angular and Spring Boot: listings, showrooms, a 3D studio with a driving sandbox, and accounts with email verification and password reset. Tested in CI on every push and deployed for free on Render and Neon.",
+    meta: "Full-Stack Intern at Al Idhafa Group, 2025",
     featured: true,
     stack: [
       "Spring Boot",
@@ -455,12 +465,13 @@ export const PROJECTS: Project[] = [
     slug: "dawrek",
     name: "Dawrek",
     kind: "AI · Real-time SaaS",
-    year: "2026",
+    year: "2025",
+    figure: { value: "5", label: "languages, Darija in Arabic and Latin script" },
     headline:
       "Clinic queues that patients follow from their phone, with an assistant that speaks Tunisian.",
     summary:
       "Patients take a ticket by QR code, follow their turn live and ask questions by text or voice in Darija, Arabic, French or English. Staff, waiting-room and manager views run on the same FastAPI backend.",
-    meta: "Personal project, 2026",
+    meta: "Personal project, 2025",
     featured: false,
     stack: [
       "Python",
@@ -568,11 +579,12 @@ export const PROJECTS: Project[] = [
     name: "Automotive ML",
     kind: "Machine learning",
     year: "2025",
+    figure: { value: "3", label: "prediction tasks: price, fuel type, horsepower" },
     headline:
       "Price prediction and a budget-based car recommender, served as a web app.",
     summary:
       "A full scikit-learn pipeline, from cleaning and clustering to supervised models, deployed behind Flask with live predictions.",
-    meta: "Academic project",
+    meta: "ESPRIT course project, 2025",
     featured: false,
     stack: ["Python", "pandas", "NumPy", "scikit-learn", "Flask"],
     flow: ["pandas", "EDA", "Clustering", "Models", "Flask"],
@@ -602,12 +614,14 @@ export const PROJECTS: Project[] = [
     slug: "sabeel",
     name: "Sabeel",
     kind: "Web & desktop",
-    year: "2024",
+    year: "2025",
+    figure: { value: "2", label: "apps: Symfony on the web, JavaFX offline on the desktop" },
+    crew: { size: 5 },
     headline:
       "Remote supervision for farms, on the web and offline on the desktop.",
     summary:
       "A Symfony platform to manage crops, equipment and resources, with a JavaFX desktop app built for low-connectivity sites.",
-    meta: "Academic team project",
+    meta: "ESPRIT team project of 5, 2025",
     featured: false,
     stack: ["Symfony", "Twig", "JavaFX", "MySQL", "Git"],
     flow: ["Symfony", "MySQL", "JavaFX"],
@@ -628,6 +642,40 @@ export const PROJECTS: Project[] = [
       },
     ],
     repo: "https://github.com/Islem-rb/sabeel",
+  },
+  {
+    slug: "readdly",
+    name: "Readdly",
+    kind: "Mobile · Internship",
+    year: "2024",
+    figure: { value: "2", label: "kinds of recognition: text and objects" },
+    headline:
+      "A phone app that reads the world out loud for people with low vision.",
+    summary:
+      "Built during my internship at Abajim: a React Native app that recognises text and objects through the camera and reads them aloud, with a high-contrast, large-text interface. A working app, not released to the stores.",
+    meta: "Mobile Developer Intern at Abajim, 2024",
+    featured: false,
+    stack: ["React Native", "Node.js", "MongoDB", "OCR", "Text-to-speech"],
+    flow: ["Camera", "OCR", "Text-to-speech", "Node.js", "MongoDB"],
+    highlights: [
+      "Text and object recognition",
+      "Reads PDFs and images aloud",
+      "High contrast, large text",
+    ],
+    sections: [
+      {
+        title: "App",
+        items: [
+          "Text and object recognition from the camera, with OCR for PDFs and images.",
+          "Text-to-speech turns what was recognised into audio.",
+          "A low-vision interface: high contrast and large text throughout.",
+        ],
+      },
+      {
+        title: "Backend",
+        items: ["The Node.js and MongoDB backend behind it."],
+      },
+    ],
   },
 ];
 
@@ -660,15 +708,15 @@ export const EXPERIENCE = [
   },
   {
     company: "Abajim",
-    logo: "/logos/abajim.svg",
     role: "Mobile Developer Intern",
     period: "Feb 2024 – Jun 2024",
     location: "Sousse",
     points: [
-      "Built a React Native accessibility app for visually impaired users, with a low-vision interface.",
+      "Built Readdly, a React Native accessibility app for visually impaired users, with text and object recognition and a high-contrast, large-text interface.",
       "Integrated OCR to extract text from PDFs and images, and TTS to turn it into audio.",
       "Developed the Node.js and MongoDB backend.",
     ],
+    project: "readdly",
   },
 ] as const;
 
@@ -676,12 +724,12 @@ export const EDUCATION = [
   {
     school: "ESPRIT",
     degree: "Engineering degree, Cloud & DevOps",
-    period: "2023 – Present",
+    period: "2024 – 2027 (expected)",
   },
   {
     school: "ISITCOM",
     degree: "Bachelor in Computer Science",
-    period: "2021 – 2023",
+    period: "2021 – 2024",
   },
   {
     school: "Lycée El Manar",
@@ -702,7 +750,7 @@ export const CAPABILITIES = [
 ] as const;
 
 export const SKILL_GROUPS = [
-  { label: "Cloud", items: "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V" },
+  { label: "Cloud", items: "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper‑V" },
   { label: "IaC & delivery", items: "Terraform, Ansible, GitHub Actions, Jenkins, Argo CD, Helm" },
   { label: "Containers", items: "Docker, Kubernetes, Docker Swarm" },
   { label: "Observability", items: "Prometheus, Grafana, Loki, Alertmanager, Zabbix" },

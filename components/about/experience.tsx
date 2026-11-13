@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, ChevronDown } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
@@ -18,69 +18,52 @@ export function Experience(): ReactNode {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-foreground text-[15px] font-semibold tracking-tight">
-        {t.about.experience}
-      </h2>
-      <div className="border-foreground/5 bg-foreground/2 dark:bg-foreground/5 rounded-4xl border p-2 sm:p-4">
-        <ul className="flex flex-col gap-2">
+      <h2 className="eyebrow">{t.about.experience}</h2>
+      <div className="sheet">
+        <ul className="flex flex-col divide-y divide-border">
           {entries.map((entry, i) => {
             const isOpen = open === i;
             const panelId = `exp-panel-${i}`;
             return (
               <li
                 key={entry.company}
-                className="bg-background border-foreground/5 rounded-3xl border"
+                className=""
               >
                 <button
                   type="button"
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
                   aria-controls={panelId}
-                  className="focus-ring flex w-full cursor-pointer items-center gap-4 rounded-3xl p-2 text-left"
+                  className="focus-ring flex w-full cursor-pointer items-center gap-4 p-4 text-left transition-colors hover:bg-background/60"
                 >
-                  {"logo" in entry ? (
-                    <img
-                      src={entry.logo}
-                      alt=""
-                      width={48}
-                      height={48}
-                      draggable={false}
-                      className="ring-foreground/8 h-12 w-12 shrink-0 ring-1 dark:ring-white/10"
-                      style={{ borderRadius: 14 }}
-                    />
-                  ) : (
-                    <span
-                      className="ring-foreground/8 inline-flex h-12 w-12 shrink-0 items-center justify-center bg-foreground ring-1 dark:ring-white/10"
-                      style={{ borderRadius: 14 }}
-                      aria-hidden="true"
-                    >
-                      <span className="text-background text-[18px] font-semibold tracking-tight">
-                        {entry.company.charAt(0)}
-                      </span>
-                    </span>
-                  )}
+                  <span
+                    aria-hidden="true"
+                    className="w-12 shrink-0 font-serif text-[17px] font-semibold tracking-[-0.02em] text-accent tabular-nums"
+                  >
+                    {entry.period.match(/\d{4}/g)?.at(-1)}
+                  </span>
                   <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="text-foreground text-[17px] font-semibold tracking-tight sm:text-[18px]">
+                    <span className="text-foreground font-serif text-[17px] font-semibold tracking-[-0.025em]">
                       {entry.company}
                     </span>
-                    <span className="text-foreground/65 mt-0.5 text-[14px] tracking-tight sm:text-[15px]">
+                    <span className="text-muted-foreground mt-0.5 text-[14px] sm:text-[15px]">
                       {entry.role}
                       <span className="text-foreground/30 mx-2">•</span>
-                      <span className="text-foreground/55">{entry.period}</span>
+                      <span className="text-muted-foreground whitespace-nowrap tabular-nums">{entry.period}</span>
                     </span>
                   </span>
-                  <motion.span
+                  <m.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.25 }}
-                    className="text-foreground/50 mr-2 inline-flex"
+                    className="text-muted-foreground mr-2 inline-flex"
                   >
                     <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                  </motion.span>
+                  </m.span>
                 </button>
 
                 <AnimatePresence initial={false}>
                   {isOpen && (
-                    <motion.div
+                    <m.div
                       id={panelId}
                       key="panel"
                       initial={{ height: 0, opacity: 0 }}
@@ -89,12 +72,12 @@ export function Experience(): ReactNode {
                       transition={{ duration: 0.45, ease: EASE }}
                       className="overflow-hidden"
                     >
-                      <div className="flex flex-col gap-3 px-4 pt-1 pb-5 sm:pl-[4.5rem]">
+                      <div className="flex flex-col gap-3 px-4 pt-0 pb-5 sm:pl-[5rem]">
                         <ul className="flex flex-col gap-2">
                           {entry.points.map((point) => (
                             <li
                               key={point}
-                              className="text-foreground/70 relative pl-4 text-[15px] leading-[1.55] tracking-tight before:bg-foreground/30 before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2"
+                              className="text-foreground/80 relative pl-4 text-[15px] leading-[1.55] before:bg-accent before:absolute before:top-[0.7em] before:left-0 before:h-px before:w-2"
                             >
                               {point}
                             </li>
@@ -110,7 +93,7 @@ export function Experience(): ReactNode {
                           </Link>
                         ) : null}
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </li>

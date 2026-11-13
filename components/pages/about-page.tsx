@@ -3,10 +3,8 @@ import type { ReactNode } from "react";
 
 import { Education } from "@/components/about/education";
 import { Experience } from "@/components/about/experience";
-import { PolaroidStrip } from "@/components/about/polaroid-strip";
 import { Skills, Toolbox } from "@/components/about/skills";
 import { Stack } from "@/components/about/stack";
-import { ContactCard } from "@/components/contact/contact-card";
 import { FadeIn } from "@/components/ui/motion-primitives";
 import { getLanguages, profile } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
@@ -95,29 +93,28 @@ function Facts({ lang }: { lang: Lang }): ReactNode {
     },
   ];
 
+  // One strip across the page: the facts side by side, the résumés at the end.
   return (
-    <div className="flex flex-col gap-3 lg:sticky lg:top-28">
-      <h2 className="text-[15px] font-semibold tracking-tight text-foreground">
-        {t.factsTitle}
-      </h2>
-      <div className="flex flex-col rounded-4xl border border-foreground/5 bg-foreground/2 p-2 sm:p-4 dark:bg-foreground/5">
-        <dl className="flex flex-col divide-y divide-foreground/6 rounded-3xl border border-foreground/5 bg-background px-4 sm:px-5">
+    <div className="flex flex-col gap-3">
+      <h2 className="eyebrow">{t.factsTitle}</h2>
+      <div className="sheet flex flex-col p-1">
+        <dl className="grid grid-cols-1 gap-x-8 px-4 sm:grid-cols-2 sm:px-5 lg:grid-cols-[1fr_1.15fr_1.5fr_1.4fr_1.25fr] [&>div]:border-b [&>div]:border-border lg:[&>div]:border-b-0">
           {rows.map((row) => (
             <div key={row.label} className="flex flex-col gap-1 py-3.5">
-              <dt className="font-mono text-[11.5px] tracking-tight text-foreground/50">
+              <dt className="text-[12.5px] text-muted-foreground">
                 {row.label}
               </dt>
-              <dd className="text-[15px] leading-[1.5] tracking-tight text-foreground/85">
+              <dd className="text-[15px] leading-normal text-foreground">
                 {row.value}
               </dd>
             </div>
           ))}
         </dl>
-        <div className="flex flex-wrap gap-2 px-1 pt-3 pb-1">
+        <div className="flex flex-wrap gap-2 px-4 pt-1 pb-4 sm:px-5 lg:border-t lg:border-border lg:pt-4">
           <a
             href={profile.cv[lang]}
             download
-            className="focus-ring inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-4 text-sm font-medium text-background"
+            className="focus-ring inline-flex h-11 items-center gap-2 rounded-md bg-foreground px-4 text-sm font-medium text-background"
           >
             <FileDown className="h-4 w-4" aria-hidden="true" />
             {t.cvPrimary}
@@ -126,7 +123,7 @@ function Facts({ lang }: { lang: Lang }): ReactNode {
             href={profile.cv[otherLang]}
             download
             lang={otherLang}
-            className="focus-ring inline-flex h-11 items-center gap-2 rounded-xl border border-foreground/8 bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-foreground/4"
+            className="focus-ring inline-flex h-11 items-center gap-2 rounded-md border border-foreground/25 px-4 text-sm font-medium text-foreground transition-colors hover:border-foreground"
           >
             <FileDown className="h-4 w-4" aria-hidden="true" />
             {t.cvSecondary}
@@ -139,58 +136,78 @@ function Facts({ lang }: { lang: Lang }): ReactNode {
 
 export function AboutPage({ lang }: { lang: Lang }): ReactNode {
   const bio = BIO[lang];
+  const t = getDictionary(lang);
 
   return (
     <main id="main-content" className="flex flex-1 flex-col">
-      <section className="mx-auto w-full max-w-312 pt-40 sm:pt-56">
-        <PolaroidStrip />
-      </section>
-
-      <section className="mx-auto w-full max-w-275 px-6 pt-20 pb-20 sm:px-10 sm:pt-28 sm:pb-28">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12">
-          <FadeIn delay={0.5} className="lg:col-span-7">
-            <div className="h-full rounded-4xl border border-foreground/5 bg-foreground/1.5 p-8 sm:p-12 dark:bg-foreground/3">
-              <h1 className="font-serif text-[1.75rem] font-medium tracking-tight text-foreground sm:text-[2rem]">
-                {bio.hello}{" "}
-                <span className="border-b border-foreground/30 pb-0.5">
-                  {profile.name}
-                </span>
-                .
-              </h1>
-              <div className="mt-8 max-w-[62ch] space-y-6 text-[17px] leading-[1.7] tracking-tight text-foreground/75 sm:text-[18px]">
-                {bio.paragraphs.map((paragraph, i) => (
-                  <p key={i}>{paragraph}</p>
-                ))}
-              </div>
+      <section className="mx-auto w-full max-w-310 px-5 pt-32 sm:px-8 sm:pt-40">
+        <div className="grid grid-cols-1 items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+          <FadeIn>
+            <p className="eyebrow">{t.nav.about}</p>
+            <h1 className="mt-5 font-serif text-[2.4rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance text-foreground sm:text-[3.4rem]">
+              {bio.hello} {profile.name}
+              <span className="text-accent">.</span>
+            </h1>
+            <div className="mt-8 max-w-[62ch] space-y-5 text-[17px] leading-[1.7] text-foreground/80 sm:text-[18px]">
+              {bio.paragraphs.map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
             </div>
           </FadeIn>
 
-          <FadeIn delay={0.6} className="lg:col-span-5">
-            <Facts lang={lang} />
+          <FadeIn delay={0.15}>
+            <figure className="sheet p-1.5">
+              <img
+                src={profile.portrait.light}
+                alt={profile.name}
+                width={640}
+                height={640}
+                className="aspect-[4/3] w-full rounded-sm object-cover object-[50%_20%] dark:hidden"
+              />
+              <img
+                src={profile.portrait.dark}
+                alt={profile.name}
+                width={640}
+                height={640}
+                className="hidden aspect-[4/3] w-full rounded-sm object-cover object-[50%_20%] dark:block"
+              />
+              <figcaption className="flex items-center justify-between px-2.5 pt-2.5 pb-1 text-[13px] text-muted-foreground">
+                <span className="font-medium text-foreground">{profile.name}</span>
+                <span>{profile.location}</span>
+              </figcaption>
+            </figure>
           </FadeIn>
+        </div>
 
+        <FadeIn delay={0.1} className="mt-14 sm:mt-16">
+          <Facts lang={lang} />
+        </FadeIn>
+      </section>
+
+      <section className="mx-auto w-full max-w-310 px-5 pt-20 sm:px-8 sm:pt-24">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-12 lg:grid-cols-12">
+          {/* Experience beside the two short sections, so neither column ends early. */}
           <FadeIn delay={0.1} className="lg:col-span-7">
             <Experience />
           </FadeIn>
-          <FadeIn delay={0.15} className="lg:col-span-5">
-            <Education lang={lang} />
-          </FadeIn>
+          <div className="flex flex-col gap-12 lg:col-span-5">
+            <FadeIn delay={0.15}>
+              <Education lang={lang} />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <Skills lang={lang} />
+            </FadeIn>
+          </div>
 
+          {/* The tools, twice: to play with, then to read. */}
           <FadeIn delay={0.1} className="lg:col-span-12">
             <Stack />
           </FadeIn>
-
-          <FadeIn delay={0.1} className="lg:col-span-5">
-            <Skills lang={lang} />
-          </FadeIn>
-          <FadeIn delay={0.15} className="lg:col-span-7">
+          <FadeIn delay={0.1} className="lg:col-span-12">
             <Toolbox lang={lang} />
           </FadeIn>
         </div>
       </section>
-
-      <ContactCard lang={lang} />
-      <div className="h-12 sm:h-16" />
     </main>
   );
 }
