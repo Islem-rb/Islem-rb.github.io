@@ -100,11 +100,9 @@ export function MapHero({
       openProject(result.open);
       return;
     }
-    const tool = result.focus?.tool ? ringTool(result.focus.tool) : undefined;
+    const tools = (result.focus?.tools ?? []).flatMap((label) => ringTool(label) ?? []);
     setFocus(
-      result.focus
-        ? { slugs: result.focus.slugs, tools: tool ? [tool] : [], year: result.focus.year }
-        : null,
+      result.focus ? { slugs: result.focus.slugs, tools, year: result.focus.year } : null,
     );
   };
 

@@ -32,8 +32,8 @@ export type Answer = {
   text: string;
   blocks: Block[];
   followUps: IntentId[];
-  /** Projects, and optionally the one tool, to light up on the map. */
-  focus?: { slugs: string[]; tool?: string; year?: number };
+  /** Projects, and optionally the tools asked about, to light up on the map. */
+  focus?: { slugs: string[]; tools?: string[]; year?: number };
   /** A project whose case study should open beside the map. */
   open?: string;
   /** Switch the map between its two layouts. */

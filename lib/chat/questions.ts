@@ -75,7 +75,7 @@ export const CASES: Case[] = [
   { group: "tools", lang: "fr", q: "est-ce que tu connais Jenkins ?", match: "tech:Jenkins" },
   { group: "tools", q: "python", match: "tech:Python" },
   { group: "tools", q: "react native", match: "tech", slugs: ["readdly"] },
-  { group: "tools", q: "kubernetes and terraform", match: "tech", slugs: ["gitops-eks-platform", "devops-observability-platform"] },
+  { group: "tools", q: "kubernetes and terraform", match: "filter:", slugs: ["gitops-eks-platform", "devops-observability-platform"] },
 
   // Years and filters.
   { group: "time", q: "what did you do in 2025?", match: "year:2025" },
@@ -83,6 +83,12 @@ export const CASES: Case[] = [
   { group: "time", q: "2026", match: "year:2026" },
   { group: "time", q: "cloud projects in 2026", slugs: CLOUD },
   { group: "time", q: "show me cloud projects", slugs: CLOUD },
+  { group: "time", q: "AI projects", slugs: ["dawrek", "automotive-ml"] },
+  { group: "time", lang: "fr", q: "tes projets cloud en 2025", slugs: ["cityvoice"] },
+  { group: "time", q: "kubernetes projects in 2025", slugs: ["cityvoice"] },
+  { group: "time", q: "spring cloud", match: "tech:Spring Cloud" },
+  { group: "tools", q: "docker and jenkins", match: "filter:" },
+  { group: "tools", q: "spring boot", match: "tech:Spring Boot" },
 
   // Details about one project, answered from the data.
   { group: "details", q: "did you work alone on Carnova?", text: /alone/i },

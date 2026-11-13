@@ -3,6 +3,7 @@ import { getDictionary, type Lang } from "@/lib/i18n";
 import { yearSummary } from "@/lib/timeline";
 
 import { detailAnswer, detailIn, listAnswer } from "./details";
+import { categoryIn, filteredAnswer } from "./filters";
 
 import {
   answerForIntent,
@@ -109,33 +110,89 @@ function techVocabulary(lang: Lang, projects: Project[]): Tech[] {
   return [...byLabel.values()];
 }
 
+/** One tool named in a question, with every project that uses it. */
+type TechHit = { label: string; key: string; slugs: string[] };
+
+/**
+ * The tools a question names: "kubernetes and terraform" gives two hits.
+ * `skip` holds words already used for something else ("cloud" in "cloud projects").
+ */
+function findTechs(norm: string, vocabulary: Tech[], skip: string[] = []): TechHit[] {
+  const padded = ` ${norm} `;
+  const hits: TechHit[] = [];
+  const used = new Set(skip);
+  // Two or more words of one tool first, so "react native" is React Native and
+  // "spring cloud" is Spring Cloud (Gateway), not two separate tools.
+  for (const tech of vocabulary) {
+    const n = tech.words.length;
+    let found: [number, number] | undefined;
+    for (let i = 0; i < n - 1 && !found; i += 1) {
+      for (let j = n; j >= i + 2; j -= 1) {
+        if (padded.includes(` ${tech.words.slice(i, j).join(" ")} `)) {
+          found = [i, j];
+          break;
+        }
+      }
+    }
+    if (!found) continue;
+    const key = tech.words.slice(...found).join(" ");
+    const label = tech.label.split(" ").slice(...found).join(" ");
+    const same = hits.find((h) => h.key === key);
+    if (same) same.slugs = [...new Set([...same.slugs, ...tech.slugs])];
+    else if (!hits.some((h) => h.key.includes(key))) hits.push({ label, key, slugs: [...tech.slugs] });
+    for (const word of tech.words.slice(...found)) used.add(word);
+  }
+  const tokens = norm
+    .split(" ")
+    .filter((t) => t.length >= 2 && !STOPWORDS.has(t) && !INTENT_WORDS.has(t) && !used.has(t));
+  for (const token of tokens) {
+    // EKS is Kubernetes, so a Kubernetes question should surface the EKS work too.
+    const k8s = token === "k8s" || token === "eks" || wordScore(token, "kubernetes") > 0;
+    let best: { label: string; key: string; score: number } | undefined;
+    const slugs: string[] = [];
+    for (const w of k8s ? ["kubernetes", "eks"] : [token]) {
+      for (const tech of vocabulary) {
+        for (const word of tech.words) {
+          // Version numbers and tiny fragments ("18", "cd") never match.
+          const score = word.length >= 3 ? wordScore(w, word) : 0;
+          if (score === 0) continue;
+          const label = tech.label.split(" ").find((x) => normalize(x) === word) ?? tech.label;
+          if (!best || score > best.score) {
+            best = k8s ? { label: "Kubernetes", key: "kubernetes", score } : { label, key: normalize(label), score };
+          }
+          for (const slug of tech.slugs) if (!slugs.includes(slug)) slugs.push(slug);
+        }
+      }
+    }
+    if (!best) continue;
+    const same = hits.find((h) => h.key === best.key);
+    if (same) same.slugs = [...new Set([...same.slugs, ...slugs])];
+    else hits.push({ label: best.label, key: best.key, slugs });
+  }
+  return hits;
+}
+
+/**
+ * Every tool named, with the projects that use all of them (`slugs`), or,
+ * when no project uses them together, those that use any (`together: false`).
+ */
 function findTech(
   norm: string,
   vocabulary: Tech[],
-): { label: string; slugs: string[] } | undefined {
-  const tokens = norm
-    .split(" ")
-    .filter((t) => t.length >= 2 && !STOPWORDS.has(t) && !INTENT_WORDS.has(t));
-  // EKS is Kubernetes, so a Kubernetes question should surface the EKS work too.
-  if (tokens.some((t) => t === "k8s" || wordScore(t, "kubernetes") > 0)) {
-    tokens.push("kubernetes", "eks");
+  skip: string[] = [],
+): { label: string; labels: string[]; slugs: string[]; together: boolean } | undefined {
+  const hits = findTechs(norm, vocabulary, skip);
+  const known = hits.filter((h) => h.slugs.length > 0);
+  if (known.length < 2) {
+    const one = known[0] ?? hits[0];
+    return one ? { label: one.label, labels: [one.label], slugs: one.slugs, together: true } : undefined;
   }
-  let best: { label: string; score: number } | undefined;
-  const slugs: string[] = [];
-  for (const token of tokens) {
-    for (const tech of vocabulary) {
-      for (const word of tech.words) {
-        // Version numbers and tiny fragments ("18", "cd") only match exactly.
-        const score = word.length >= 3 ? wordScore(token, word) : 0;
-        if (score === 0) continue;
-        const label =
-          tech.label.split(" ").find((w) => normalize(w) === word) ?? tech.label;
-        if (!best || score > best.score) best = { label, score };
-        for (const slug of tech.slugs) if (!slugs.includes(slug)) slugs.push(slug);
-      }
-    }
-  }
-  return best ? { label: best.label, slugs } : undefined;
+  const labels = known.map((h) => h.label);
+  const all = known[0]!.slugs.filter((slug) => known.every((h) => h.slugs.includes(slug)));
+  const any = [...new Set(known.flatMap((h) => h.slugs))];
+  return all.length > 0
+    ? { label: labels.join(" + "), labels, slugs: all, together: true }
+    : { label: labels.join(" + "), labels, slugs: any, together: false };
 }
 
 /**
@@ -185,8 +242,22 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
     return detail === "more" ? projectAnswer(current) : detailAnswer(current, detail, lang);
   }
 
-  // "What did you do in 2025?": the timeline, with that year lit.
   const year = norm.match(/\b(20[12]\d)\b/)?.[1];
+  const vocabulary = techVocabulary(lang, projects);
+
+  // "Cloud projects in 2026", "kubernetes in 2025": every filter at once.
+  const category = categoryIn(norm);
+  const yearTools = year ? findTech(norm, vocabulary) : undefined;
+  if (category || (year && yearTools && yearTools.slugs.length > 0)) {
+    const tools = findTech(norm, vocabulary, category?.words);
+    return filteredAnswer(projects, lang, {
+      category: category?.category,
+      year: year ? Number(year) : undefined,
+      tools: tools && tools.slugs.length > 0 ? tools : undefined,
+    });
+  }
+
+  // "What did you do in 2025?": the timeline, with that year lit.
   const summary = year
     ? yearSummary(Number(year), lang, Object.fromEntries(projects.map((p) => [p.slug, p.name])))
     : undefined;
@@ -201,16 +272,17 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
     };
   }
 
-  const tech = findTech(norm, techVocabulary(lang, projects));
+  const tech = findTech(norm, vocabulary);
   if (tech) {
     // Keep the site's own project order, flagship first.
     tech.slugs = projects.map((p) => p.slug).filter((s) => tech.slugs.includes(s));
+    if (tech.labels.length > 1) return filteredAnswer(projects, lang, { tools: tech });
     return tech.slugs.length > 0
       ? {
           text: t.tech(tech.label, tech.slugs.length),
           blocks: [{ type: "projects", slugs: tech.slugs }],
           followUps: ["skills", "projects", "experience"],
-          focus: { slugs: tech.slugs, tool: tech.label },
+          focus: { slugs: tech.slugs, tools: tech.labels },
           mode: "map",
           matched: `tech:${tech.label}`,
         }
