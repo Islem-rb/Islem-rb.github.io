@@ -7,7 +7,7 @@ import { CASES, type Case } from "./questions";
 import type { Answer } from "./types";
 
 /** The share of CASES that must pass. Raise it as the chat improves, never lower it. */
-const MINIMUM = 0.8;
+const MINIMUM = 0.84;
 
 function ask(item: Case): Answer {
   const lang: Lang = item.lang ?? "en";

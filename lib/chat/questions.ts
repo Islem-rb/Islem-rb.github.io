@@ -94,6 +94,11 @@ export const CASES: Case[] = [
   { group: "details", q: "what was the result of the GitOps platform?", text: /245/ },
   { group: "details", q: "which projects did you do in a team?", slugs: ["cityvoice", "sabeel"] },
   { group: "details", q: "when did you build Dawrek?", text: /May.*Sep 2025/ },
+  { group: "details", q: "which projects can I try online?", slugs: ["cityvoice", "carnova", "dawrek"] },
+  { group: "details", q: "which projects did you build alone?", slugs: ["carnova", "verdustry-social"] },
+  { group: "details", lang: "fr", q: "quels projets ont une démo en ligne ?", slugs: ["cityvoice", "carnova", "dawrek"] },
+  { group: "details", after: "carnova", q: "which projects have a live demo?", match: "list:live" },
+  { group: "details", q: "monitoring with grafana", match: "tech" },
 
   // Follow-ups that depend on the previous question.
   { group: "follow-ups", after: "tell me about CityVoice", q: "what was your role?", text: /cloud/i },

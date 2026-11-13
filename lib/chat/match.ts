@@ -2,7 +2,7 @@ import { getProjects, getSkillGroups, type Project } from "@/lib/content";
 import { getDictionary, type Lang } from "@/lib/i18n";
 import { yearSummary } from "@/lib/timeline";
 
-import { detailAnswer, detailIn } from "./details";
+import { detailAnswer, detailIn, listAnswer } from "./details";
 
 import {
   answerForIntent,
@@ -173,6 +173,10 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
   if (project) {
     return detail && detail !== "more" ? detailAnswer(project, detail, lang) : projectAnswer(project);
   }
+
+  // "Which projects have a live demo?": every project that fits.
+  const list = listAnswer(norm, detail, projects, lang);
+  if (list) return list;
 
   // A follow-up such as "is it live?" about the project the conversation is on.
   const current = projects.find((p) => p.slug === context?.project);

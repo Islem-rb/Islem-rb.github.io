@@ -178,7 +178,7 @@ export const DEFAULT_SUGGESTIONS: IntentId[] = [
 /** Extra names people use for a project, beyond its full name. */
 export const PROJECT_ALIASES: Record<string, string[]> = {
   "gitops-eks-platform": ["gitops", "eks"],
-  "devops-observability-platform": ["observability platform"],
+  "devops-observability-platform": ["observability", "observabilite"],
   cityvoice: ["city voice"],
   "verdustry-social": ["verdustry"],
   "automotive-ml": ["automotive", "machine learning"],
