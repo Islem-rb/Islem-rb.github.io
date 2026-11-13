@@ -533,18 +533,27 @@ export function ProjectMap({
         </g>
 
         <g className="pmap-zoom" transform={zoomTransform}>
-        {[R_TOOL, R_PROJECT, 60].map((r) => (
-          <circle key={r} className="pmap-ring" cx={CENTER} cy={CENTER} r={r} />
+        {[R_TOOL, R_PROJECT, 60].map((r, i) => (
+          <circle
+            key={r}
+            className="pmap-ring"
+            cx={CENTER}
+            cy={CENTER}
+            r={r}
+            pathLength={1}
+            style={{ "--i": 2 - i } as CSSProperties}
+          />
         ))}
 
         <g aria-hidden="true">
-          {placed.map(({ project, category: cat, tools: used, ring }) => {
-            const style = { "--c": `var(--${cat})` } as CSSProperties;
+          {placed.map(({ project, category: cat, tools: used, ring }, i) => {
+            const style = { "--c": `var(--${cat})`, "--i": i } as CSSProperties;
             const lit = litProjects.has(project.slug);
             return (
               <g key={project.slug} style={style}>
                 <line
-                  className={`pmap-edge ${lit ? "on" : ""}`}
+                  className={`pmap-edge spoke ${lit ? "on" : ""}`}
+                  pathLength={1}
                   x1={CENTER}
                   y1={CENTER}
                   x2={ring[0]}
@@ -557,6 +566,7 @@ export function ProjectMap({
                     <line
                       key={name}
                       className={`pmap-edge ${lit && litTools.has(name) ? "on" : ""}`}
+                      pathLength={1}
                       x1={ring[0]}
                       y1={ring[1]}
                       x2={(toolXY.get(name) ?? tool.xy)[0]}
@@ -569,7 +579,7 @@ export function ProjectMap({
           })}
         </g>
 
-        {tools.map(({ name, deg, xy }) => (
+        {tools.map(({ name, deg, xy }, i) => (
           <g
             key={name}
             role="button"
@@ -577,9 +587,12 @@ export function ProjectMap({
             aria-label={t.tool(name)}
             aria-pressed={litTools.size === 1 && litTools.has(name)}
             className={`pmap-node tool ${litTools.has(name) ? "on" : ""}`}
-            style={{
-              transform: `translate(${(toolXY.get(name) ?? xy)[0]}px, ${(toolXY.get(name) ?? xy)[1]}px)`,
-            }}
+            style={
+              {
+                "--i": i,
+                transform: `translate(${(toolXY.get(name) ?? xy)[0]}px, ${(toolXY.get(name) ?? xy)[1]}px)`,
+              } as CSSProperties
+            }
             onClick={() => goTool(name)}
             onKeyDown={activate(() => goTool(name))}
           >
@@ -588,10 +601,11 @@ export function ProjectMap({
           </g>
         ))}
 
-        {placed.map(({ project, category: cat, deg, ring, time, bar, approx, period, under }) => {
+        {placed.map(({ project, category: cat, deg, ring, time, bar, approx, period, under }, i) => {
           const [x, y] = timeline ? time : ring;
           const style = {
             "--c": `var(--${cat})`,
+            "--i": i,
             transform: `translate(${x}px, ${y}px)`,
           } as CSSProperties;
           return (
