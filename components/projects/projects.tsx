@@ -66,8 +66,9 @@ function ProjectCard({
             <img
               src={cover}
               alt=""
-              loading={index < 2 ? "eager" : "lazy"}
-              fetchPriority={index < 2 ? "high" : "auto"}
+              // Only the first cover is above the fold on a phone; the rest wait their turn.
+              loading={index === 0 ? "eager" : "lazy"}
+              fetchPriority={index === 0 ? "high" : "auto"}
               decoding="async"
               className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
             />

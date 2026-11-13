@@ -307,6 +307,37 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   letter-spacing: 0;
 }
 .pmap-core { transition: opacity 0.5s; }
+
+/* ---- Map: drawn on display, in the order a platform comes up ----
+   Photo, then the rings, then each project travels out from the centre along
+   its line, then the tools and their links. Starts with the map's slice of the
+   page roll-out (0.7s) and replays with it ("-b" names restart the animations).
+   Every keyframe has only a "from", so each element ends where React put it. */
+.pmap { --enter: 0.75s; }
+.pmap-ring,
+.pmap-edge { stroke-dasharray: 1; }
+.pmap-core { transform-box: fill-box; transform-origin: center; animation: pm-pop-a 0.7s var(--enter) cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.pmap-ring { animation: pm-draw-a 1s calc(var(--enter) + 0.1s + var(--i) * 0.15s) cubic-bezier(0.65, 0, 0.35, 1) backwards; }
+.pmap-edge.spoke { animation: pm-draw-a 0.6s calc(var(--enter) + 0.35s + var(--i) * 0.07s) ease-out backwards; }
+.pmap-edge:not(.spoke) { animation: pm-draw-a 0.7s calc(var(--enter) + 1.05s + var(--i) * 0.05s) ease-out backwards; }
+.pmap-node { animation: pm-out-a 0.8s calc(var(--enter) + 0.35s + var(--i) * 0.07s) cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.pmap-node.tool { animation: pm-fade-a 0.5s calc(var(--enter) + 1s + var(--i) * 0.035s) ease-out backwards; }
+.rollout[data-run="1"] .pmap-core { animation-name: pm-pop-b; }
+.rollout[data-run="1"] .pmap-ring,
+.rollout[data-run="1"] .pmap-edge { animation-name: pm-draw-b; }
+.rollout[data-run="1"] .pmap-node { animation-name: pm-out-b; }
+.rollout[data-run="1"] .pmap-node.tool { animation-name: pm-fade-b; }
+@keyframes pm-pop-a { from { opacity: 0; transform: scale(0.6); } }
+@keyframes pm-pop-b { from { opacity: 0; transform: scale(0.6); } }
+@keyframes pm-draw-a { from { stroke-dashoffset: 1; } }
+@keyframes pm-draw-b { from { stroke-dashoffset: 1; } }
+@keyframes pm-out-a { from { opacity: 0; transform: translate(300px, 300px) scale(0.4); } }
+@keyframes pm-out-b { from { opacity: 0; transform: translate(300px, 300px) scale(0.4); } }
+@keyframes pm-fade-a { from { opacity: 0; } }
+@keyframes pm-fade-b { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .pmap-core, .pmap-ring, .pmap-edge, .pmap-node { animation: none !important; }
+}
 .pmap-core circle { fill: none; stroke: var(--accent); stroke-width: 1.5; }
 /* Timeline: month axis, bands for studies and internships, bars that grow from each point. */
 .pmap-tl { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
