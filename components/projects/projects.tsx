@@ -84,14 +84,14 @@ function ProjectCard({
           </div>
         )}
 
-        <h3 className="mt-5 font-serif text-[1.45rem] leading-[1.1] font-semibold tracking-[-0.035em] text-foreground">
+        <h2 className="mt-5 font-serif text-[1.45rem] leading-[1.1] font-semibold tracking-[-0.035em] text-foreground">
           <Link
             href={localePath(lang, `/projects/${project.slug}`)}
             className="focus-ring rounded-sm after:absolute after:inset-0 after:content-['']"
           >
             {project.name}
           </Link>
-        </h3>
+        </h2>
         <p className="mt-2 text-[16px] leading-snug text-pretty text-foreground/85">
           {project.headline}
         </p>

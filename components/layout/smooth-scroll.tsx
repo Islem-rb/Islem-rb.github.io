@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import { features } from "@/lib/config";
 
 const LENIS_OPTIONS = {
@@ -28,16 +28,18 @@ export function SmoothScroll({
 
     if (prefersReducedMotion) return;
 
-    const lenis = new Lenis(LENIS_OPTIONS);
+    // Loaded after first paint, so smooth scrolling never delays the page.
+    let lenis: Lenis | undefined;
+    let rafId = 0;
+    let cancelled = false;
 
     function raf(time: number): void {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
+      lenis?.raf(time);
+      rafId = requestAnimationFrame(raf);
     }
 
-    const rafId = requestAnimationFrame(raf);
-
     function handleAnchorClick(e: MouseEvent): void {
+      if (!lenis) return;
       const target = e.target as HTMLElement;
       const anchor = target.closest('a[href^="#"]');
       if (!anchor) return;
@@ -52,12 +54,18 @@ export function SmoothScroll({
       lenis.scrollTo(element as HTMLElement, { offset: -100 });
     }
 
-    document.addEventListener("click", handleAnchorClick);
+    void import("lenis").then(({ default: LenisClass }) => {
+      if (cancelled) return;
+      lenis = new LenisClass(LENIS_OPTIONS);
+      rafId = requestAnimationFrame(raf);
+      document.addEventListener("click", handleAnchorClick);
+    });
 
     return () => {
+      cancelled = true;
       document.removeEventListener("click", handleAnchorClick);
       cancelAnimationFrame(rafId);
-      lenis.destroy();
+      lenis?.destroy();
     };
   }, []);
 

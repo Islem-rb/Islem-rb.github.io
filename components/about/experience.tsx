@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, ChevronDown } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
@@ -52,18 +52,18 @@ export function Experience(): ReactNode {
                       <span className="text-muted-foreground whitespace-nowrap tabular-nums">{entry.period}</span>
                     </span>
                   </span>
-                  <motion.span
+                  <m.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.25 }}
                     className="text-muted-foreground mr-2 inline-flex"
                   >
                     <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                  </motion.span>
+                  </m.span>
                 </button>
 
                 <AnimatePresence initial={false}>
                   {isOpen && (
-                    <motion.div
+                    <m.div
                       id={panelId}
                       key="panel"
                       initial={{ height: 0, opacity: 0 }}
@@ -93,7 +93,7 @@ export function Experience(): ReactNode {
                           </Link>
                         ) : null}
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </li>

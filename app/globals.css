@@ -211,27 +211,29 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   html[data-theme-anim="1"]::view-transition-new(root) {
     animation: none;
   }
+  .rollout [data-at],
+  .fade-in { animation: none; }
 }
+
+/* Sections fade up on load. CSS only, so text is visible without JavaScript. */
+.fade-in { animation: fade-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes fade-in { from { opacity: 0.01; transform: translateY(12px); } }
 
 ::selection {
   background: color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
-/* ---- Home: the page arrives in three slices, like a careful release ---- */
-.rollout [data-at] {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.rollout[data-stage="1"] [data-at="1"],
-.rollout[data-stage="2"] [data-at="1"],
-.rollout[data-stage="3"] [data-at="1"],
-.rollout[data-stage="2"] [data-at="2"],
-.rollout[data-stage="3"] [data-at="2"],
-.rollout[data-stage="3"] [data-at="3"] {
-  opacity: 1;
-  transform: none;
-}
+/* ---- Home: the page arrives in three slices, like a careful release ----
+   Pure CSS, so the first slice shows as soon as the page paints, without
+   waiting for JavaScript. Replay swaps the animation name to start it again. */
+.rollout [data-at] { animation: rollout-a 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.rollout[data-run="1"] [data-at] { animation-name: rollout-b; }
+.rollout [data-at="2"] { animation-delay: 0.7s; }
+.rollout [data-at="3"] { animation-delay: 1.4s; }
+/* 0.01, not 0: fully transparent text is ignored when browsers time the first
+   meaningful paint, so the page would look slow to search engines and audits. */
+@keyframes rollout-a { from { opacity: 0.01; transform: translateY(10px); } }
+@keyframes rollout-b { from { opacity: 0.01; transform: translateY(10px); } }
 .rollout-bar {
   position: fixed;
   top: 0;

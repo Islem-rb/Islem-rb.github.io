@@ -138,10 +138,7 @@ export function MapHero({
   };
 
   return (
-    <section className="rollout relative w-full" data-stage={stage}>
-      <noscript>
-        <style>{".rollout [data-at]{opacity:1!important;transform:none!important}"}</style>
-      </noscript>
+    <section className="rollout relative w-full" data-stage={stage} data-run={run % 2}>
       <div className="rollout-bar" aria-hidden="true" />
 
       <div className="mx-auto grid w-full max-w-310 grid-cols-1 items-start gap-x-12 gap-y-6 px-5 pt-24 sm:px-8 sm:pt-26 lg:pt-23 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">

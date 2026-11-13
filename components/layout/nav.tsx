@@ -147,6 +147,7 @@ export function Nav(): ReactNode {
       >
         <Link
           href={localePath(lang, "/")}
+          aria-label={`Islem Rebhi, ${t.role}`}
           className="focus-ring mr-auto inline-flex items-center gap-2.5 rounded-md text-foreground"
         >
           <Avatar />
@@ -167,7 +168,7 @@ export function Nav(): ReactNode {
                   href={localePath(lang, item.href)}
                   aria-current={isActive ? "page" : undefined}
                   className={`focus-ring relative inline-flex items-center px-2.5 text-[14px] font-medium whitespace-nowrap transition-colors sm:px-3.5 ${
-                    isActive ? "text-foreground" : "text-foreground/60 hover:text-foreground"
+                    isActive ? "text-foreground" : "text-foreground/75 hover:text-foreground"
                   }`}
                 >
                   {t[item.key]}

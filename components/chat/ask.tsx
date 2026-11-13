@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, CornerDownRight } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import {
   useEffect,
   useId,
@@ -47,7 +47,6 @@ export const ASK_FOCUS_EVENT = "ask:focus";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const PLACEHOLDER_MS = 3200;
-const WELCOME_MS = 600;
 const MAX_QUESTION = 200;
 /** Only the latest answer is shown; earlier questions stay one click away. */
 const MAX_ENTRIES = 6;
@@ -70,7 +69,14 @@ export function Ask({
   const { lang, t } = useLang();
   const reduced = useReducedMotion();
   const [value, setValue] = useState("");
-  const [entries, setEntries] = useState<Entry[]>([]);
+  // The welcome is in the page's HTML from the start, so it never waits for JavaScript.
+  const [entries, setEntries] = useState<Entry[]>(() => [
+    {
+      id: 0,
+      answer: { text: t.ask.answers.greeting, blocks: [], followUps: DEFAULT_SUGGESTIONS },
+      settled: true,
+    },
+  ]);
   const [placeholder, setPlaceholder] = useState(0);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -155,17 +161,13 @@ export function Ask({
     },
   }));
 
-  // First paint: replay a shared `?q=` link, or let the page introduce itself.
+  // First paint: replay a shared `?q=` link.
   useEffect(() => {
     const shared = new URLSearchParams(window.location.search).get("q")?.trim();
-    const id = window.setTimeout(
-      () => {
-        if (shared) ask(shared);
-        else setEntries([welcome(false)]);
-        if (window.location.hash === "#ask") inputRef.current?.focus();
-      },
-      shared ? 0 : WELCOME_MS,
-    );
+    const id = window.setTimeout(() => {
+      if (shared) ask(shared);
+      if (window.location.hash === "#ask") inputRef.current?.focus();
+    }, 0);
     return () => window.clearTimeout(id);
     // Runs once per page load; the language only changes with a navigation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -334,7 +336,7 @@ export function Ask({
         <div className="flex flex-col gap-3 text-left">
           {/* One answer at a time: a new question replaces the card instead of stacking. */}
           <AnimatePresence initial={false} mode="wait">
-            <motion.article
+            <m.article
               key={latest.id}
               initial={{ opacity: 0, y: reduced ? 0 : 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -351,7 +353,7 @@ export function Ask({
                 onAsk={pickSuggestion}
                 onOpenProject={onOpenProject}
               />
-            </motion.article>
+            </m.article>
           </AnimatePresence>
 
           {earlier.length > 0 ? (
@@ -435,7 +437,7 @@ function EntryView({
             onOpenProject={onOpenProject}
             onAsk={onAsk}
           />
-          <motion.ul
+          <m.ul
             aria-label={entry.question ? t.ask.followUps : t.ask.suggestions}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -449,7 +451,7 @@ function EntryView({
                 </button>
               </li>
             ))}
-          </motion.ul>
+          </m.ul>
         </>
       ) : null}
     </div>

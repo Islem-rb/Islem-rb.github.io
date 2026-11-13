@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type MotionProps, type Variants } from "motion/react";
+import { m, type MotionProps, type Variants } from "motion/react";
 import {
   createContext,
   useContext,
@@ -112,7 +112,7 @@ export function MotionDiv({
     : defaultTransition;
 
   return (
-    <motion.div
+    <m.div
       initial="hidden"
       animate="visible"
       variants={activeVariants}
@@ -121,7 +121,7 @@ export function MotionDiv({
       {...props}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -139,7 +139,7 @@ export function MotionSection({
     : defaultTransition;
 
   return (
-    <motion.section
+    <m.section
       initial="hidden"
       animate="visible"
       variants={activeVariants}
@@ -148,7 +148,7 @@ export function MotionSection({
       {...props}
     >
       {children}
-    </motion.section>
+    </m.section>
   );
 }
 
@@ -163,7 +163,7 @@ export function StaggerContainer({
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.div
+    <m.div
       initial="hidden"
       animate="visible"
       variants={prefersReducedMotion ? reducedMotionVariants : staggerContainer}
@@ -171,7 +171,7 @@ export function StaggerContainer({
       {...props}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -186,12 +186,12 @@ export function StaggerItem({
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.div
+    <m.div
       variants={prefersReducedMotion ? reducedMotionVariants : fadeInUp}
       className={className}
       {...props}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
