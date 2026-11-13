@@ -11,7 +11,7 @@ import {
   INTENTS,
   PROJECT_ALIASES,
 } from "./intents";
-import type { Answer, ChatContext, Suggestion } from "./types";
+import type { Answer, ChatContext, IntentId, Suggestion } from "./types";
 
 const STOPWORDS = new Set([
   "the", "and", "you", "your", "with", "for", "are", "what", "how", "use",
@@ -242,6 +242,9 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
     return detail === "more" ? projectAnswer(current) : detailAnswer(current, detail, lang);
   }
 
+  const early = bestIntent(norm, BEFORE_TOOLS);
+  if (early) return answerForIntent(early, lang);
+
   const year = norm.match(/\b(20[12]\d)\b/)?.[1];
   const vocabulary = techVocabulary(lang, projects);
 
@@ -294,9 +297,27 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
         };
   }
 
+  const best = bestIntent(norm);
+  if (best) return answerForIntent(best, lang);
+
+  return {
+    text: t.fallback,
+    blocks: [{ type: "ask", question: query.trim() }],
+    followUps: DEFAULT_SUGGESTIONS,
+    matched: "fallback",
+  };
+}
+
+/**
+ * The intent whose keywords fit best. `only` limits the search, for the
+ * questions that must win over a tool name ("AWS certifications?").
+ */
+function bestIntent(norm: string, only?: IntentId[]): IntentId | undefined {
+  const padded = ` ${norm} `;
   const tokens = norm.split(" ");
-  let best: { id: (typeof INTENTS)[number]["id"]; score: number } | undefined;
+  let best: { id: IntentId; score: number } | undefined;
   for (const intent of INTENTS) {
+    if (only && !only.includes(intent.id)) continue;
     let score = 0;
     for (const keyword of intent.keywords) {
       if (keyword.includes(" ")) {
@@ -307,15 +328,11 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
     }
     if (score > 0 && (!best || score > best.score)) best = { id: intent.id, score };
   }
-  if (best) return answerForIntent(best.id, lang);
-
-  return {
-    text: t.fallback,
-    blocks: [{ type: "ask", question: query.trim() }],
-    followUps: DEFAULT_SUGGESTIONS,
-    matched: "fallback",
-  };
+  return best?.id;
 }
+
+/** Questions about me that mention a tool or a year but are not about it. */
+const BEFORE_TOOLS: IntentId[] = ["certifications", "salary", "hardest", "whyDevops"];
 
 const MAX_SUGGESTIONS = 5;
 
@@ -364,7 +381,8 @@ export function allSuggestions(filter: string, lang: Lang): Suggestion[] {
   const norm = normalize(filter);
   const chips = getDictionary(lang).ask.chips;
   const keep = (label: string): boolean => !norm || normalize(label).includes(norm);
-  const questions: Suggestion[] = INTENTS.filter((i) => i.id !== "greeting")
+  // Salary is answered when asked, not offered.
+  const questions: Suggestion[] = INTENTS.filter((i) => i.id !== "greeting" && i.id !== "salary")
     .map((i) => ({ label: chips[i.id], kind: "question" as const, intent: i.id }))
     .filter((s) => keep(s.label));
   const projects: Suggestion[] = getProjects(lang)

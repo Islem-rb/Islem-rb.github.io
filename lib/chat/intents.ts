@@ -17,6 +17,48 @@ type Intent = {
 /** Order matters: on a tie, the earlier intent wins. */
 export const INTENTS: Intent[] = [
   {
+    id: "certifications",
+    keywords: [
+      "certification", "certifications", "certified", "certificate", "certificates",
+      "cka", "ckad", "certificat", "certificats", "certifie",
+    ],
+    blocks: () => [{ type: "projects", slugs: ["gitops-eks-platform"] }],
+    followUps: ["projects", "learning", "cv"],
+  },
+  {
+    id: "salary",
+    keywords: [
+      "salary", "salaries", "pay", "paid", "compensation", "stipend", "expectations",
+      "salaire", "salariales", "remuneration", "pretentions", "gratification",
+    ],
+    blocks: () => [{ type: "contact" }],
+    followUps: ["availability", "cv", "projects"],
+  },
+  {
+    id: "hardest",
+    keywords: [
+      "hardest", "hard problem", "difficult", "challenge", "challenging", "toughest",
+      "proudest", "biggest problem", "difficile", "defi", "probleme",
+    ],
+    blocks: () => [{ type: "projects", slugs: ["gitops-eks-platform"] }],
+    followUps: ["projects", "learning", "deploy"],
+  },
+  {
+    id: "whyDevops",
+    keywords: ["why devops", "why cloud", "why platform", "pourquoi le devops", "pourquoi devops", "pourquoi le cloud"],
+    blocks: () => [],
+    followUps: ["timeline", "projects", "learning"],
+  },
+  {
+    id: "team",
+    keywords: [
+      "in a team", "team", "teamwork", "teams", "collaborate", "collaboration",
+      "en equipe", "equipe", "collaborer",
+    ],
+    blocks: () => [{ type: "projects", slugs: ["cityvoice", "sabeel"] }],
+    followUps: ["experience", "projects", "contact"],
+  },
+  {
     id: "timeline",
     keywords: [
       "timeline", "years", "year", "history", "journey", "evolution",
@@ -96,7 +138,8 @@ export const INTENTS: Intent[] = [
     keywords: [
       "learning", "learn", "currently", "improving", "studying now",
       "working on", "apprends", "apprendre", "actuellement", "en ce moment",
-      "travailles sur",
+      "travailles sur", "weakness", "weaknesses", "weak", "improve", "faiblesse",
+      "point faible", "points faibles", "ameliorer",
     ],
     blocks: () => [{ type: "projects", slugs: ["gitops-eks-platform"] }],
     followUps: ["projects", "skills", "availability"],
@@ -107,6 +150,7 @@ export const INTENTS: Intent[] = [
       "available", "availability", "hire", "hiring", "pfe", "internship",
       "opportunity", "looking", "free", "recruit", "disponible",
       "disponibilite", "stage", "recruter", "embaucher", "cherches",
+      "start", "when can you start", "starting", "start date", "commencer", "debuter",
     ],
     blocks: () => [{ type: "facts" }, { type: "contact" }],
     followUps: ["cv", "projects", "skills"],
@@ -148,7 +192,10 @@ export const INTENTS: Intent[] = [
     id: "location",
     keywords: [
       "where", "based", "location", "located", "live", "city", "country",
-      "tunisia", "remote", "habites", "ville", "pays", "tunisie", "base",
+      "tunisia", "remote", "remotely", "work remotely", "work from home", "relocate",
+      "relocating", "relocation", "move abroad",
+      "habites", "ville", "pays", "tunisie", "base", "distance", "teletravail",
+      "demenager", "a distance",
     ],
     blocks: () => [{ type: "facts" }],
     followUps: ["availability", "languages", "contact"],

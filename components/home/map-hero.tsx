@@ -172,8 +172,8 @@ export function MapHero({
             <p className="mt-4 max-w-[44ch] text-[17px] leading-relaxed text-pretty text-muted-foreground">
               {t.map.intro}
             </p>
-            <p className="mt-3 inline-flex items-center gap-2 text-[14.5px] font-medium text-foreground">
-              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--signal)]" />
+            <p className="mt-3 inline-flex items-start gap-2 text-[14.5px] font-medium text-foreground">
+              <span aria-hidden="true" className="mt-[0.45em] h-2 w-2 shrink-0 rounded-full bg-[var(--signal)]" />
               {t.hero.availability}
             </p>
           </div>

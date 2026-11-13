@@ -133,6 +133,12 @@ export const CASES: Case[] = [
   { group: "new questions", lang: "fr", q: "quel est le problème le plus difficile que tu as résolu ?", match: "intent:hardest" },
   { group: "new questions", lang: "fr", q: "tes prétentions salariales ?", match: "intent:salary" },
   { group: "new questions", q: "AWS certifications?", match: "intent:certifications" },
+  { group: "new questions", q: "are you open to relocation?", match: "intent:location" },
+  { group: "new questions", lang: "fr", q: "tu peux travailler à distance ?", match: "intent:location" },
+  { group: "new questions", lang: "fr", q: "quand peux-tu commencer ?", match: "intent:availability", text: /janvier 2027/ },
+  { group: "new questions", q: "when can you start?", text: /January 2027/ },
+  { group: "new questions", lang: "fr", q: "pourquoi le devops ?", match: "intent:whyDevops" },
+  { group: "new questions", q: "what was your biggest challenge?", match: "intent:hardest" },
 
   // Things the chat should admit it does not know.
   { group: "unknown", q: "what's your favourite food?", match: "fallback" },

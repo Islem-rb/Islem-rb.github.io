@@ -29,8 +29,8 @@ export function SiteFooter({ lang }: { lang: Lang }): ReactNode {
     {
       label: t.about.lookingFor,
       value: (
-        <span className="inline-flex items-center gap-2">
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--signal)]" />
+        <span className="inline-flex items-start gap-2">
+          <span aria-hidden="true" className="mt-[0.45em] h-2 w-2 shrink-0 rounded-full bg-[var(--signal)]" />
           {t.hero.availability}
         </span>
       ),

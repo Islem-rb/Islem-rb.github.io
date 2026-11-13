@@ -13,7 +13,12 @@ export type IntentId =
   | "deploy"
   | "timeline"
   | "why"
-  | "learning";
+  | "learning"
+  | "hardest"
+  | "team"
+  | "whyDevops"
+  | "certifications"
+  | "salary";
 
 /** A rich card rendered under the typed answer. Data is read by the renderer. */
 export type Block =

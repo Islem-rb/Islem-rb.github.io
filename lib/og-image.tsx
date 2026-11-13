@@ -102,8 +102,8 @@ export function renderOgImage(lang: Lang): ImageResponse {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 14, fontSize: 24 }}>
             <span style={{ color: C.muted, fontFamily: "Noto", fontSize: 21 }}>{t.meta.ogTagline}</span>
-            <span style={{ display: "flex", alignItems: "center", gap: 12, fontWeight: 600 }}>
-              <span style={{ width: 12, height: 12, borderRadius: 6, background: C.signal }} />
+            <span style={{ display: "flex", alignItems: "flex-start", gap: 12, fontWeight: 600 }}>
+              <span style={{ width: 12, height: 12, borderRadius: 6, background: C.signal, flexShrink: 0, marginTop: 9 }} />
               {t.hero.availability}
             </span>
           </div>

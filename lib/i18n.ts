@@ -36,7 +36,7 @@ const en = {
     line1: "I build platforms",
     line2: "that",
     emphasis: "ship themselves.",
-    availability: "Open to PFE internships · Tunisia or Europe",
+    availability: "Open to a PFE internship from Jan 2027 · Tunisia, Europe or remote",
   },
   contactButton: {
     label: "Contact",
@@ -124,7 +124,7 @@ const en = {
     studying: "Studying",
     studyingValue: "Engineering, Cloud & DevOps · ESPRIT",
     lookingFor: "Looking for",
-    lookingForValue: "PFE internship · Tunisia or Europe",
+    lookingForValue: "PFE internship from Jan 2027 · Tunisia, Europe or remote",
     emailLabel: "Email",
   },
   ask: {
@@ -158,6 +158,11 @@ const en = {
       timeline: "Show the timeline",
       why: "Why should we hire you?",
       learning: "What are you learning now?",
+      hardest: "Hardest problem you solved?",
+      team: "Have you worked in a team?",
+      whyDevops: "Why DevOps?",
+      certifications: "Any certifications?",
+      salary: "Salary expectations?",
     },
     emailQuestion: "Email me this question",
     showAll: "Show every question",
@@ -192,9 +197,9 @@ const en = {
         "Email is the fastest way to reach me. I’m also on LinkedIn and GitHub.",
       cv: "Here’s my résumé, in English and in French.",
       availability:
-        "Yes. I’m looking for a PFE internship in Cloud, DevOps or Platform Engineering, in Tunisia or Europe.",
+        "Yes. I’m looking for a PFE internship in Cloud, DevOps or Platform Engineering, starting as early as January 2027 and by March at the latest. In Tunisia, in Europe or remote.",
       location:
-        "I’m based in Ariana, Tunisia, and open to internships in Tunisia or Europe.",
+        "I’m based in Ariana, Tunisia. I’m happy to relocate for the internship, in Tunisia or Europe, and open to remote work.",
       languages: "I speak Arabic, French and English.",
       deploy:
         "The way this page just arrived: a small slice first, health checks, then everyone. My GitOps platform does that for every commit, and nobody touches the cluster by hand.",
@@ -204,6 +209,16 @@ const en = {
         "Because I’ve already done the work an intern usually learns on the job: a GitOps platform on EKS where a bad release stops itself, Terraform instead of console clicks, signed images, and alerts that fire before users notice. And I write down what broke and why.",
       learning:
         "Right now: Karpenter for node autoscaling with cost visibility per namespace on EKS, and finding the root cause of a DNS failure I hit after restoring a cluster with Velero.",
+      hardest:
+        "Making a bad release stop itself on my GitOps EKS platform. The API ships as a canary, and a Prometheus check on its error rate decides whether it goes on. With 50% of requests failing on purpose, the release was aborted automatically in 245–328 s while the stable version kept serving. One problem is still open: a DNS failure after restoring the cluster with Velero, which I’m still tracking down.",
+      team:
+        "Yes. At ESPRIT I built CityVoice in a team of 7, where my part was the cloud, the DevOps and some of the backend, and Sabeel in a team of 5. My other projects I built alone, end to end.",
+      whyDevops:
+        "My path made the choice for me: a mobile app in 2024, full-stack products in 2025, and by 2026 most of what I build is the platform underneath. I like the part that lets everything else ship safely, without anyone touching a server by hand.",
+      certifications:
+        "Not yet. For now the proof is the work itself: Terraform on AWS, Kubernetes and GitOps delivery, all public on GitHub.",
+      salary:
+        "That depends on the internship and the country, so I’d rather discuss it with you directly. Send me an email and I’ll answer.",
       fallback:
         "I don’t have an answer for that one yet. Send it to me and I’ll reply by email, or try a project name, a tool like “kubernetes”, or one of these.",
     },
@@ -291,7 +306,7 @@ const fr: Dictionary = {
     line1: "Je construis des plateformes",
     line2: "qui",
     emphasis: "se déploient seules.",
-    availability: "Disponible pour un stage PFE · Tunisie ou Europe",
+    availability: "Disponible pour un stage PFE dès janvier 2027 · Tunisie, Europe ou à distance",
   },
   contactButton: {
     label: "Contact",
@@ -379,7 +394,7 @@ const fr: Dictionary = {
     studying: "Études",
     studyingValue: "Ingénieur Cloud & DevOps · ESPRIT",
     lookingFor: "Recherche",
-    lookingForValue: "Stage PFE · Tunisie ou Europe",
+    lookingForValue: "Stage PFE dès janvier 2027 · Tunisie, Europe ou à distance",
     emailLabel: "E-mail",
   },
   ask: {
@@ -413,6 +428,11 @@ const fr: Dictionary = {
       timeline: "Voir la chronologie",
       why: "Pourquoi te recruter ?",
       learning: "Qu’apprends-tu en ce moment ?",
+      hardest: "Ton problème le plus difficile ?",
+      team: "As-tu travaillé en équipe ?",
+      whyDevops: "Pourquoi le DevOps ?",
+      certifications: "Des certifications ?",
+      salary: "Tes prétentions salariales ?",
     },
     emailQuestion: "M’envoyer cette question",
     showAll: "Voir toutes les questions",
@@ -447,9 +467,9 @@ const fr: Dictionary = {
         "L’e-mail est le moyen le plus rapide de me joindre. Je suis aussi sur LinkedIn et GitHub.",
       cv: "Voici mon CV, en français et en anglais.",
       availability:
-        "Oui. Je cherche un stage PFE en Cloud, DevOps ou Platform Engineering, en Tunisie ou en Europe.",
+        "Oui. Je cherche un stage PFE en Cloud, DevOps ou Platform Engineering, à partir de janvier 2027 et au plus tard en mars. En Tunisie, en Europe ou à distance.",
       location:
-        "Je suis basé à Ariana, en Tunisie, et ouvert aux stages en Tunisie ou en Europe.",
+        "Je suis basé à Ariana, en Tunisie. Je suis prêt à déménager pour le stage, en Tunisie ou en Europe, et ouvert au télétravail.",
       languages: "Je parle arabe, français et anglais.",
       deploy:
         "Comme cette page vient d’arriver : une petite tranche d’abord, des contrôles de santé, puis tout le monde. Ma plateforme GitOps fait ça à chaque commit, et personne ne touche au cluster à la main.",
@@ -459,6 +479,16 @@ const fr: Dictionary = {
         "Parce que j’ai déjà fait ce qu’un stagiaire apprend d’habitude sur le terrain : une plateforme GitOps sur EKS où une mauvaise version s’arrête toute seule, Terraform plutôt que des clics dans la console, des images signées, et des alertes qui sonnent avant les utilisateurs. Et je note ce qui a cassé, et pourquoi.",
       learning:
         "En ce moment : Karpenter pour l’autoscaling des nœuds avec le coût par namespace sur EKS, et la cause d’une panne DNS rencontrée après la restauration d’un cluster avec Velero.",
+      hardest:
+        "Faire qu’une mauvaise version s’arrête toute seule sur ma plateforme GitOps EKS. L’API est livrée en canary, et une vérification Prometheus de son taux d’erreur décide si elle continue. Avec 50 % de requêtes en erreur volontaire, la version a été annulée automatiquement en 245 à 328 s pendant que la version stable continuait de servir. Un problème reste ouvert : une panne DNS après la restauration du cluster avec Velero, dont je cherche encore la cause.",
+      team:
+        "Oui. À ESPRIT, j’ai réalisé CityVoice dans une équipe de 7, où ma part était le cloud, le DevOps et une partie du backend, et Sabeel dans une équipe de 5. Mes autres projets, je les ai réalisés seul, de bout en bout.",
+      whyDevops:
+        "Mon parcours a choisi pour moi : une application mobile en 2024, des produits full-stack en 2025, et en 2026 je construis surtout la plateforme en dessous. J’aime la partie qui permet à tout le reste d’être livré sans risque, sans que personne ne touche un serveur à la main.",
+      certifications:
+        "Pas encore. Pour l’instant, la preuve, c’est le travail : Terraform sur AWS, Kubernetes et livraison GitOps, le tout public sur GitHub.",
+      salary:
+        "Cela dépend du stage et du pays, donc je préfère en parler directement avec vous. Envoyez-moi un e-mail et je vous répondrai.",
       fallback:
         "Je n’ai pas encore de réponse à ça. Envoyez-la-moi et je répondrai par e-mail, ou essayez un nom de projet, un outil comme « kubernetes », ou l’une de ces questions.",
     },
