@@ -348,6 +348,7 @@ export function Ask({
                 lang={lang}
                 t={t}
                 onPick={(id) => ask(t.ask.chips[id], id)}
+                onAsk={pickSuggestion}
                 onOpenProject={onOpenProject}
               />
             </motion.article>
@@ -393,6 +394,7 @@ function EntryView({
   lang,
   t,
   onPick,
+  onAsk,
   onOpenProject,
 }: {
   entry: Entry;
@@ -400,6 +402,7 @@ function EntryView({
   lang: Lang;
   t: Dictionary;
   onPick: (id: IntentId) => void;
+  onAsk: (suggestion: Suggestion) => void;
   onOpenProject: (slug: string) => void;
 }): ReactNode {
   const [typed, setTyped] = useState(false);
@@ -430,6 +433,7 @@ function EntryView({
             lang={lang}
             t={t}
             onOpenProject={onOpenProject}
+            onAsk={onAsk}
           />
           <motion.ul
             aria-label={entry.question ? t.ask.followUps : t.ask.suggestions}

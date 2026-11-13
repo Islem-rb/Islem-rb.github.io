@@ -6,7 +6,7 @@ import type { CSSProperties, ReactNode } from "react";
 
 import { ContactButton } from "@/components/contact/contact-button";
 import { categoryOf, mapLabel } from "@/lib/chat/map";
-import type { Block } from "@/lib/chat/types";
+import type { Block, Suggestion } from "@/lib/chat/types";
 import {
   getEducation,
   getExperience,
@@ -27,6 +27,8 @@ type BlockProps = {
   lang: Lang;
   t: Dictionary;
   onOpenProject: (slug: string) => void;
+  /** Ask one of the "did you mean" guesses. */
+  onAsk?: ((suggestion: Suggestion) => void) | undefined;
 };
 
 /** The cards under a typed answer. They fade up one after another. */
@@ -49,6 +51,7 @@ function BlockView({
   lang,
   t,
   onOpenProject,
+  onAsk,
 }: BlockProps & { block: Block }): ReactNode {
   switch (block.type) {
     case "projects": {
@@ -211,6 +214,27 @@ function BlockView({
         </StaggerItem>
       );
     }
+    case "didYouMean":
+      return (
+        <StaggerItem>
+          <ul aria-label={t.ask.didYouMean} className="flex flex-wrap gap-2">
+            {block.items.map((item) => (
+              <li key={item.label}>
+                <button
+                  type="button"
+                  onClick={() => onAsk?.(item)}
+                  className="focus-ring inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-accent/45 bg-surface px-3.5 text-[14px] font-medium text-foreground transition-colors hover:border-accent"
+                >
+                  {item.label}
+                  <span className="text-[12px] font-normal text-muted-foreground">
+                    {t.ask.kinds[item.kind]}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </StaggerItem>
+      );
     case "ask":
       return (
         <StaggerItem>

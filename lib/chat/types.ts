@@ -30,6 +30,8 @@ export type Block =
   | { type: "contact" }
   | { type: "cv" }
   | { type: "facts" }
+  /** Close guesses for a question the chat did not understand. */
+  | { type: "didYouMean"; items: Suggestion[] }
   /** Offer to send a question the site could not answer by email. */
   | { type: "ask"; question: string };
 

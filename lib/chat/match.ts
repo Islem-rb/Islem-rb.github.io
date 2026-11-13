@@ -300,12 +300,89 @@ export function answer(query: string, lang: Lang, context?: ChatContext): Answer
   const best = bestIntent(norm);
   if (best) return answerForIntent(best, lang);
 
+  const guesses = closest(norm, lang, projects, vocabulary);
   return {
-    text: t.fallback,
-    blocks: [{ type: "ask", question: query.trim() }],
-    followUps: DEFAULT_SUGGESTIONS,
+    text: guesses.length > 0 ? t.didYouMean : t.fallback,
+    blocks: [
+      ...(guesses.length > 0 ? [{ type: "didYouMean" as const, items: guesses }] : []),
+      { type: "ask", question: query.trim() },
+    ],
+    // With guesses on screen, fewer ready-made questions keep the card short.
+    followUps: guesses.length > 0 ? DEFAULT_SUGGESTIONS.slice(0, 3) : DEFAULT_SUGGESTIONS,
     matched: "fallback",
   };
+}
+
+/** Edit distance, counting a swap of two neighbouring letters as one edit. */
+function distance(a: string, b: string): number {
+  const d = Array.from({ length: a.length + 1 }, (_, i) =>
+    Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)),
+  );
+  for (let i = 1; i <= a.length; i += 1) {
+    for (let j = 1; j <= b.length; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      let best = Math.min(d[i - 1]![j]! + 1, d[i]![j - 1]! + 1, d[i - 1]![j - 1]! + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        best = Math.min(best, d[i - 2]![j - 2]! + 1);
+      }
+      d[i]![j] = best;
+    }
+  }
+  return d[a.length]![b.length]!;
+}
+
+/**
+ * How close a typed word is to a known one, looser than the matcher: the start
+ * of a word ("kube"), or two typos in a long one ("terrafrom"). 0 when not close.
+ */
+function closeness(token: string, word: string, alone: boolean): number {
+  if (token.length < 3 || word.length < 4) return 0;
+  if (token === word) return 1;
+  // A word typed on its own may be cut short; inside a sentence ("play") it is a word.
+  if (alone && token.length >= 4 && word.startsWith(token)) return 0.9;
+  const edits = distance(token, word);
+  if (edits === 1 && token.length >= 4) return 0.8;
+  if (edits === 2 && token.length >= 6 && word.length >= 6) return 0.6;
+  return 0;
+}
+
+const MAX_GUESSES = 3;
+
+/** Up to three things the visitor may have meant: projects, tools, then questions. */
+function closest(norm: string, lang: Lang, projects: Project[], vocabulary: Tech[]): Suggestion[] {
+  const tokens = norm.split(" ").filter((tok) => !STOPWORDS.has(tok));
+  if (tokens.length === 0) return [];
+  const chips = getDictionary(lang).ask.chips;
+  const score = (words: string[]): number =>
+    Math.max(0, ...tokens.flatMap((tok) => words.map((w) => closeness(tok, w, tokens.length === 1))));
+
+  const found: (Suggestion & { score: number })[] = [];
+  for (const p of projects) {
+    const words = [...normalize(p.name).split(" "), ...(PROJECT_ALIASES[p.slug] ?? [])];
+    found.push({ label: p.name, kind: "project", score: score(words) + 0.05 });
+  }
+  for (const tech of vocabulary) {
+    if (tech.slugs.length === 0) continue;
+    found.push({ label: tech.label, kind: "tool", score: score(tech.words) });
+  }
+  for (const intent of INTENTS) {
+    if (intent.id === "greeting" || intent.id === "salary") continue;
+    const words = intent.keywords.filter((k) => !k.includes(" "));
+    found.push({ label: chips[intent.id], kind: "question", intent: intent.id, score: score(words) - 0.05 });
+  }
+
+  const seen = new Set<string>();
+  return found
+    .filter((f) => f.score > 0.5)
+    .sort((a, b) => b.score - a.score)
+    .filter((f) => {
+      const key = f.label.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, MAX_GUESSES)
+    .map(({ score: _score, ...rest }) => rest);
 }
 
 /**

@@ -7,7 +7,7 @@ import { CASES, type Case } from "./questions";
 import type { Answer } from "./types";
 
 /** The share of CASES that must pass. Raise it as the chat improves, never lower it. */
-const MINIMUM = 0.97;
+const MINIMUM = 0.98;
 
 function ask(item: Case): Answer {
   const lang: Lang = item.lang ?? "en";
@@ -25,6 +25,10 @@ function check(item: Case, got: Answer): string | null {
     if (lit !== [...item.slugs].sort().join(",")) return `lit [${lit}], expected [${item.slugs.join(",")}]`;
   }
   if (item.text && !item.text.test(got.text)) return `text lacks ${item.text}`;
+  if (item.suggests !== undefined) {
+    const guesses = got.blocks.flatMap((b) => (b.type === "didYouMean" ? b.items.map((i) => i.label) : []));
+    if (item.suggests === "" ? guesses.length > 0 : !guesses.includes(item.suggests)) return `suggested [${guesses.join(", ")}], expected ${item.suggests}`;
+  }
   return null;
 }
 

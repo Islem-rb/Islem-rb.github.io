@@ -165,6 +165,7 @@ const en = {
       salary: "Salary expectations?",
     },
     emailQuestion: "Email me this question",
+    didYouMean: "Did you mean",
     showAll: "Show every question",
     slashHint: "Type / to see every question",
     slashTitle: "Everything you can ask",
@@ -219,6 +220,7 @@ const en = {
         "Not yet. For now the proof is the work itself: Terraform on AWS, Kubernetes and GitOps delivery, all public on GitHub.",
       salary:
         "That depends on the internship and the country, so I’d rather discuss it with you directly. Send me an email and I’ll answer.",
+      didYouMean: "I’m not sure I understood. Did you mean one of these?",
       fallback:
         "I don’t have an answer for that one yet. Send it to me and I’ll reply by email, or try a project name, a tool like “kubernetes”, or one of these.",
     },
@@ -435,6 +437,7 @@ const fr: Dictionary = {
       salary: "Tes prétentions salariales ?",
     },
     emailQuestion: "M’envoyer cette question",
+    didYouMean: "Vouliez-vous dire",
     showAll: "Voir toutes les questions",
     slashHint: "Tapez / pour voir toutes les questions",
     slashTitle: "Tout ce que vous pouvez demander",
@@ -489,6 +492,7 @@ const fr: Dictionary = {
         "Pas encore. Pour l’instant, la preuve, c’est le travail : Terraform sur AWS, Kubernetes et livraison GitOps, le tout public sur GitHub.",
       salary:
         "Cela dépend du stage et du pays, donc je préfère en parler directement avec vous. Envoyez-moi un e-mail et je vous répondrai.",
+      didYouMean: "Je ne suis pas sûr d’avoir compris. Vouliez-vous dire l’un de ces sujets ?",
       fallback:
         "Je n’ai pas encore de réponse à ça. Envoyez-la-moi et je répondrai par e-mail, ou essayez un nom de projet, un outil comme « kubernetes », ou l’une de ces questions.",
     },

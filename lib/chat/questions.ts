@@ -9,6 +9,7 @@ import type { Lang } from "@/lib/i18n";
  * - slugs: the exact projects the map must light up.
  * - text: something the answer text must contain.
  * - after: a previous question in the same conversation (for follow-ups).
+ * - suggests: a "did you mean" guess the answer must offer ("" for none at all).
  */
 export type Case = {
   q: string;
@@ -18,6 +19,7 @@ export type Case = {
   match?: string;
   slugs?: string[];
   text?: RegExp;
+  suggests?: string;
 };
 
 const CLOUD = ["gitops-eks-platform", "devops-observability-platform", "cityvoice"];
@@ -145,6 +147,16 @@ export const CASES: Case[] = [
   { group: "unknown", q: "asdfgh", match: "fallback" },
   { group: "unknown", q: "do you play football?", match: "fallback" },
   { group: "unknown", q: "weather today", match: "fallback" },
+
+  // Not understood, but close to something: offer it.
+  { group: "did you mean", q: "terrafrom", suggests: "Terraform" },
+  { group: "did you mean", q: "kube", suggests: "Kubernetes" },
+  { group: "did you mean", q: "dokcer", suggests: "Docker" },
+  { group: "did you mean", q: "carnoav", suggests: "Carnova" },
+  { group: "did you mean", q: "obs", match: "fallback" },
+  { group: "did you mean", lang: "fr", q: "certifs", suggests: "Des certifications ?" },
+  { group: "did you mean", q: "what's your favourite food?", match: "fallback", suggests: "" },
+  { group: "did you mean", q: "do you play football?", match: "fallback", suggests: "" },
 
   // Typos and short forms.
   { group: "robustness", q: "kubernets", match: "tech" },
