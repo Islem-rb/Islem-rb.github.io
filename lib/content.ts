@@ -750,7 +750,7 @@ export const CAPABILITIES = [
 ] as const;
 
 export const SKILL_GROUPS = [
-  { label: "Cloud", items: "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper-V" },
+  { label: "Cloud", items: "AWS (EC2, VPC, S3, IAM, EKS), OpenStack, KVM, Hyper‑V" },
   { label: "IaC & delivery", items: "Terraform, Ansible, GitHub Actions, Jenkins, Argo CD, Helm" },
   { label: "Containers", items: "Docker, Kubernetes, Docker Swarm" },
   { label: "Observability", items: "Prometheus, Grafana, Loki, Alertmanager, Zabbix" },

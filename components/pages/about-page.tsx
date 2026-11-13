@@ -93,11 +93,12 @@ function Facts({ lang }: { lang: Lang }): ReactNode {
     },
   ];
 
+  // One strip across the page: the facts side by side, the résumés at the end.
   return (
     <div className="flex flex-col gap-3">
       <h2 className="eyebrow">{t.factsTitle}</h2>
       <div className="sheet flex flex-col p-1">
-        <dl className="flex flex-col divide-y divide-border px-4 sm:px-5">
+        <dl className="grid grid-cols-1 gap-x-8 px-4 sm:grid-cols-2 sm:px-5 lg:grid-cols-[1fr_1.15fr_1.5fr_1.4fr_1.25fr] [&>div]:border-b [&>div]:border-border lg:[&>div]:border-b-0">
           {rows.map((row) => (
             <div key={row.label} className="flex flex-col gap-1 py-3.5">
               <dt className="text-[12.5px] text-muted-foreground">
@@ -109,7 +110,7 @@ function Facts({ lang }: { lang: Lang }): ReactNode {
             </div>
           ))}
         </dl>
-        <div className="flex flex-wrap gap-2 border-t border-border px-4 py-4 sm:px-5">
+        <div className="flex flex-wrap gap-2 px-4 pt-1 pb-4 sm:px-5 lg:border-t lg:border-border lg:pt-4">
           <a
             href={profile.cv[lang]}
             download
@@ -140,7 +141,7 @@ export function AboutPage({ lang }: { lang: Lang }): ReactNode {
   return (
     <main id="main-content" className="flex flex-1 flex-col">
       <section className="mx-auto w-full max-w-310 px-5 pt-32 sm:px-8 sm:pt-40">
-        <div className="grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div className="grid grid-cols-1 items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
           <FadeIn>
             <p className="eyebrow">{t.nav.about}</p>
             <h1 className="mt-5 font-serif text-[2.4rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance text-foreground sm:text-[3.4rem]">
@@ -154,7 +155,7 @@ export function AboutPage({ lang }: { lang: Lang }): ReactNode {
             </div>
           </FadeIn>
 
-          <FadeIn delay={0.15} className="flex flex-col gap-8">
+          <FadeIn delay={0.15}>
             <figure className="sheet p-1.5">
               <img
                 src={profile.portrait.light}
@@ -175,28 +176,34 @@ export function AboutPage({ lang }: { lang: Lang }): ReactNode {
                 <span>{profile.location}</span>
               </figcaption>
             </figure>
-            <Facts lang={lang} />
           </FadeIn>
         </div>
+
+        <FadeIn delay={0.1} className="mt-14 sm:mt-16">
+          <Facts lang={lang} />
+        </FadeIn>
       </section>
 
-      <section className="mx-auto w-full max-w-310 px-5 pt-20 sm:px-8 sm:pt-28">
+      <section className="mx-auto w-full max-w-310 px-5 pt-20 sm:px-8 sm:pt-24">
         <div className="grid grid-cols-1 gap-x-6 gap-y-12 lg:grid-cols-12">
+          {/* Experience beside the two short sections, so neither column ends early. */}
           <FadeIn delay={0.1} className="lg:col-span-7">
             <Experience />
           </FadeIn>
-          <FadeIn delay={0.15} className="lg:col-span-5">
-            <Education lang={lang} />
-          </FadeIn>
+          <div className="flex flex-col gap-12 lg:col-span-5">
+            <FadeIn delay={0.15}>
+              <Education lang={lang} />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <Skills lang={lang} />
+            </FadeIn>
+          </div>
 
+          {/* The tools, twice: to play with, then to read. */}
           <FadeIn delay={0.1} className="lg:col-span-12">
             <Stack />
           </FadeIn>
-
-          <FadeIn delay={0.1} className="lg:col-span-5">
-            <Skills lang={lang} />
-          </FadeIn>
-          <FadeIn delay={0.15} className="lg:col-span-7">
+          <FadeIn delay={0.1} className="lg:col-span-12">
             <Toolbox lang={lang} />
           </FadeIn>
         </div>

@@ -29,11 +29,14 @@ export function Toolbox({ lang }: { lang: Lang }): ReactNode {
     <div className="flex flex-col gap-3">
       <h2 className="eyebrow">{t.toolbox}</h2>
       <div className="sheet">
-        <dl className="flex flex-col divide-y divide-border px-4 sm:px-5">
-          {getSkillGroups(lang).map((group) => (
+        {/* Two columns on wide screens, so the full-width table stays short. */}
+        <dl className="grid grid-cols-1 gap-x-10 px-4 sm:px-5 lg:grid-cols-2">
+          {getSkillGroups(lang).map((group, i) => (
             <div
               key={group.label}
-              className="grid grid-cols-1 gap-1 py-3.5 sm:grid-cols-[8.5rem_1fr] sm:gap-4"
+              className={`grid grid-cols-1 gap-1 border-border py-3.5 sm:grid-cols-[8.5rem_1fr] sm:gap-4 ${
+                i > 0 ? "border-t" : ""
+              } ${i === 1 ? "lg:border-t-0" : ""}`}
             >
               <dt className="text-[13px] leading-[1.7] font-semibold text-foreground">
                 {group.label}

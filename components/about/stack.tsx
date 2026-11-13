@@ -226,7 +226,7 @@ export function Stack(): ReactNode {
         </span>
       </div>
 
-      <div className="sheet relative h-72 overflow-hidden">
+      <div className="sheet relative h-72 overflow-hidden lg:h-52">
         <button
           type="button"
           onClick={() => setResetKey((k) => k + 1)}
