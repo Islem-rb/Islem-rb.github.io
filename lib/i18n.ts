@@ -263,8 +263,6 @@ const en = {
     projects: { name: "Projects", what: "Cloud platforms, GitOps pipelines and full-stack products", go: "View all" },
     experience: { name: "Experience", what: "Internships at Verdustry, Al Idhafa Group and Abajim", go: "Read" },
     education: { name: "Education", what: "Engineering degree in Cloud & DevOps, ESPRIT", go: "Read" },
-    resume: { name: "Résumé", what: "English and French, PDF", go: "Download" },
-    contact: { name: "Contact", what: "Open to PFE internships in Tunisia or Europe", go: "Get in touch" },
   },
   notFound: {
     title: "This page was never deployed.",
@@ -535,8 +533,6 @@ const fr: Dictionary = {
     projects: { name: "Projets", what: "Plateformes cloud, pipelines GitOps et produits full-stack", go: "Tout voir" },
     experience: { name: "Expérience", what: "Stages chez Verdustry, Al Idhafa Group et Abajim", go: "Lire" },
     education: { name: "Formation", what: "Diplôme d’ingénieur Cloud & DevOps, ESPRIT", go: "Lire" },
-    resume: { name: "CV", what: "Français et anglais, PDF", go: "Télécharger" },
-    contact: { name: "Contact", what: "Ouvert aux stages PFE en Tunisie ou en Europe", go: "Me contacter" },
   },
   notFound: {
     title: "Cette page n’a jamais été déployée.",
